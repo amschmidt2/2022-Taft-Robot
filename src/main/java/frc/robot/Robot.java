@@ -23,16 +23,25 @@ public class Robot extends TimedRobot {
    */
   private CANSparkMax front_LeftyMotor = new CANSparkMax(1, MotorType.kBrushless);
   private CanSparkMax back_LeftyMotor = new CanSparkMax(2, MotorType.kBrushless);
+  SpeedControllerGroup m_lefty = new SpeedControllerGroup(front_LeftyMotor, back_LeftyMotor);
+
   private CANSparkMax front_RightyMotor = new CANSparkMax(3, MotorType.kBrushless);
   private CanSparkMax back_RightyMotor = new CanSparkMax(4, MotorType.kBrushless);
+  SpeedControllerGroup m_righty = new SpeedControllerGroup(front_RightyMotor, back_RightyMotor);
 
+  DifferentialDrive m_drive = new DifferentialDrive(m_righty, m_lefty);
+ 
 
   private Joystick joy0 = new Joystick(0);
   private Joystick joy1 = new Joystick(1);
   
 
   @Override
-  public void robotInit() {}
+  public void robotInit() {
+
+    m_lefty.setInverted(true); // If you wanna invert the entire side you can do it here
+
+  }
 
   @Override
   public void robotPeriodic() {}
