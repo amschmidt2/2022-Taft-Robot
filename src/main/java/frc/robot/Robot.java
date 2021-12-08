@@ -6,9 +6,14 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PWMVictorSPX;
+import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.drive.MecanumDrive;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -25,6 +30,16 @@ public class Robot extends TimedRobot {
   private CANSparkMax leftMotor = new CANSparkMax(1, MotorType.kBrushless);
   private CANSparkMax rightMotor = new CANSparkMax(2, MotorType.kBrushless);
 
+  //Motor group
+Spark m_frontLeft = new Spark(1);
+Spark m_rearLeft = new Spark(2);
+SpeedControllerGroup m_left = new SpeedControllerGroup(m_frontLeft, m_rearLeft);
+
+Spark m_frontRight = new Spark(3);
+Spark m_rearRight = new Spark(4);
+SpeedControllerGroup m_right = new SpeedControllerGroup(m_frontRight, m_rearRight);
+DifferentialDrive m_drive = new DifferentialDrive(m_left, m_right);
+
   //Joysticks
   private Joystick joy0 = new Joystick(0);
   private Joystick joy1 = new Joystick(1);
@@ -33,7 +48,23 @@ public class Robot extends TimedRobot {
   private DifferentialDrive drivechain = new DifferentialDrive(leftMotor, rightMotor);
 
   @Override
-  public void robotInit() {}
+  public void robotInit() {
+    PWMVictorSPX frontLeft = new PWMVictorSPX(kFrontLeftChannel);
+    PWMVictorSPX rearLeft = new PWMVictorSPX(kRearLeftChannel);
+    PWMVictorSPX frontRight = new PWMVictorSPX(kFrontRightChannel);
+    PWMVictorSPX rearRight = new PWMVictorSPX(kRearRightChannel);
+
+    //Invert the left side motors.
+    //You may need to chnge or remove this to match your robot.
+    frontLeft.setInverted(true);
+    rearLeft.setInverted(true);
+
+    m_robotDrive = new MecanumDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor);
+
+    m_stick = new Joystick(kJoystickChannel);
+
+    m_left.setInverted(true);
+  }
 
   @Override
   public void robotPeriodic() {}
