@@ -21,12 +21,16 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
+  //Motor Controllers
   private CANSparkMax leftMotor = new CANSparkMax(1, MotorType.kBrushless);
   private CANSparkMax rightMotor = new CANSparkMax(2, MotorType.kBrushless);
 
+  //Joysticks
   private Joystick joy0 = new Joystick(0);
   private Joystick joy1 = new Joystick(1);
 
+  //Drivechain
+  private DifferentialDrive drivechain = new DifferentialDrive(leftMotor, rightMotor);
 
   @Override
   public void robotInit() {}
@@ -44,10 +48,28 @@ public class Robot extends TimedRobot {
   public void teleopInit() {}
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
 
 // boolean nothing = joy0.getRawButton(x);
 // boolean nothing = joy1.getRawButton(x);
+
+//driving
+double speed = joy0.getRawAxis(1);
+
+double turn_raw = joy0.getRawAxis(0);
+double turn = Math.pow(turn_raw, 2.0);
+if (turn_raw < 0);{
+  turn = -turn;
+}
+
+//drive train control
+drivechain.arcadeDrive(speed, turn);
+System.out.println("arcade drive speed: "+speed+", turn: "+turn);
+
+
+
+
+  }
 
   @Override
   public void disabledInit() {}
