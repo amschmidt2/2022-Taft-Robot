@@ -6,9 +6,14 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+//import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*; 
+
+//import edu.wpi.first.wpilibj.DoubleSolenoid; 
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -22,15 +27,16 @@ public class Robot extends TimedRobot {
    * initialization code.
    */
   private CANSparkMax front_LeftyMotor = new CANSparkMax(1, MotorType.kBrushless);
-  private CanSparkMax back_LeftyMotor = new CanSparkMax(2, MotorType.kBrushless);
+  private CANSparkMax back_LeftyMotor = new CANSparkMax(2, MotorType.kBrushless);
   SpeedControllerGroup m_lefty = new SpeedControllerGroup(front_LeftyMotor, back_LeftyMotor);
 
   private CANSparkMax front_RightyMotor = new CANSparkMax(3, MotorType.kBrushless);
-  private CanSparkMax back_RightyMotor = new CanSparkMax(4, MotorType.kBrushless);
+  private CANSparkMax back_RightyMotor = new CANSparkMax(4, MotorType.kBrushless);
   SpeedControllerGroup m_righty = new SpeedControllerGroup(front_RightyMotor, back_RightyMotor);
 
   DifferentialDrive m_drive = new DifferentialDrive(m_righty, m_lefty);
- 
+
+  //private DoubleSolenoid canCrush = new DoubleSolenoid(0,1); 
 
   private Joystick joy0 = new Joystick(0);
   private Joystick joy1 = new Joystick(1);
@@ -58,10 +64,22 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {}
 
+// boolean Crush = joy0.getRawButton(3); 
+// boolean crushOff = joy0.getRawButton(4); 
+
 // boolean nothing = joy0.getRawButton(x);
 // boolean nothing = joy1.getRawButton(x);
 
+//if (joy0.getRawButton(3)){
+  //canCrush.set(kForward);
+//}
+//else if (joy0.getRawButton(4)){
+  //canCrush.set(kReverse);
+//}
 
+//else{
+ // canCrush.set(kOff);
+//}
 
 
   @Override
