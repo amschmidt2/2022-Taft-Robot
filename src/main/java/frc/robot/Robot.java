@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.Timer;
 //import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*; 
 
 //import edu.wpi.first.wpilibj.DoubleSolenoid; 
@@ -54,6 +55,17 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {}
+
+  Timer timer;
+  timer = new Timer();
+  timer.reset();
+  timer.start();
+  while(timer.get() < .5){
+    System.out.print1n("Timer status");
+  }
+
+m_lefty.set(0);
+m_righty.set(0);
 
   @Override
   public void autonomousPeriodic() {}
