@@ -54,18 +54,36 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {}
 
   @Override
-  public void autonomousInit() {}
+  public void autonomousInit() {
 
+  Double moveRobotTime = 10.0;
+  Double moveRobotSpeed = 1.0;
+  //startTime = Timer.getFPGATimestamp();
   Timer timer;
   timer = new Timer();
+  System.out.println("Start autonomous");
+  System.out.println("Reseting timer");
   timer.reset();
+  System.out.println("Timer starting");
   timer.start();
+  System.out.println("current time is: " + timer.get());
   while(timer.get() < .5){
-    System.out.print1n("Timer status");
+    System.out.println("Timer status");
   }
+  System.out.println("Done");
+  //Wheels go forward
+  front_LeftyMotor.set(moveRobotSpeed*-1);
+  front_RightyMotor.set(moveRobotSpeed);
+  back_RightyMotor.set(moveRobotSpeed);
+  back_LeftyMotor.set(moveRobotSpeed*-1);
+  
+  //turn wheels off
+  front_LeftyMotor.set(0);
+  back_LeftyMotor.set(0);
+  front_RightyMotor.set(0);
+  back_RightyMotor.set(0);
 
-m_lefty.set(0);
-m_righty.set(0);
+  }
 
   @Override
   public void autonomousPeriodic() {}
@@ -106,3 +124,9 @@ m_righty.set(0);
   @Override
   public void testPeriodic() {}
 }
+
+
+
+
+
+// \(0.0 /)
