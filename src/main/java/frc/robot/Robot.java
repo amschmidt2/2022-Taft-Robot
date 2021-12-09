@@ -21,28 +21,18 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
-<<<<<<< HEAD
-  //Motor Controllers
-  private CANSparkMax leftMotor = new CANSparkMax(1, MotorType.kBrushless);
-  private CANSparkMax rightMotor = new CANSparkMax(2, MotorType.kBrushless);
-=======
   private CANSparkMax front_LeftyMotor = new CANSparkMax(1, MotorType.kBrushless);
-  private CanSparkMax back_LeftyMotor = new CanSparkMax(2, MotorType.kBrushless);
+  private CANSparkMax back_LeftyMotor = new CANSparkMax(2, MotorType.kBrushless);
   private CANSparkMax front_RightyMotor = new CANSparkMax(3, MotorType.kBrushless);
-  private CanSparkMax back_RightyMotor = new CanSparkMax(4, MotorType.kBrushless);
-
->>>>>>> Angie's-Branch
+  private CANSparkMax back_RightyMotor = new CANSparkMax(4, MotorType.kBrushless);
 
   //Joysticks
   private Joystick joy0 = new Joystick(0);
   private Joystick joy1 = new Joystick(1);
-<<<<<<< HEAD
 
   //Drivechain
-  private DifferentialDrive drivechain = new DifferentialDrive(leftMotor, rightMotor);
-=======
   
->>>>>>> Angie's-Branch
+  private DifferentialDrive drivechain = new DifferentialDrive(leftMotor, rightMotor);
 
   @Override
   public void robotInit() {}
@@ -56,37 +46,13 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {}
 
-  @Override
-  public void teleopInit() {}
-
-  @Override
-  public void teleopPeriodic() {
-
-// boolean nothing = joy0.getRawButton(x);
-// boolean nothing = joy1.getRawButton(x);
-
-<<<<<<< HEAD
-//driving
-double speed = joy0.getRawAxis(1);
-
-double turn_raw = joy0.getRawAxis(0);
-double turn = Math.pow(turn_raw, 2.0);
-if (turn_raw < 0);{
-  turn = -turn;
-}
-
-//drive train control
-drivechain.arcadeDrive(speed, turn);
-System.out.println("arcade drive speed: "+speed+", turn: "+turn);
+//   @Override
+// // drivechain.arcadeDrive(speed, turn);
+// // System.out.println("arcade drive speed: "+speed+", turn: "+turn);
 
 
 
-
-  }
-=======
-
-
->>>>>>> Angie's-Branch
+// //   }
 
   @Override
   public void disabledInit() {}
