@@ -36,7 +36,7 @@ public class Robot extends TimedRobot {
 
   //Drivechain
   
-  private DifferentialDrive drivechain = new DifferentialDrive(leftMotor, rightMotor);
+  private DifferentialDrive drivechain = new DifferentialDrive(m_lefty, m_righty);
 
   @Override
   public void robotInit() {}
