@@ -35,7 +35,7 @@ public class Robot extends TimedRobot {
   private Joystick joy1 = new Joystick(1);
 
   //Drivechain
-  
+
   private DifferentialDrive drivechain = new DifferentialDrive(m_lefty, m_righty);
 
   @Override
@@ -46,7 +46,7 @@ public class Robot extends TimedRobot {
 
     // Xbox A, B, Y, X, tiny two frames (TTF.), tiny three line(T3L), Dpad
     // Right Bummper, Left Bummper, Right Trigger, Left Trigger, Top Joystick, Bottom Joystick
-    // This was the shooter speed these are not things to look at buttons wise. 
+    // This was the shooter speed these are not things to look at buttons wise.
     boolean xbox_A = joy0.getRawButton(1); // xbox A
     boolean xbox_B = joy0.getRawButton(2); // xbox B
     boolean xbox_X = joy0.getRawButton(3); // xbox X
@@ -54,7 +54,7 @@ public class Robot extends TimedRobot {
 
     dumpTruck(xbox_X, xbox_Y);
     elevator(xbox_A, xbox_B);
-    
+
     double joy_Left = joy0.getRawAxis(1);
     double joy_Right = joy0.getRawAxis(0);
 
@@ -121,9 +121,9 @@ private void elevator(boolean up, boolean down) {
 
 }
 
-  
+
 private void driveTruck(double speed, double turn_raw){
-  
+
   double turn = Math.pow(turn_raw, 2.0);
   if (turn_raw < 0){
     turn = -turn;
@@ -132,9 +132,6 @@ private void driveTruck(double speed, double turn_raw){
   //drive train control
   drivechain.arcadeDrive(speed, turn);
   System.out.println("arcade drive speed: " + speed + ", turn: " + turn);
-}  
+}
 
-
-
-
-
+}  // <--- Leave this close brace
