@@ -38,7 +38,10 @@ public class Robot extends TimedRobot {
 
   private DifferentialDrive drivechain = new DifferentialDrive(m_lefty, m_righty);
 
-  Room room =  new Room();
+  
+  // Create Variables
+  boolean dumpTruck_state = false;
+  boolean dumpTruck_prev_but = false;
 
   @Override
   public void robotInit() {
@@ -69,15 +72,15 @@ public class Robot extends TimedRobot {
 
     
     // checking if the button has changed
-    if (xbox_X != room.dumpTruck_prev_but) {
+    if (xbox_X != dumpTruck_prev_but) {
       
       //if state is true make false (this is a if, else statement within a if statement)
-      if(room.dumpTruck_state) {
-        room.dumpTruck_state = false;
+      if(dumpTruck_state) {
+        dumpTruck_state = false;
       }
       //else make state true (this else relates to the second true)
       else{
-        room.dumpTruck_state = true;
+        dumpTruck_state = true;
       }
     }
     else{}
@@ -118,7 +121,7 @@ public class Robot extends TimedRobot {
 
 private void dumpTruck() {
 
-  if (room.dumpTruck_state) {
+  if (dumpTruck_state) {
     System.out.println("dumpTruck moves up");
   }
 
@@ -158,9 +161,5 @@ private void driveTruck(double speed, double turn_raw){
   System.out.println("arcade drive speed: " + speed + ", turn: " + turn);
 }
 
-public class Room{
-    boolean dumpTruck_state = false;
-    boolean dumpTruck_prev_but = false;
-  }
 
 }  // <--- Leave this close brace
