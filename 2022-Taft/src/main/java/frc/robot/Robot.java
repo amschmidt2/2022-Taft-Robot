@@ -22,9 +22,9 @@ import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
  */
 public class Robot extends TimedRobot {
   //Create motors and controllers and stuff
-  private final PWMSparkMax m_leftMotor = new PWMSparkMax(0);
-  private final PWMSparkMax m_rightMotor = new PWMSparkMax(1);
-  private final DifferentialDrive drivechain = new DifferentialDrive(m_leftMotor, m_rightMotor);
+  // private final PWMSparkMax m_leftMotor = new PWMSparkMax(0);
+  // private final PWMSparkMax m_rightMotor = new PWMSparkMax(1);
+  // private final DifferentialDrive drivechain = new DifferentialDrive(m_leftMotor, m_rightMotor);
   
   
   private final XboxController joy0 = new XboxController(0);
@@ -43,7 +43,22 @@ public class Robot extends TimedRobot {
   // 1: move forwards, 5 sec
   // 2: shoot ball, 10 sec
 
-  double sammy[] = {2.0, 5.0, 10.0};
+  double sammy[] = {2.0, 5.0, 10.0, 12.0};
+
+// hello
+  String starts[] = {"Motor move the wheels backwards","Motor move the wheels forward","Motor shoot the cargo upwards","Motor move the wheels backward", "we are done"};
+  String ends[] = {"Stop moving","Stop moving","Stop shooter","Stop Moving"};
+
+  private void briefcase(String task){
+    System.out.println(task);
+    switch(task){
+      case "Motor move the wheels backwards":
+        System.out.println("The wheels are moving back!");
+        // drivechain.arcadeDrive(speed, turn);
+      default:
+        break;
+    }
+  }
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -87,6 +102,8 @@ public class Robot extends TimedRobot {
     timmy.reset();
     timmy.start();
     System.out.println("timmy's time is " + timmy.get());
+
+    briefcase(starts[0]);
   }
 
   /** This function is called periodically during autonomous. */
@@ -98,48 +115,60 @@ public class Robot extends TimedRobot {
         break;
       case kDefaultAuto:
       default:
-        if(autonomous_counter == 0){
-          //move backwards code
-          if(timmy.get() < sammy[autonomous_counter]){
-            System.out.println("Move Backwards");
-            
-          }
-          else{
-            System.out.println("I have two seconds " + timmy.get());
-            System.out.println("make some code to start the next routine");
-            // autonomous_counter = autonomous_counter + 1;
+        if(autonomous_counter != sammy.length){
+          if(timmy.get() > sammy[autonomous_counter]){  // <-- This is an event
+            briefcase(ends[autonomous_counter]);
+            //System.out.println(ends[autonomous_counter]);        
             autonomous_counter++;
-            System.out.println("autonomous counter = " + autonomous_counter);
-            }
+            briefcase(starts[autonomous_counter]);
+            //System.out.println(starts[autonomous_counter]);
+          }
+        }
+        
 
-        }
-        //code for moving forward
-        else if(autonomous_counter == 1){
-          //
-          if(timmy.get() < sammy[autonomous_counter]){
-            System.out.println("Move Forwards");
-          }
-          else{
-            System.out.println("I have 5 seconds " + timmy.get());
-            System.out.println("make some code to start the next routine");
-            // autonomous_counter = autonomous_counter + 1;
-            autonomous_counter++;
-            System.out.println("autonomous counter = " + autonomous_counter);
-          }
-        }
-        else if(autonomous_counter == 2){
-          //
-          if(timmy.get() < sammy[autonomous_counter]){
-            System.out.println("shoot ball");
-          }
-          else{
-            System.out.println("I have 10 seconds " + timmy.get());
-            System.out.println("make some code to start the next routine");
-            // autonomous_counter = autonomous_counter + 1;
-            autonomous_counter++;
-            System.out.println("autonomous counter = " + autonomous_counter);
-          }
-        }
+        // if(autonomous_counter == 0){
+        //   //we are already moving backwards
+        //   if(timmy.get() > sammy[autonomous_counter]){  // <-- This is an event
+        //     System.out.println(ends[autonomous_counter]);
+        //     //System.out.println("I have two seconds " + timmy.get());
+        //     //System.out.println("make some code to start the next routine");
+        //     // autonomous_counter = autonomous_counter + 1;
+        //     autonomous_counter++;
+        //     System.out.println(starts[autonomous_counter]);
+        //     //System.out.println("autonomous counter = " + autonomous_counter);
+            
+        //   }
+        //   else{}
+        
+            
+        // }
+        // //code for moving forward
+        // else if(autonomous_counter == 1){
+        //   //
+        //   if(timmy.get() > sammy[autonomous_counter]){
+        //     System.out.println(ends[autonomous_counter]);
+        //     // System.out.println("I have 5 seconds " + timmy.get());
+        //     // System.out.println("make some code to start the next routine");
+        //     // autonomous_counter = autonomous_counter + 1;
+        //     autonomous_counter++;
+        //     System.out.println(starts[autonomous_counter]);
+        //     //System.out.println("autonomous counter = " + autonomous_counter);
+        //   }
+        //   else{}
+          
+        // }
+        // else if(autonomous_counter == 2){
+        //   //
+        //   if(timmy.get() > sammy[autonomous_counter]){
+        //     System.out.println(ends[autonomous_counter]);
+        //     // System.out.println("I have 10 seconds " + timmy.get());
+        //     // System.out.println("make some code to start the next routine");
+        //     // autonomous_counter = autonomous_counter + 1;
+        //     autonomous_counter++;
+        //     // System.out.println("autonomous counter = " + autonomous_counter);
+        //   }
+        //   else{}
+        // }
 
         
         
@@ -177,7 +206,7 @@ public class Robot extends TimedRobot {
     double joy_Left = joy0.getRawAxis(1);
     double joy_Right = joy0.getRawAxis(0);
 
-    driveTruck(joy_Left, joy_Right);
+    //driveTruck(joy_Left, joy_Right);
 
   }
 
@@ -231,17 +260,17 @@ public class Robot extends TimedRobot {
   
   }
 
-  private void driveTruck(double speed, double turn_raw){
+  // private void driveTruck(double speed, double turn_raw){
 
-    double turn = Math.pow(turn_raw, 2.0);
-    if (turn_raw < 0){
-      turn = -turn;
-    }
+  //   double turn = Math.pow(turn_raw, 2.0);
+  //   if (turn_raw < 0){
+  //     turn = -turn;
+  //   }
   
-    //drive train control
-    drivechain.arcadeDrive(speed, turn);
-    System.out.println("arcade drive speed: " + speed + ", turn: " + turn);
-  }
+  //   //drive train control
+  //   drivechain.arcadeDrive(speed, turn);
+  //   System.out.println("arcade drive speed: " + speed + ", turn: " + turn);
+  // }
 }  // <--- Leave this close brace
 
 
