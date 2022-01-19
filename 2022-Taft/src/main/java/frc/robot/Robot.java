@@ -3,10 +3,16 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
+//package edu.wpi.first.wpilibj.arcadedrivexboxcontroller;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -15,10 +21,29 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
+  //Create motors and controllers and stuff
+  private final PWMSparkMax m_leftMotor = new PWMSparkMax(0);
+  private final PWMSparkMax m_rightMotor = new PWMSparkMax(1);
+  private final DifferentialDrive drivechain = new DifferentialDrive(m_leftMotor, m_rightMotor);
+  
+  
+  private final XboxController joy0 = new XboxController(0);
+  private final XboxController joy1 = new XboxController(1);
+
+
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
+
+  Timer timmy = new Timer();
+
+  int autonomous_counter = 0;
+  // 0: move backwards, 2 sec
+  // 1: move forwards, 5 sec
+  // 2: shoot ball, 10 sec
+
+  double sammy[] = {2.0, 5.0, 10.0};
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -29,6 +54,7 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+
   }
 
   /**
@@ -56,6 +82,11 @@ public class Robot extends TimedRobot {
     m_autoSelected = m_chooser.getSelected();
     // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + m_autoSelected);
+    System.out.println("We are starting autonomous mode");
+    System.out.println("reset timmy");
+    timmy.reset();
+    timmy.start();
+    System.out.println("timmy's time is " + timmy.get());
   }
 
   /** This function is called periodically during autonomous. */
@@ -67,7 +98,52 @@ public class Robot extends TimedRobot {
         break;
       case kDefaultAuto:
       default:
-        // Put default auto code here
+        if(autonomous_counter == 0){
+          //move backwards code
+          if(timmy.get() < sammy[autonomous_counter]){
+            System.out.println("Move Backwards");
+            
+          }
+          else{
+            System.out.println("I have two seconds " + timmy.get());
+            System.out.println("make some code to start the next routine");
+            // autonomous_counter = autonomous_counter + 1;
+            autonomous_counter++;
+            System.out.println("autonomous counter = " + autonomous_counter);
+            }
+
+        }
+        //code for moving forward
+        else if(autonomous_counter == 1){
+          //
+          if(timmy.get() < sammy[autonomous_counter]){
+            System.out.println("Move Forwards");
+          }
+          else{
+            System.out.println("I have 5 seconds " + timmy.get());
+            System.out.println("make some code to start the next routine");
+            // autonomous_counter = autonomous_counter + 1;
+            autonomous_counter++;
+            System.out.println("autonomous counter = " + autonomous_counter);
+          }
+        }
+        else if(autonomous_counter == 2){
+          //
+          if(timmy.get() < sammy[autonomous_counter]){
+            System.out.println("shoot ball");
+          }
+          else{
+            System.out.println("I have 10 seconds " + timmy.get());
+            System.out.println("make some code to start the next routine");
+            // autonomous_counter = autonomous_counter + 1;
+            autonomous_counter++;
+            System.out.println("autonomous counter = " + autonomous_counter);
+          }
+        }
+
+        
+        
+
         break;
     }
   }
@@ -78,11 +154,40 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+   // Drive Train (4m, SparkMax, Neo)
+    // Climber (1m, victorSPX, 775)
+    
+    // Ball Handling
+    // Intake (2 or 4m, ?, ?)
+    // Shooter (2m, SparkMax, Neo)
+    // Conveyer (2m/2m, victorsSPX,775)
+  
+    // Xbox A, B, Y, X, tiny two frames (TTF.), tiny three line(T3L), Dpad
+    // Right Bummper, Left Bummper, Right Trigger, Left Trigger, Top Joystick, Bottom Joystick
+    // This was the shooter speed these are not things to look at buttons wise.
+    boolean xbox_A = joy0.getRawButton(1); // xbox A
+    boolean xbox_B = joy0.getRawButton(2); // xbox B
+    boolean xbox_X = joy0.getRawButton(3); // xbox X
+    boolean xbox_Y = joy0.getRawButton(4); // xbox Y
+
+    dumpTruck(xbox_X, xbox_Y);
+    climber(xbox_A, xbox_B);
+
+    double joy_Left = joy0.getRawAxis(1);
+    double joy_Right = joy0.getRawAxis(0);
+
+    driveTruck(joy_Left, joy_Right);
+
+  }
 
   /** This function is called once when the robot is disabled. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    // Stop the rumble when entering disabled
+    joy0.setRumble(RumbleType.kLeftRumble, 0.0);
+    joy0.setRumble(RumbleType.kRightRumble, 0.0);
+  }
 
   /** This function is called periodically when disabled. */
   @Override
@@ -95,4 +200,49 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {}
-}
+
+  private void climber(boolean up, boolean down) {
+    if (up){
+      System.out.println("Elevator moves up");
+    }
+  
+    else if(down){
+      System.out.println("Elevator moves down");
+    }
+  
+    else{
+      System.out.println("Elevator stops");
+    }
+  
+  }
+  private void dumpTruck(boolean up, boolean down) {
+
+    if (up) {
+      System.out.println("dumpTruck moves up");
+    }
+  
+    else if (down) {
+      System.out.println("dumpTruck moves up");
+    }
+  
+    else {
+      System.out.println("dumpTruck off");
+    }
+  
+  }
+
+  private void driveTruck(double speed, double turn_raw){
+
+    double turn = Math.pow(turn_raw, 2.0);
+    if (turn_raw < 0){
+      turn = -turn;
+    }
+  
+    //drive train control
+    drivechain.arcadeDrive(speed, turn);
+    System.out.println("arcade drive speed: " + speed + ", turn: " + turn);
+  }
+}  // <--- Leave this close brace
+
+
+
