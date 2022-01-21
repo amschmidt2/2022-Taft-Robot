@@ -14,12 +14,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 
-/**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
- * project.
- */
+
 public class Robot extends TimedRobot {
   //Create motors and controllers and stuff
   // private final PWMSparkMax m_leftMotor = new PWMSparkMax(0);
@@ -63,17 +58,10 @@ public class Robot extends TimedRobot {
   Timer timmy = new Timer();
 
   int autonomous_counter = 0;
-  // 0: move backwards, 2 sec
-  // 1: move forwards, 5 sec
-  // 2: shoot ball, 10 sec
 
   double lil_sam = 0.0;
-  //                2.0, 2.5, 5.5
-  //double sammy[] = {2.0, 2.5, 5.5, 7.0};
-
-// hello
- // String starts[] = {"Motor move the wheels backwards","Motor move the wheels forward","Motor shoot the cargo upwards","Motor move the wheels backward", "we are done"};
- // String ends[] = {"Stop moving","Stop moving","Stop shooter","Stop Moving"};
+  
+ 
 
   //  {starts, ends, duration}
   String spyroom [][] = {
@@ -98,10 +86,7 @@ public class Robot extends TimedRobot {
     }
   }
 
-  /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
-   */
+
   @Override
   public void robotInit() {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
@@ -110,26 +95,10 @@ public class Robot extends TimedRobot {
 
   }
 
-  /**
-   * This function is called every robot packet, no matter the mode. Use this for items like
-   * diagnostics that you want ran during disabled, autonomous, teleoperated and test.
-   *
-   * <p>This runs after the mode specific periodic functions, but before LiveWindow and
-   * SmartDashboard integrated updating.
-   */
   @Override
   public void robotPeriodic() {}
 
-  /**
-   * This autonomous (along with the chooser code above) shows how to select between different
-   * autonomous modes using the dashboard. The sendable chooser code works with the Java
-   * SmartDashboard. If you prefer the LabVIEW Dashboard, remove all of the chooser code and
-   * uncomment the getString line to get the auto name from the text box below the Gyro
-   *
-   * <p>You can add additional auto modes by adding additional comparisons to the switch structure
-   * below with additional strings. If using the SendableChooser make sure to add them to the
-   * chooser code above as well.
-   */
+ 
   @Override
   public void autonomousInit() {
     m_autoSelected = m_chooser.getSelected();
@@ -155,64 +124,13 @@ public class Robot extends TimedRobot {
       case kDefaultAuto:
       default:
         if(timmy.get() > lil_sam){  // <-- This is an event
-          briefcase(spyroom[autonomous_counter][1]);
-          //System.out.println(ends[autonomous_counter]);        
+          briefcase(spyroom[autonomous_counter][1]);      
           autonomous_counter++;
           briefcase(spyroom[autonomous_counter][0]);
           lil_sam = lil_sam + Double.parseDouble(spyroom[autonomous_counter][2]); 
-          //System.out.println(starts[autonomous_counter]);
-        }
-
-        
-
-        // if(autonomous_counter == 0){
-        //   //we are already moving backwards
-        //   if(timmy.get() > sammy[autonomous_counter]){  // <-- This is an event
-        //     System.out.println(ends[autonomous_counter]);
-        //     //System.out.println("I have two seconds " + timmy.get());
-        //     //System.out.println("make some code to start the next routine");
-        //     // autonomous_counter = autonomous_counter + 1;
-        //     autonomous_counter++;
-        //     System.out.println(starts[autonomous_counter]);
-        //     //System.out.println("autonomous counter = " + autonomous_counter);
-            
-        //   }
-        //   else{}
-        
-            
-        // }
-        // //code for moving forward
-        // else if(autonomous_counter == 1){
-        //   //
-        //   if(timmy.get() > sammy[autonomous_counter]){
-        //     System.out.println(ends[autonomous_counter]);
-        //     // System.out.println("I have 5 seconds " + timmy.get());
-        //     // System.out.println("make some code to start the next routine");
-        //     // autonomous_counter = autonomous_counter + 1;
-        //     autonomous_counter++;
-        //     System.out.println(starts[autonomous_counter]);
-        //     //System.out.println("autonomous counter = " + autonomous_counter);
-        //   }
-        //   else{}
           
-        // }
-        // else if(autonomous_counter == 2){
-        //   //
-        //   if(timmy.get() > sammy[autonomous_counter]){
-        //     System.out.println(ends[autonomous_counter]);
-        //     // System.out.println("I have 10 seconds " + timmy.get());
-        //     // System.out.println("make some code to start the next routine");
-        //     // autonomous_counter = autonomous_counter + 1;
-        //     autonomous_counter++;
-        //     // System.out.println("autonomous counter = " + autonomous_counter);
-        //   }
-        //   else{}
-        // }
-
-        
-        
-
-        break;
+        }
+       break;
     }
   }
 
