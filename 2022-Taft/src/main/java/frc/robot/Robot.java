@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 
 
@@ -36,14 +37,14 @@ public class Robot extends TimedRobot {
 
   timmy the Timer
 
-  driver the Controller
-  gunner the Controller
+  driver the 0th Controller
+  gunner the 1st Controller
 
-  [insert_name] the Autonomous
+  Archie the Autonomous
   
-  [insert_name] the Wheels
+  Wally the Wheels
 
-  [insert_name] the BallHandler
+  [insert_name] the BallHandler | Interests: gunner and driver and cares a lot about balls
   [insert_name] the Intake
   [insert_name] the Conveyor
   [insert_name] the Shooter
@@ -51,48 +52,24 @@ public class Robot extends TimedRobot {
   with the possible future inclustion of:
   [insert_name] the Turret
   [insert_name] the LimeLight
-  [insert_name] the Climber
+  Carol the Climber
 
   */
 
   Timer timmy = new Timer();
+  SpyLord archie = new SpyLord("archie");
+  Wheels wally = new Wheels("wally");
 
-  int autonomous_counter = 0;
-
-  double lil_sam = 0.0;
-  
  
-
-  //  {starts, ends, duration}
-  String spyroom [][] = {
-    {"Back move", "Stop move", "2.0"},
-    {"Forward move", "Stop move", "2.5"},
-    {"Shoot Cargo", "Stay off", "4.5"},
-    {"Back move", "Stop move", "5.0"}, 
-    {"Done", "this will never run", "999.9"}
-  };
-
-
-  
-
-  private void briefcase(String task){
-    System.out.println(task);
-    switch(task){
-      case "Back move":
-        System.out.println("The wheels are moving back!");
-        // drivechain.arcadeDrive(speed, turn);
-      default:
-        break;
-    }
-  }
-
-
   @Override
   public void robotInit() {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
 
+    // Agents will announce themselves
+    archie.talk();
+    wally.talk();
   }
 
   @Override
@@ -105,13 +82,7 @@ public class Robot extends TimedRobot {
     // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + m_autoSelected);
     System.out.println("We are starting autonomous mode");
-    System.out.println("reset timmy");
-    timmy.reset();
-    timmy.start();
-    System.out.println("timmy's time is " + timmy.get());
-
-    briefcase(spyroom[0][0]);
-    lil_sam = lil_sam + Double.parseDouble(spyroom[0][2]); 
+    archie.start();
   }
 
   /** This function is called periodically during autonomous. */
@@ -123,14 +94,7 @@ public class Robot extends TimedRobot {
         break;
       case kDefaultAuto:
       default:
-        if(timmy.get() > lil_sam){  // <-- This is an event
-          briefcase(spyroom[autonomous_counter][1]);      
-          autonomous_counter++;
-          briefcase(spyroom[autonomous_counter][0]);
-          lil_sam = lil_sam + Double.parseDouble(spyroom[autonomous_counter][2]); 
-          
-        }
-       break;
+        archie.check();
     }
   }
 
@@ -186,6 +150,81 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {}
+
+
+  public class Wheels{
+    private String name;
+
+    public Wheels(String _name){
+      name = _name;
+      System.out.println(name + " has waddled in ");
+    }
+
+    public void talk(){
+      System.out.println( " Hi, I'm " + name + " I run the wheels, vroom vroom ");
+    }
+  }
+
+  public class SpyLord {
+    private String spyroom [][]= {
+        {"Back move", "Stop move", "2.0"},
+        {"Forward move", "Stop move", "2.5"},
+        {"Shoot Cargo", "Stay off", "4.5"},
+        {"Back move", "Stop move", "5.0"}, 
+        {"Done", "this will never run", "999.9"}
+      };
+    private int autonomous_counter = 0;
+    private double lil_sam = 0;
+    private String name;
+
+    
+    public SpyLord(String _name){
+      name = _name;
+      System.out.println(name + " has entered ");
+    }
+
+    
+    public void start(){
+      timmy.reset();
+      timmy.start();
+      briefcase(spyroom[0][0]);
+      lil_sam = lil_sam + Double.parseDouble(spyroom[0][2]); 
+    }
+    
+    
+    public void check(){
+      if(timmy.get() > lil_sam){  // <-- This is an event
+        briefcase(spyroom[autonomous_counter][1]);      
+        autonomous_counter++;
+        briefcase(spyroom[autonomous_counter][0]);
+        lil_sam = lil_sam + Double.parseDouble(spyroom[autonomous_counter][2]); 
+        
+      }
+    }
+    
+    
+    private void briefcase(String task){
+      System.out.println(task);
+      switch(task){
+        case "Back move":
+          System.out.println("The wheels are moving back!");
+          // drivechain.arcadeDrive(speed, turn);
+        default:
+          break;
+      }
+    }
+
+    public void talk(){
+      System.out.println( " Hi, I'm " + name + " I am the boss of autonomous, you can look at tasks in the spyroom and make sure there is a function for it in the briefcase");
+    }
+
+  }
+
+
+
+
+
+
 
   private void climber(boolean up, boolean down) {
     if (up){
