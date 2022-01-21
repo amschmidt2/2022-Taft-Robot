@@ -36,6 +36,30 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
+  /*
+  Our Agents
+
+  timmy the Timer
+
+  driver the Controller
+  gunner the Controller
+
+  [insert_name] the Autonomous
+  
+  [insert_name] the Wheels
+
+  [insert_name] the BallHandler
+  [insert_name] the Intake
+  [insert_name] the Conveyor
+  [insert_name] the Shooter
+
+  with the possible future inclustion of:
+  [insert_name] the Turret
+  [insert_name] the LimeLight
+  [insert_name] the Climber
+
+  */
+
   Timer timmy = new Timer();
 
   int autonomous_counter = 0;
@@ -43,16 +67,30 @@ public class Robot extends TimedRobot {
   // 1: move forwards, 5 sec
   // 2: shoot ball, 10 sec
 
-  double sammy[] = {2.0, 5.0, 10.0, 12.0};
+  double lil_sam = 0.0;
+  //                2.0, 2.5, 5.5
+  //double sammy[] = {2.0, 2.5, 5.5, 7.0};
 
 // hello
-  String starts[] = {"Motor move the wheels backwards","Motor move the wheels forward","Motor shoot the cargo upwards","Motor move the wheels backward", "we are done"};
-  String ends[] = {"Stop moving","Stop moving","Stop shooter","Stop Moving"};
+ // String starts[] = {"Motor move the wheels backwards","Motor move the wheels forward","Motor shoot the cargo upwards","Motor move the wheels backward", "we are done"};
+ // String ends[] = {"Stop moving","Stop moving","Stop shooter","Stop Moving"};
+
+  //  {starts, ends, duration}
+  String spyroom [][] = {
+    {"Back move", "Stop move", "2.0"},
+    {"Forward move", "Stop move", "2.5"},
+    {"Shoot Cargo", "Stay off", "4.5"},
+    {"Back move", "Stop move", "5.0"}, 
+    {"Done", "this will never run", "999.9"}
+  };
+
+
+  
 
   private void briefcase(String task){
     System.out.println(task);
     switch(task){
-      case "Motor move the wheels backwards":
+      case "Back move":
         System.out.println("The wheels are moving back!");
         // drivechain.arcadeDrive(speed, turn);
       default:
@@ -103,7 +141,8 @@ public class Robot extends TimedRobot {
     timmy.start();
     System.out.println("timmy's time is " + timmy.get());
 
-    briefcase(starts[0]);
+    briefcase(spyroom[0][0]);
+    lil_sam = lil_sam + Double.parseDouble(spyroom[0][2]); 
   }
 
   /** This function is called periodically during autonomous. */
@@ -115,15 +154,15 @@ public class Robot extends TimedRobot {
         break;
       case kDefaultAuto:
       default:
-        if(autonomous_counter != sammy.length){
-          if(timmy.get() > sammy[autonomous_counter]){  // <-- This is an event
-            briefcase(ends[autonomous_counter]);
-            //System.out.println(ends[autonomous_counter]);        
-            autonomous_counter++;
-            briefcase(starts[autonomous_counter]);
-            //System.out.println(starts[autonomous_counter]);
-          }
+        if(timmy.get() > lil_sam){  // <-- This is an event
+          briefcase(spyroom[autonomous_counter][1]);
+          //System.out.println(ends[autonomous_counter]);        
+          autonomous_counter++;
+          briefcase(spyroom[autonomous_counter][0]);
+          lil_sam = lil_sam + Double.parseDouble(spyroom[autonomous_counter][2]); 
+          //System.out.println(starts[autonomous_counter]);
         }
+
         
 
         // if(autonomous_counter == 0){
