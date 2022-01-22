@@ -31,7 +31,7 @@ public class Robot extends TimedRobot {
   private MotorControllerGroup rodger = new MotorControllerGroup(front_RightyMotor, back_RightyMotor);
   private MotorControllerGroup louie = new MotorControllerGroup(front_LeftyMotor, back_LeftyMotor);
 
-  private final DifferentialDrive drivechain = new DifferentialDrive(rodger, louie);
+  private final DifferentialDrive drivechain = new DifferentialDrive(louie, rodger);
   
   private final XboxController joy0 = new XboxController(0);
   private final XboxController joy1 = new XboxController(1);
@@ -42,6 +42,12 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
+  //homework please
+  // make a strings list of button ids
+  String buttons_list[] = {"x", "a", "a"};
+  
+  
+  
   /*
   Our Agents
 
@@ -60,8 +66,8 @@ public class Robot extends TimedRobot {
   [sunny] the Shooter (2m, SparkMax, Neo's, pnem. 1)  *musician
 
   with the possible future inclustion of:
-  [insert_name] the Turret
-  [insert_name] the LimeLight
+  [todd] the Turret
+  [lemon] the LimeLight
   Carol the Climber (2m/2m, VictorSPX, 775)
 
   */
@@ -73,6 +79,9 @@ public class Robot extends TimedRobot {
   Intake izzy = new Intake("izzy");
   Conveyor conner = new Conveyor("conner");
   Shooter sunny = new Shooter("sunny");
+  Controller driver = new Controller("driver");
+  Controller gunner = new Controller("gunner");
+  
  
   @Override
   public void robotInit() {
@@ -89,6 +98,8 @@ public class Robot extends TimedRobot {
     izzy.talk();
     conner.talk();
     sunny.talk();
+    driver.talk();
+    gunner.talk();
   }
 
   @Override
@@ -152,6 +163,24 @@ public class Robot extends TimedRobot {
     wally.check(joy_Left, joy_Right);
     
   }
+
+public class Controller{
+  private String name;
+
+  public Controller(String _name){
+     name = _name;
+     System.out.println(name + " coming in hot ");
+    }
+
+    public void talk(){
+     System.out.println(" Hi, I'm " + name + " I am a controller, woah! ");
+    } 
+  }
+
+
+
+
+
   
   public class BallHandler{
     private String name;
