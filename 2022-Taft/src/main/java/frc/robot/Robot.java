@@ -79,6 +79,8 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+    rodger.setInverted(true);
+  
 
     // Agents will announce themselves
     archie.talk();
@@ -328,17 +330,6 @@ public class Intake{
   
   }
 
-  // private void driveTruck(double speed, double turn_raw){
-
-  //   double turn = Math.pow(turn_raw, 2.0);
-  //   if (turn_raw < 0){
-  //     turn = -turn;
-  //   }
-  
-  //   //drive train control
-  //   drivechain.arcadeDrive(speed, turn);
-  //   System.out.println("arcade drive speed: " + speed + ", turn: " + turn);
-  // }
 
   @Override
   public void disabledInit() {
