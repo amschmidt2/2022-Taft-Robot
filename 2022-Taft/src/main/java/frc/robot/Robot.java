@@ -5,6 +5,7 @@
 package frc.robot;
 //package edu.wpi.first.wpilibj.arcadedrivexboxcontroller;
 
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -13,15 +14,24 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
-
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class Robot extends TimedRobot {
   //Create motors and controllers and stuff
-  // private final PWMSparkMax m_leftMotor = new PWMSparkMax(0);
-  // private final PWMSparkMax m_rightMotor = new PWMSparkMax(1);
-  // private final DifferentialDrive drivechain = new DifferentialDrive(m_leftMotor, m_rightMotor);
+
   
+  private CANSparkMax front_LeftyMotor = new CANSparkMax(1, MotorType.kBrushless);
+  private CANSparkMax back_LeftyMotor = new CANSparkMax(2, MotorType.kBrushless);
+  private CANSparkMax front_RightyMotor = new CANSparkMax(3, MotorType.kBrushless);
+  private CANSparkMax back_RightyMotor = new CANSparkMax(4, MotorType.kBrushless);
+
+  private MotorControllerGroup rodger = new MotorControllerGroup(front_RightyMotor, back_RightyMotor);
+  private MotorControllerGroup louie = new MotorControllerGroup(front_LeftyMotor, back_LeftyMotor);
+
+  private final DifferentialDrive drivechain = new DifferentialDrive(rodger, louie);
   
   private final XboxController joy0 = new XboxController(0);
   private final XboxController joy1 = new XboxController(1);
@@ -42,17 +52,17 @@ public class Robot extends TimedRobot {
 
   Archie the Autonomous
   
-  Wally the Wheels
+  Wally the Wheels (4m, SparkMax, Neo's)
 
   [insert_name] the BallHandler | Interests: gunner and driver and cares a lot about balls
-  [insert_name] the Intake
-  [insert_name] the Conveyor
-  [insert_name] the Shooter
+  [insert_name] the Intake (1m, VictorSPX, 775, pnem. 2)
+  [insert_name] the Conveyor (2 or 4m, ?, ?)
+  [insert_name] the Shooter (2m, SparkMax, Neo's, pnem. 1)
 
   with the possible future inclustion of:
   [insert_name] the Turret
   [insert_name] the LimeLight
-  Carol the Climber
+  Carol the Climber (2m/2m, VictorSPX, 775)
 
   */
 
@@ -76,6 +86,7 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {}
 
  
+ 
   @Override
   public void autonomousInit() {
     m_autoSelected = m_chooser.getSelected();
@@ -85,7 +96,7 @@ public class Robot extends TimedRobot {
     archie.start();
   }
 
-  /** This function is called periodically during autonomous. */
+
   @Override
   public void autonomousPeriodic() {
     switch (m_autoSelected) {
@@ -98,11 +109,11 @@ public class Robot extends TimedRobot {
     }
   }
 
-  /** This function is called once when teleop is enabled. */
+
   @Override
   public void teleopInit() {}
 
-  /** This function is called periodically during operator control. */
+
   @Override
   public void teleopPeriodic() {
    // Drive Train (4m, SparkMax, Neo)
@@ -127,29 +138,10 @@ public class Robot extends TimedRobot {
     double joy_Left = joy0.getRawAxis(1);
     double joy_Right = joy0.getRawAxis(0);
 
-    //driveTruck(joy_Left, joy_Right);
-
+   
+    driveTruck(joy_Left, joy_Right);
   }
-
-  /** This function is called once when the robot is disabled. */
-  @Override
-  public void disabledInit() {
-    // Stop the rumble when entering disabled
-    joy0.setRumble(RumbleType.kLeftRumble, 0.0);
-    joy0.setRumble(RumbleType.kRightRumble, 0.0);
-  }
-
-  /** This function is called periodically when disabled. */
-  @Override
-  public void disabledPeriodic() {}
-
-  /** This function is called once when test mode is enabled. */
-  @Override
-  public void testInit() {}
-
-  /** This function is called periodically during test mode. */
-  @Override
-  public void testPeriodic() {}
+  
 
 
   public class Wheels{
@@ -163,6 +155,19 @@ public class Robot extends TimedRobot {
     public void talk(){
       System.out.println( " Hi, I'm " + name + " I run the wheels, vroom vroom ");
     }
+    private void driveTruck(double speed, double turn_raw){
+
+    double turn = Math.pow(turn_raw, 2.0);
+     if (turn_raw < 0){
+       turn = -turn;
+     }
+   
+     //drive train control
+     drivechain.arcadeDrive(speed, turn);
+     System.out.println("arcade drive speed: " + speed + ", turn: " + turn);
+   }
+
+
   }
 
   public class SpyLord {
@@ -223,9 +228,6 @@ public class Robot extends TimedRobot {
 
 
 
-
-
-
   private void climber(boolean up, boolean down) {
     if (up){
       System.out.println("Elevator moves up");
@@ -267,6 +269,19 @@ public class Robot extends TimedRobot {
   //   drivechain.arcadeDrive(speed, turn);
   //   System.out.println("arcade drive speed: " + speed + ", turn: " + turn);
   // }
+
+  @Override
+  public void disabledInit() {
+    // Stop the rumble when entering disabled
+    joy0.setRumble(RumbleType.kLeftRumble, 0.0);
+    joy0.setRumble(RumbleType.kRightRumble, 0.0);
+  }
+  @Override
+  public void disabledPeriodic() {}
+  @Override
+  public void testInit() {}
+  @Override
+  public void testPeriodic() {}
 }  // <--- Leave this close brace
 
 
