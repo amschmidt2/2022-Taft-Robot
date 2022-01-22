@@ -54,10 +54,10 @@ public class Robot extends TimedRobot {
   
   Wally the Wheels (4m, SparkMax, Neo's)
 
-  [insert_name] the BallHandler | Interests: gunner and driver and cares a lot about balls
-  [insert_name] the Intake (1m, VictorSPX, 775, pnem. 2)
-  [insert_name] the Conveyor (2 or 4m, ?, ?)
-  [insert_name] the Shooter (2m, SparkMax, Neo's, pnem. 1)
+  [bobby] the BallHandler | Is like a conductor, Interests: gunner and driver and cares a lot about balls
+  [izzy] the Intake (1m, VictorSPX, 775, pnem. 2)    *musician
+  [conner] the Conveyor (2 or 4m, ?, ?)                *musician
+  [sunny] the Shooter (2m, SparkMax, Neo's, pnem. 1)  *musician
 
   with the possible future inclustion of:
   [insert_name] the Turret
@@ -68,8 +68,11 @@ public class Robot extends TimedRobot {
 
   Timer timmy = new Timer();
   SpyLord archie = new SpyLord("archie");
-  Wheels wally = new Wheels("wally");
-
+  Wheels wally = new Wheels("wally", .7);
+  BallHandler bobby = new BallHandler("bobby");
+  Intake izzy = new Intake("izzy");
+  Conveyor conner = new Conveyor("conner");
+  Shooter sunny = new Shooter("sunny");
  
   @Override
   public void robotInit() {
@@ -80,6 +83,10 @@ public class Robot extends TimedRobot {
     // Agents will announce themselves
     archie.talk();
     wally.talk();
+    bobby.talk();
+    izzy.talk();
+    conner.talk();
+    sunny.talk();
   }
 
   @Override
@@ -116,6 +123,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+
    // Drive Train (4m, SparkMax, Neo)
     // Climber (1m, victorSPX, 775)
     
@@ -139,36 +147,98 @@ public class Robot extends TimedRobot {
     double joy_Right = joy0.getRawAxis(0);
 
    
-    driveTruck(joy_Left, joy_Right);
+    wally.check(joy_Left, joy_Right);
+    
   }
   
+  public class BallHandler{
+    private String name;
+
+    public BallHandler(String _name){
+     name = _name;
+     System.out.println(name + " better bob is here ");
+    }
+
+    public void talk(){
+     System.out.println(" Hi, I'm " + name + " I tell you knowledge about cargo");
+    } 
+  }
+
+
+public class Intake{
+    private String name;
+
+    public Intake(String _name){
+     name = _name;
+     System.out.println(name + " izzy is on the scene ");
+    }
+
+    public void talk(){
+     System.out.println(" Hi, I'm " + name + " I reach out and collect cargo");
+    } 
+  }
+
+  public class Conveyor{
+    private String name;
+
+    public Conveyor(String _name){
+     name = _name;
+     System.out.println(name + " has rolled in ");
+    }
+
+    public void talk(){
+     System.out.println(" Hi, I'm " + name + " I move the cargo ");
+    } 
+  }
+
+ public class Shooter{
+    private String name;
+
+    public Shooter(String _name){
+     name = _name;
+     System.out.println(name + " i am very happy ");
+    }
+
+    public void talk(){
+     System.out.println(" Hi, I'm " + name + " I get rid of cargo, pew pew, yuck!");
+    } 
+  }
 
 
   public class Wheels{
     private String name;
+    private double max_speed;
 
-    public Wheels(String _name){
+    public Wheels(String _name, double _max_speed){
       name = _name;
+      max_speed = _max_speed;
       System.out.println(name + " has waddled in ");
     }
 
     public void talk(){
-      System.out.println( " Hi, I'm " + name + " I run the wheels, vroom vroom ");
+      System.out.println( " Hi, I'm " + name + " I run the wheels, vroom vroom, Our max speed limit is " + max_speed);
     }
-    private void driveTruck(double speed, double turn_raw){
+    
+    private void check(double speed, double turn){
+      sensitive(speed, turn);
+    }
 
-    double turn = Math.pow(turn_raw, 2.0);
-     if (turn_raw < 0){
-       turn = -turn;
-     }
-   
-     //drive train control
+
+    private void drive(double speed, double turn){
      drivechain.arcadeDrive(speed, turn);
-     System.out.println("arcade drive speed: " + speed + ", turn: " + turn);
    }
+   
+    private void sensitive(double speed, double turn){
+      turn = Math.pow(turn, 2.0);
+      if (turn < 0){
+        turn = -turn;
+      }
+      speed = max_speed * speed;
 
+      drive(speed, turn);
+    } 
 
-  }
+  } 
 
   public class SpyLord {
     private String spyroom [][]= {
