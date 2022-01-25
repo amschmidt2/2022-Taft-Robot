@@ -83,6 +83,262 @@ public class Robot extends TimedRobot {
   Gunner gunner = new Gunner("gunner", 1);
   
  
+
+  public class Driver{
+    private String name;
+    private XboxController joy;
+
+    public Driver(String _name, int port_num){
+        name = _name;
+        joy = new XboxController(port_num);
+        System.out.println(name + " coming in hot ");
+      }
+
+      public void talk(){
+        System.out.println(" Hi, I'm " + name + " I am the one who drives, Kachow! ");
+      } 
+
+      public boolean get_but(int but_num){
+        return joy.getRawButton(but_num);
+      }
+      public double get_axis(int raw_axis){
+        return joy.getRawAxis(raw_axis);
+      }
+    }
+
+
+  public class Gunner{
+    private String name;
+    private XboxController joy;
+
+    public Gunner(String _name, int port_num){
+      name = _name;
+      joy = new XboxController(port_num);
+      System.out.println(name + " coming in hot ");
+      }
+
+      public void talk(){
+      System.out.println(" Hi, I'm " + name + " I work with the weapons, pew pew! ");
+      } 
+      public boolean get_but(int but_num){
+        return joy.getRawButton(but_num);
+      }
+      public double get_axis(int raw_axis){
+        return joy.getRawAxis(raw_axis);
+      }
+    }
+
+    
+  public class CargoChief{
+    private String name;
+    boolean wants_cargo[] = {false, false};
+    String state = "idle";
+    
+    public CargoChief(String _name){
+      name = _name;
+      System.out.println(name + " better bob is here ");
+    }
+
+    public void talk(){      
+      System.out.println(" Hi, I'm " + name + " I tell you knowledge about cargo");
+    } 
+    public void check(){
+      boolean ahhh [] = {false, false};
+      ahhh = event_chk(driver.get_but(1), wants_cargo[1]);
+      if (ahhh[0]){
+        
+        if (ahhh[1]){
+          System.out.println("move all this to some other function make code clean like below");
+        }
+
+      }
+      // This is the code I want to see in bobby's maing check function
+      // if(wants_to_fire()){
+      //   state = "firing";
+      // }
+      // else if(wants_cargo()){
+      //   state = "get_cargo";
+      // }
+      
+    }
+  }
+
+
+  public class Intake{
+    private String name;
+
+    public Intake(String _name){
+      name = _name;
+      System.out.println(name + " izzy is on the scene ");
+    }
+
+    public void talk(){
+      System.out.println(" Hi, I'm " + name + " I reach out and collect cargo");
+    } 
+  }
+
+
+  public class Conveyor{
+    private String name;
+
+    public Conveyor(String _name){
+      name = _name;
+      System.out.println(name + " has rolled in ");
+    }
+
+    public void talk(){
+      System.out.println(" Hi, I'm " + name + " I move the cargo ");
+    } 
+  }
+
+  
+  public class Shooter{
+    private String name;
+
+    public Shooter(String _name){
+      name = _name;
+      System.out.println(name + " i am very happy ");
+    }
+
+    public void talk(){
+      System.out.println(" Hi, I'm " + name + " I get rid of cargo, pew pew, yuck!");
+    } 
+  }
+
+
+  public class Wheels{
+    private String name;
+    private double max_speed;
+
+    public Wheels(String _name, double _max_speed){
+      name = _name;
+      max_speed = _max_speed;
+      System.out.println(name + " has waddled in ");
+    }
+
+    public void talk(){
+      System.out.println( " Hi, I'm " + name + " I run the wheels, vroom vroom, Our max speed limit is " + max_speed);
+    }
+    
+    private void check(double speed, double turn){
+      sensitive(speed, turn);
+    }
+
+
+    private void drive(double speed, double turn){
+      drivechain.arcadeDrive(speed, turn);
+    }
+
+    private void sensitive(double speed, double turn){
+      turn = Math.pow(turn, 2.0);
+      if (turn < 0){
+        turn = -turn;
+      }
+      speed = max_speed * speed;
+
+      drive(speed, turn);
+    } 
+  } 
+
+
+  public class SpyLord {
+    private String spyroom [][]= {
+        {"Back move", "Stop move", "2.0"},
+        {"Forward move", "Stop move", "2.5"},
+        {"Shoot Cargo", "Stay off", "4.5"},
+        {"Back move", "Stop move", "5.0"}, 
+        {"Done", "this will never run", "999.9"}
+      };
+    private int autonomous_counter = 0;
+    private double lil_sam = 0;
+    private String name;
+
+    
+    public SpyLord(String _name){
+      name = _name;
+      System.out.println(name + " has entered ");
+    }
+
+    
+    public void start(){
+      timmy.reset();
+      timmy.start();
+      briefcase(spyroom[0][0]);
+      lil_sam = lil_sam + Double.parseDouble(spyroom[0][2]); 
+    }
+    
+    public void check(){
+      if(timmy.get() > lil_sam){  // <-- This is an event
+        briefcase(spyroom[autonomous_counter][1]);      
+        autonomous_counter++;
+        briefcase(spyroom[autonomous_counter][0]);
+        lil_sam = lil_sam + Double.parseDouble(spyroom[autonomous_counter][2]); 
+        
+      }
+    }
+   
+    private void briefcase(String task){
+      System.out.println(task);
+      switch(task){
+        case "Back move":
+          System.out.println("The wheels are moving back!");
+          // drivechain.arcadeDrive(speed, turn);
+        default:
+          break;
+      }
+    }
+
+    public void talk(){
+      System.out.println( " Hi, I'm " + name + " I am the boss of autonomous, you can look at tasks in the spyroom and make sure there is a function for it in the briefcase");
+    }
+
+  }
+
+
+
+
+  private void climber(boolean up, boolean down) {
+    if (up){
+      System.out.println("Elevator moves up");
+    }
+
+    else if(down){
+      System.out.println("Elevator moves down");
+    }
+
+    else{
+      System.out.println("Elevator stops");
+    }
+
+  }
+
+  private void dumpTruck(boolean up, boolean down) {
+
+    if (up) {
+      System.out.println("dumpTruck moves up");
+    }
+
+    else if (down) {
+      System.out.println("dumpTruck moves up");
+    }
+
+    else {
+      System.out.println("dumpTruck off");
+    }
+
+  }
+
+  boolean[] event_chk(boolean now, boolean past){
+    boolean partyroom[] = {false, false};
+    if (now != past){
+      partyroom[0] = true;
+        if(!past){
+          partyroom[1] = true;
+        }
+    }
+    return partyroom;
+  }
+
   @Override
   public void robotInit() {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
@@ -166,260 +422,8 @@ public class Robot extends TimedRobot {
     
   }
 
-  public class Driver{
-    private String name;
-    private XboxController joy;
-
-    public Driver(String _name, int port_num){
-        name = _name;
-        joy = new XboxController(port_num);
-        System.out.println(name + " coming in hot ");
-      }
-
-      public void talk(){
-        System.out.println(" Hi, I'm " + name + " I am the one who drives, Kachow! ");
-      } 
-
-      public boolean get_but(int but_num){
-        return joy.getRawButton(but_num);
-      }
-      public double get_axis(int raw_axis){
-        return joy.getRawAxis(raw_axis);
-      }
-    }
-
-  public class Gunner{
-    private String name;
-    private XboxController joy;
-
-    public Gunner(String _name, int port_num){
-      name = _name;
-      joy = new XboxController(port_num);
-      System.out.println(name + " coming in hot ");
-      }
-
-      public void talk(){
-      System.out.println(" Hi, I'm " + name + " I work with the weapons, pew pew! ");
-      } 
-      public boolean get_but(int but_num){
-        return joy.getRawButton(but_num);
-      }
-      public double get_axis(int raw_axis){
-        return joy.getRawAxis(raw_axis);
-      }
-    }
-
-
   
-  public class CargoChief{
-    private String name;
-    boolean wants_cargo[] = {false, false};
-    String state = "idle";
-    
-    public CargoChief(String _name){
-      name = _name;
-      System.out.println(name + " better bob is here ");
-    }
 
-    public void talk(){      
-      System.out.println(" Hi, I'm " + name + " I tell you knowledge about cargo");
-    } 
-    public void check(){
-      boolean ahhh [] = {false, false};
-      ahhh = event_chk(driver.get_but(1), wants_cargo[1]);
-      if (ahhh[0]){
-        
-        if (ahhh[1]){
-          System.out.println("move all this to some other function make code clean like below");
-        }
-
-      }
-      // This is the code I want to see in bobby's maing check function
-      // if(wants_to_fire()){
-      //   state = "firing";
-      // }
-      // else if(wants_cargo()){
-      //   state = "get_cargo";
-      // }
-      
-    }
-  }
-
-
-  public class Intake{
-      private String name;
-
-      public Intake(String _name){
-      name = _name;
-      System.out.println(name + " izzy is on the scene ");
-      }
-
-      public void talk(){
-      System.out.println(" Hi, I'm " + name + " I reach out and collect cargo");
-      } 
-    }
-
-  public class Conveyor{
-    private String name;
-
-    public Conveyor(String _name){
-      name = _name;
-      System.out.println(name + " has rolled in ");
-    }
-
-    public void talk(){
-      System.out.println(" Hi, I'm " + name + " I move the cargo ");
-    } 
-  }
-
-    public class Shooter{
-      private String name;
-
-      public Shooter(String _name){
-        name = _name;
-        System.out.println(name + " i am very happy ");
-      }
-
-      public void talk(){
-        System.out.println(" Hi, I'm " + name + " I get rid of cargo, pew pew, yuck!");
-      } 
-    }
-
-
-  public class Wheels{
-    private String name;
-    private double max_speed;
-
-    public Wheels(String _name, double _max_speed){
-      name = _name;
-      max_speed = _max_speed;
-      System.out.println(name + " has waddled in ");
-    }
-
-    public void talk(){
-      System.out.println( " Hi, I'm " + name + " I run the wheels, vroom vroom, Our max speed limit is " + max_speed);
-    }
-    
-    private void check(double speed, double turn){
-      sensitive(speed, turn);
-    }
-
-
-    private void drive(double speed, double turn){
-      drivechain.arcadeDrive(speed, turn);
-    }
-
-    private void sensitive(double speed, double turn){
-      turn = Math.pow(turn, 2.0);
-      if (turn < 0){
-        turn = -turn;
-      }
-      speed = max_speed * speed;
-
-      drive(speed, turn);
-    } 
-  } 
-
-
-public class SpyLord {
-  private String spyroom [][]= {
-      {"Back move", "Stop move", "2.0"},
-      {"Forward move", "Stop move", "2.5"},
-      {"Shoot Cargo", "Stay off", "4.5"},
-      {"Back move", "Stop move", "5.0"}, 
-      {"Done", "this will never run", "999.9"}
-    };
-  private int autonomous_counter = 0;
-  private double lil_sam = 0;
-  private String name;
-
-  
-  public SpyLord(String _name){
-    name = _name;
-    System.out.println(name + " has entered ");
-  }
-
-  
-  public void start(){
-    timmy.reset();
-    timmy.start();
-    briefcase(spyroom[0][0]);
-    lil_sam = lil_sam + Double.parseDouble(spyroom[0][2]); 
-  }
-  
-  
-  public void check(){
-    if(timmy.get() > lil_sam){  // <-- This is an event
-      briefcase(spyroom[autonomous_counter][1]);      
-      autonomous_counter++;
-      briefcase(spyroom[autonomous_counter][0]);
-      lil_sam = lil_sam + Double.parseDouble(spyroom[autonomous_counter][2]); 
-      
-    }
-  }
-  
-  
-  private void briefcase(String task){
-    System.out.println(task);
-    switch(task){
-      case "Back move":
-        System.out.println("The wheels are moving back!");
-        // drivechain.arcadeDrive(speed, turn);
-      default:
-        break;
-    }
-  }
-
-  public void talk(){
-    System.out.println( " Hi, I'm " + name + " I am the boss of autonomous, you can look at tasks in the spyroom and make sure there is a function for it in the briefcase");
-  }
-
-}
-
-
-
-
-private void climber(boolean up, boolean down) {
-  if (up){
-    System.out.println("Elevator moves up");
-  }
-
-  else if(down){
-    System.out.println("Elevator moves down");
-  }
-
-  else{
-    System.out.println("Elevator stops");
-  }
-
-}
-
-private void dumpTruck(boolean up, boolean down) {
-
-  if (up) {
-    System.out.println("dumpTruck moves up");
-  }
-
-  else if (down) {
-    System.out.println("dumpTruck moves up");
-  }
-
-  else {
-    System.out.println("dumpTruck off");
-  }
-
-}
-
-  boolean[] event_chk(boolean now, boolean past){
-    boolean partyroom[] = {false, false};
-    if (now != past){
-      partyroom[0] = true;
-        if(!past){
-          partyroom[1] = true;
-        }
-    }
-    return partyroom;
-  }
 
   @Override
   public void disabledInit() {
