@@ -22,7 +22,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 public class Robot extends TimedRobot {
   //Create motors and controllers and stuff
 
-  
+
   private CANSparkMax front_LeftyMotor = new CANSparkMax(1, MotorType.kBrushless);
   private CANSparkMax back_LeftyMotor = new CANSparkMax(2, MotorType.kBrushless);
   private CANSparkMax front_RightyMotor = new CANSparkMax(3, MotorType.kBrushless);
@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
   private MotorControllerGroup louie = new MotorControllerGroup(front_LeftyMotor, back_LeftyMotor);
 
   private final DifferentialDrive drivechain = new DifferentialDrive(louie, rodger);
-  
+
   // private final XboxController joy0 = new XboxController(0);
   // private final XboxController joy1 = new XboxController(1);
 
@@ -45,9 +45,10 @@ public class Robot extends TimedRobot {
   //homework please
   // make a strings list of button ids
   String buttons_list[] = {"x", "a", "a"};
-  
-  
-  
+
+  public boolean team_blue = true;
+
+
   /*
   Our Agents
 
@@ -57,18 +58,18 @@ public class Robot extends TimedRobot {
   gunner the 1st Controller
 
   Archie the Autonomous
-  
+
   Wally the Wheels (4m, SparkMax, Neo's)
 
-  [bobby] the BallHandler | Is like a conductor, Interests: gunner and driver and cares a lot about balls
-  [izzy] the Intake (1m, VictorSPX, 775, pnem. 2)    *musician
-  [conner] the Conveyor (2 or 4m, ?, ?)                *musician
-  [sunny] the Shooter (2m, SparkMax, Neo's, pnem. 1)  *musician
+  bobby the BallHandler | Is like a conductor, Interests: gunner and driver and cares a lot about balls
+  izzy the Intake (1m, VictorSPX, 775, pnem. 2)    *musician
+  conner the Conveyor (2 or 4m, ?, ?)                *musician
+  sunny the Shooter (2m, SparkMax, Neo's, pnem. 1)  *musician
 
   with the possible future inclustion of:
-  [todd] the Turret
-  [lemon] the LimeLight
-  Carol the Climber (2m/2m, VictorSPX, 775)
+  todd the Turret
+  lucy the LimeLight
+  ellie the Elevator (2m/2m, VictorSPX, 775)
 
   */
 
@@ -81,28 +82,35 @@ public class Robot extends TimedRobot {
   Shooter sunny = new Shooter("sunny");
   Driver driver = new Driver("driver", 0);
   Gunner gunner = new Gunner("gunner", 1);
-  
- 
+
+
 
   public class Driver{
     private String name;
     private XboxController joy;
+    private boolean apple = 0;  ``
 
     public Driver(String _name, int port_num){
         name = _name;
         joy = new XboxController(port_num);
         System.out.println(name + " coming in hot ");
       }
+      public void check(){}
 
       public void talk(){
         System.out.println(" Hi, I'm " + name + " I am the one who drives, Kachow! ");
-      } 
-
+      }
+      public void rumble(){
+        joy.setRumble(RumbleType.kLeftRumble, 1);
+      }
       public boolean get_but(int but_num){
         return joy.getRawButton(but_num);
       }
       public double get_axis(int raw_axis){
         return joy.getRawAxis(raw_axis);
+      }
+      public boolean wants_cargo(){
+        return get_but(apple);
       }
     }
 
@@ -119,7 +127,7 @@ public class Robot extends TimedRobot {
 
       public void talk(){
       System.out.println(" Hi, I'm " + name + " I work with the weapons, pew pew! ");
-      } 
+      }
       public boolean get_but(int but_num){
         return joy.getRawButton(but_num);
       }
@@ -128,25 +136,25 @@ public class Robot extends TimedRobot {
       }
     }
 
-    
+
   public class CargoChief{
     private String name;
     boolean wants_cargo[] = {false, false};
     String state = "idle";
-    
+
     public CargoChief(String _name){
       name = _name;
       System.out.println(name + " better bob is here ");
     }
 
-    public void talk(){      
+    public void talk(){
       System.out.println(" Hi, I'm " + name + " I tell you knowledge about cargo");
-    } 
+    }
     public void check(){
       boolean ahhh [] = {false, false};
       ahhh = event_chk(driver.get_but(1), wants_cargo[1]);
       if (ahhh[0]){
-        
+
         if (ahhh[1]){
           System.out.println("move all this to some other function make code clean like below");
         }
@@ -159,7 +167,7 @@ public class Robot extends TimedRobot {
       // else if(wants_cargo()){
       //   state = "get_cargo";
       // }
-      
+
     }
   }
 
@@ -174,24 +182,55 @@ public class Robot extends TimedRobot {
 
     public void talk(){
       System.out.println(" Hi, I'm " + name + " I reach out and collect cargo");
-    } 
+    }
+    public void eat(){
+      //Deploy intake turn motor on to take in Cargo
+      break;
+    }
   }
 
 
   public class Conveyor{
     private String name;
+    private boolean full;
+    private String state; // Hungry, Full, Moving
+    private double lil_sam;
+
+    private boolean ballroom[] = {false, false};
+    private boolean color_cargo[] = {false, true};
 
     public Conveyor(String _name){
       name = _name;
       System.out.println(name + " has rolled in ");
     }
 
+    public void check(){
+      if(driver.wants_cargo()){
+        if (full){
+          driver.rumble(); //Need to state how long it rumbles for
+        }
+        else{
+          eat();
+          izzy.eat();
+        }
+      }
+      if(state == moving){
+        if(timmy.get() > lil_sam){}
+      }
+    }
+    public void eat(){
+      //Motor turns on, nom nom.
+      break;
+    }
     public void talk(){
       System.out.println(" Hi, I'm " + name + " I move the cargo ");
-    } 
+    }
+    public void set_team(){
+      color_cargo[0] = team_blue;
+    }
   }
 
-  
+
   public class Shooter{
     private String name;
 
@@ -202,7 +241,7 @@ public class Robot extends TimedRobot {
 
     public void talk(){
       System.out.println(" Hi, I'm " + name + " I get rid of cargo, pew pew, yuck!");
-    } 
+    }
   }
 
 
@@ -219,7 +258,7 @@ public class Robot extends TimedRobot {
     public void talk(){
       System.out.println( " Hi, I'm " + name + " I run the wheels, vroom vroom, Our max speed limit is " + max_speed);
     }
-    
+
     private void check(double speed, double turn){
       sensitive(speed, turn);
     }
@@ -237,8 +276,8 @@ public class Robot extends TimedRobot {
       speed = max_speed * speed;
 
       drive(speed, turn);
-    } 
-  } 
+    }
+  }
 
 
   public class SpyLord {
@@ -246,37 +285,37 @@ public class Robot extends TimedRobot {
         {"Back move", "Stop move", "2.0"},
         {"Forward move", "Stop move", "2.5"},
         {"Shoot Cargo", "Stay off", "4.5"},
-        {"Back move", "Stop move", "5.0"}, 
+        {"Back move", "Stop move", "5.0"},
         {"Done", "this will never run", "999.9"}
       };
     private int autonomous_counter = 0;
     private double lil_sam = 0;
     private String name;
 
-    
+
     public SpyLord(String _name){
       name = _name;
       System.out.println(name + " has entered ");
     }
 
-    
+
     public void start(){
       timmy.reset();
       timmy.start();
       briefcase(spyroom[0][0]);
-      lil_sam = lil_sam + Double.parseDouble(spyroom[0][2]); 
+      lil_sam = lil_sam + Double.parseDouble(spyroom[0][2]);
     }
-    
+
     public void check(){
       if(timmy.get() > lil_sam){  // <-- This is an event
-        briefcase(spyroom[autonomous_counter][1]);      
+        briefcase(spyroom[autonomous_counter][1]);
         autonomous_counter++;
         briefcase(spyroom[autonomous_counter][0]);
-        lil_sam = lil_sam + Double.parseDouble(spyroom[autonomous_counter][2]); 
-        
+        lil_sam = lil_sam + Double.parseDouble(spyroom[autonomous_counter][2]);
+
       }
     }
-   
+
     private void briefcase(String task){
       System.out.println(task);
       switch(task){
@@ -345,7 +384,7 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
     rodger.setInverted(true);
-  
+    conner.set_team();
 
     // Agents will announce themselves
     archie.talk();
@@ -361,8 +400,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {}
 
- 
- 
+
+
   @Override
   public void autonomousInit() {
     m_autoSelected = m_chooser.getSelected();
@@ -395,12 +434,12 @@ public class Robot extends TimedRobot {
 
    // Drive Train (4m, SparkMax, Neo)
     // Climber (1m, victorSPX, 775)
-    
+
     // Ball Handling
     // Intake (2 or 4m, ?, ?)
     // Shooter (2m, SparkMax, Neo)
     // Conveyer (2m/2m, victorsSPX,775)
-  
+
     // Xbox A, B, Y, X, tiny two frames (TTF.), tiny three line(T3L), Dpad
     // Right Bummper, Left Bummper, Right Trigger, Left Trigger, Top Joystick, Bottom Joystick
     // This was the shooter speed these are not things to look at buttons wise.
@@ -415,14 +454,14 @@ public class Robot extends TimedRobot {
     //double joy_Left = driver.get_axis(1);
     //double joy_Right = driver.get_axis(0);
 
-   
+
     wally.check(driver.get_axis(1), driver.get_axis(0));
     // bobby.check();
     //wally.check(left=driver.get_axis('x'), right=driver.get_axis('y'))
-    
+
   }
 
-  
+
 
 
   @Override
@@ -438,6 +477,3 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {}
 }  // <--- Leave this close brace
-
-
-
