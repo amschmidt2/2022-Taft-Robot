@@ -88,7 +88,7 @@ public class Robot extends TimedRobot {
   public class Driver{
     private String name;
     private XboxController joy;
-    private boolean apple = 0;  ``
+    private int apple = 0;
 
     public Driver(String _name, int port_num){
         name = _name;
@@ -185,7 +185,7 @@ public class Robot extends TimedRobot {
     }
     public void eat(){
       //Deploy intake turn motor on to take in Cargo
-      break;
+      //break;
     }
   }
 
@@ -193,7 +193,7 @@ public class Robot extends TimedRobot {
   public class Conveyor{
     private String name;
     private boolean full;
-    private String state; // Hungry, Full, Moving
+    private String state; // eating, full, moving, firing
     private double lil_sam;
 
     private boolean ballroom[] = {false, false};
@@ -214,13 +214,51 @@ public class Robot extends TimedRobot {
           izzy.eat();
         }
       }
-      if(state == moving){
-        if(timmy.get() > lil_sam){}
+      if(state.equals("moving")){
+        if(timmy.get() > lil_sam){
+          System.out.println(" stoping le motors ");
+          ballroom[1] = true;
+          color_cargo[1] = color_cargo[0];
+          // TODO: settle connors state, maybe check with izzy
+        }
+      }
+      if(state.equals("firing")){
+        if(timmy.get() > lil_sam){
+          move_piston("down"); 
+          ballroom[1] = false; 
+          if(ballroom[0]){
+            move();
+          }
+        }
       }
     }
+    public void move(){
+      System.out.println(" Motors please move conner he is lazy ");
+      state = "moving";
+      lil_sam = timmy.get() + 2.0;
+    }
+
+    public void move_piston(String move_dirt){
+      System.out.println(" i am a pistion I go up and down ");
+      if(move_dirt.equals("up")){
+        System.out.println(" Moving up! ");
+      }
+      else if(move_dirt.equals("down")){
+        System.out.println(" Moving down down down! ");
+      }
+      else{
+        System.out.println(" I stopped moving up/down :) haha ");
+      }
+    }
+    public void fire(){
+      move_piston("up");
+      state = "firing";
+      lil_sam = timmy.get() + 2.0;
+    }
+
     public void eat(){
       //Motor turns on, nom nom.
-      break;
+      //break;
     }
     public void talk(){
       System.out.println(" Hi, I'm " + name + " I move the cargo ");
