@@ -8,6 +8,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController;
@@ -47,8 +48,8 @@ public class Robot extends TimedRobot {
   String buttons_list[] = {"x", "a", "a"};
 
   public boolean team_blue = true;
-
-
+  DigitalInput cargo_det = new DigitalInput(0);
+  
   /*
   Our Agents
 
@@ -63,7 +64,7 @@ public class Robot extends TimedRobot {
 
   bobby the BallHandler | Is like a conductor, Interests: gunner and driver and cares a lot about balls
   izzy the Intake (1m, VictorSPX, 775, pnem. 2)    *musician
-  conner the Conveyor (2 or 4m, ?, ?)                *musician
+  conner the Conveyor (2m, ?, ?)                *musician
   sunny the Shooter (2m, SparkMax, Neo's, pnem. 1)  *musician
 
   with the possible future inclustion of:
@@ -88,7 +89,8 @@ public class Robot extends TimedRobot {
   public class Driver{
     private String name;
     private XboxController joy;
-    private int apple = 0;
+    private int apple = 0; // hopefully A xbox button
+    private int bread = 1; // hopefully B xbox button
 
     public Driver(String _name, int port_num){
         name = _name;
@@ -111,6 +113,9 @@ public class Robot extends TimedRobot {
       }
       public boolean wants_cargo(){
         return get_but(apple);
+      }
+      public boolean no_cargo(){
+        return get_but(bread);
       }
     }
 
@@ -174,18 +179,29 @@ public class Robot extends TimedRobot {
 
   public class Intake{
     private String name;
+    private String state; //eating, resting
 
     public Intake(String _name){
       name = _name;
       System.out.println(name + " izzy is on the scene ");
     }
 
+    public void check(){
+      if(driver.no_cargo()){
+        rest(); 
+      }
+    }
+
     public void talk(){
       System.out.println(" Hi, I'm " + name + " I reach out and collect cargo");
     }
     public void eat(){
+      state = "eating";
       //Deploy intake turn motor on to take in Cargo
-      //break;
+    }
+    public void rest(){
+      state = "resting";
+      //Tell motors to bring back izzy and stop moving
     }
   }
 
@@ -193,7 +209,7 @@ public class Robot extends TimedRobot {
   public class Conveyor{
     private String name;
     private boolean full;
-    private String state; // eating, full, moving, firing
+    private String state; // eating, full, moving, firing, sleeping
     private double lil_sam;
 
     private boolean ballroom[] = {false, false};
@@ -231,6 +247,14 @@ public class Robot extends TimedRobot {
           }
         }
       }
+      if(state.equals("eating")){
+        if(cargo_det.get()){
+          update_cargo();
+        }
+      }
+
+      if(state.equals("sleeping")){}
+
     }
     public void move(){
       System.out.println(" Motors please move conner he is lazy ");
@@ -265,6 +289,11 @@ public class Robot extends TimedRobot {
     }
     public void set_team(){
       color_cargo[0] = team_blue;
+    }
+    public void update_cargo(){
+      //Needs to know that color there is
+      //Add x color to color cargo
+      ballroom[0] = true;
     }
   }
 
