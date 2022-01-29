@@ -30,8 +30,8 @@ public class Robot extends TimedRobot {
   private CANSparkMax back_LeftyMotor = new CANSparkMax(3, MotorType.kBrushless);
   private CANSparkMax front_RightyMotor = new CANSparkMax(1, MotorType.kBrushless);
   private CANSparkMax back_RightyMotor = new CANSparkMax(2, MotorType.kBrushless);
-  private CANSparkMax izzys_motor = new CANSparkMax(6, MotorType.kBrushless);
-  private VictorSPX amys_motor = new VictorSPX(8);
+  private CANSparkMax amys_motor = new CANSparkMax(8, MotorType.kBrushless);
+  private VictorSPX izzys_motor = new VictorSPX(6);
 
   private MotorControllerGroup rodger = new MotorControllerGroup(front_RightyMotor, back_RightyMotor);
   private MotorControllerGroup louie = new MotorControllerGroup(front_LeftyMotor, back_LeftyMotor);
@@ -81,18 +81,18 @@ public class Robot extends TimedRobot {
   Timer timmy = new Timer();
   SpyLord archie = new SpyLord("archie");
   Wheels wally = new Wheels("wally", .7);
-  Intake izzy = new Intake("izzy"); // Can id 6
+  Intake izzy = new Intake("izzy"); 
   Driver driver = new Driver("driver", 0);
-  Arm amy = new Arm("amy"); // Can id 8
+  Arm amy = new Arm("amy"); 
 
 
   public class Driver{
     private String name;
     private XboxController joy;
-    private int apple = 1; // hopefully A xbox button
-    private int bread = 2; // hopefully B xbox button
-    private int yoke = 4; // hopefully Y xbox button
-    private int xcited =3; // hopefully X xbox button
+    private int apple = 1; // hopefully Y xbox button
+    private int bread = 2; // hopefully X xbox button
+    private int yoke = 4; // hopefully A xbox button
+    private int xcited =3; // hopefully B xbox button
 
     
 
@@ -136,13 +136,15 @@ public class Robot extends TimedRobot {
     }
     public void check(){
       if(driver.amy_up()){
-        amys_motor.set(ControlMode.PercentOutput,.2);
+        amys_motor.set(.5);
+        System.out.println( " Do you see me? ");
       }
       else if(driver.amy_down()){
-        amys_motor.set(ControlMode.PercentOutput, -.2);
+        amys_motor.set(-.5);
+        System.out.println( " Can you still see me? ");
       }
       else{
-        amys_motor.set(ControlMode.PercentOutput, 0);
+        amys_motor.set(0);
       }
     }
 
@@ -159,13 +161,13 @@ public class Robot extends TimedRobot {
 
     public void check(){
       if(driver.wants_cargo()){
-        izzys_motor.set(.3);
+        izzys_motor.set(ControlMode.PercentOutput,.3);
       }
       else if(driver.no_cargo()){
-        izzys_motor.set(-.3);
+        izzys_motor.set(ControlMode.PercentOutput,-.3);
       }
       else{
-        izzys_motor.set(0);
+        izzys_motor.set(ControlMode.PercentOutput,0);
       }
     }
   }
@@ -349,7 +351,7 @@ public class Robot extends TimedRobot {
     // boolean xbox_X = driver.get_but(3); // xbox X
     // boolean xbox_Y = driver.get_but(4); // xbox Y
 
-    dumpTruck(driver.get_but(3), driver.get_but(4));
+   // dumpTruck(driver.get_but(3), driver.get_but(4));
     // climber(xbox_A, xbox_B);
 
     //double joy_Left = driver.get_axis(1);
@@ -357,6 +359,8 @@ public class Robot extends TimedRobot {
 
 
     wally.check(driver.get_axis(1), driver.get_axis(0));
+    amy.check();
+    izzy.check();
     // bobby.check();
     //wally.check(left=driver.get_axis('x'), right=driver.get_axis('y'))
 
