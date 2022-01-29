@@ -77,13 +77,9 @@ public class Robot extends TimedRobot {
   Timer timmy = new Timer();
   SpyLord archie = new SpyLord("archie");
   Wheels wally = new Wheels("wally", .7);
-  CargoChief bobby = new CargoChief("bobby");
   Intake izzy = new Intake("izzy");
-  Conveyor conner = new Conveyor("conner");
-  Shooter sunny = new Shooter("sunny");
   Driver driver = new Driver("driver", 0);
-  Gunner gunner = new Gunner("gunner", 1);
-
+  Arm amy = new Arm("amy");
 
 
   public class Driver{
@@ -119,61 +115,33 @@ public class Robot extends TimedRobot {
       }
     }
 
-
-  public class Gunner{
+  public class Arm{
     private String name;
-    private XboxController joy;
+    private String state; //lifting, lowering
 
-    public Gunner(String _name, int port_num){
+    public Arm(String _name){
       name = _name;
-      joy = new XboxController(port_num);
-      System.out.println(name + " coming in hot ");
-      }
-
-      public void talk(){
-      System.out.println(" Hi, I'm " + name + " I work with the weapons, pew pew! ");
-      }
-      public boolean get_but(int but_num){
-        return joy.getRawButton(but_num);
-      }
-      public double get_axis(int raw_axis){
-        return joy.getRawAxis(raw_axis);
-      }
-    }
-
-
-  public class CargoChief{
-    private String name;
-    boolean wants_cargo[] = {false, false};
-    String state = "idle";
-
-    public CargoChief(String _name){
-      name = _name;
-      System.out.println(name + " better bob is here ");
+      System.out.println(name + " I am here  for support ");
     }
 
     public void talk(){
-      System.out.println(" Hi, I'm " + name + " I tell you knowledge about cargo");
+      System.out.println(" Hello, I'm " + name + " I move the izzy and help her collect cargo ");
     }
     public void check(){
-      boolean ahhh [] = {false, false};
-      ahhh = event_chk(driver.get_but(1), wants_cargo[1]);
-      if (ahhh[0]){
-
-        if (ahhh[1]){
-          System.out.println("move all this to some other function make code clean like below");
-        }
-
-      }
-      // This is the code I want to see in bobby's maing check function
-      // if(wants_to_fire()){
-      //   state = "firing";
-      // }
-      // else if(wants_cargo()){
-      //   state = "get_cargo";
-      // }
-
+      //if(drier.no_cargo){
+        // lower();
+     // }
     }
+    public void lift(){
+      state = "lifting";
+      // Tell motor to lift the arm upwards
+    }
+    public void lower(){
+      state = "lowering";
+      // Tell the motor to lower 
+    }
+
+
   }
 
 
@@ -204,113 +172,6 @@ public class Robot extends TimedRobot {
       //Tell motors to bring back izzy and stop moving
     }
   }
-
-
-  public class Conveyor{
-    private String name;
-    private boolean full;
-    private String state; // eating, full, moving, firing, sleeping
-    private double lil_sam;
-
-    private boolean ballroom[] = {false, false};
-    private boolean color_cargo[] = {false, true};
-
-    public Conveyor(String _name){
-      name = _name;
-      System.out.println(name + " has rolled in ");
-    }
-
-    public void check(){
-      if(driver.wants_cargo()){
-        if (full){
-          driver.rumble(); //Need to state how long it rumbles for
-        }
-        else{
-          eat();
-          izzy.eat();
-        }
-      }
-      if(state.equals("moving")){
-        if(timmy.get() > lil_sam){
-          System.out.println(" stoping le motors ");
-          ballroom[1] = true;
-          color_cargo[1] = color_cargo[0];
-          // TODO: settle connors state, maybe check with izzy
-        }
-      }
-      if(state.equals("firing")){
-        if(timmy.get() > lil_sam){
-          move_piston("down"); 
-          ballroom[1] = false; 
-          if(ballroom[0]){
-            move();
-          }
-        }
-      }
-      if(state.equals("eating")){
-        if(cargo_det.get()){
-          update_cargo();
-        }
-      }
-
-      if(state.equals("sleeping")){}
-
-    }
-    public void move(){
-      System.out.println(" Motors please move conner he is lazy ");
-      state = "moving";
-      lil_sam = timmy.get() + 2.0;
-    }
-
-    public void move_piston(String move_dirt){
-      System.out.println(" i am a pistion I go up and down ");
-      if(move_dirt.equals("up")){
-        System.out.println(" Moving up! ");
-      }
-      else if(move_dirt.equals("down")){
-        System.out.println(" Moving down down down! ");
-      }
-      else{
-        System.out.println(" I stopped moving up/down :) haha ");
-      }
-    }
-    public void fire(){
-      move_piston("up");
-      state = "firing";
-      lil_sam = timmy.get() + 2.0;
-    }
-
-    public void eat(){
-      //Motor turns on, nom nom.
-      //break;
-    }
-    public void talk(){
-      System.out.println(" Hi, I'm " + name + " I move the cargo ");
-    }
-    public void set_team(){
-      color_cargo[0] = team_blue;
-    }
-    public void update_cargo(){
-      //Needs to know that color there is
-      //Add x color to color cargo
-      ballroom[0] = true;
-    }
-  }
-
-
-  public class Shooter{
-    private String name;
-
-    public Shooter(String _name){
-      name = _name;
-      System.out.println(name + " i am very happy ");
-    }
-
-    public void talk(){
-      System.out.println(" Hi, I'm " + name + " I get rid of cargo, pew pew, yuck!");
-    }
-  }
-
 
   public class Wheels{
     private String name;
@@ -403,21 +264,7 @@ public class Robot extends TimedRobot {
 
 
 
-  private void climber(boolean up, boolean down) {
-    if (up){
-      System.out.println("Elevator moves up");
-    }
-
-    else if(down){
-      System.out.println("Elevator moves down");
-    }
-
-    else{
-      System.out.println("Elevator stops");
-    }
-
-  }
-
+ 
   private void dumpTruck(boolean up, boolean down) {
 
     if (up) {
