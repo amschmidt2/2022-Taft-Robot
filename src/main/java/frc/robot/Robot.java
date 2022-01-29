@@ -24,10 +24,10 @@ public class Robot extends TimedRobot {
   //Create motors and controllers and stuff
 
 
-  private CANSparkMax front_LeftyMotor = new CANSparkMax(1, MotorType.kBrushless);
-  private CANSparkMax back_LeftyMotor = new CANSparkMax(2, MotorType.kBrushless);
-  private CANSparkMax front_RightyMotor = new CANSparkMax(3, MotorType.kBrushless);
-  private CANSparkMax back_RightyMotor = new CANSparkMax(4, MotorType.kBrushless);
+  private CANSparkMax front_LeftyMotor = new CANSparkMax(4, MotorType.kBrushless);
+  private CANSparkMax back_LeftyMotor = new CANSparkMax(3, MotorType.kBrushless);
+  private CANSparkMax front_RightyMotor = new CANSparkMax(1, MotorType.kBrushless);
+  private CANSparkMax back_RightyMotor = new CANSparkMax(2, MotorType.kBrushless);
 
   private MotorControllerGroup rodger = new MotorControllerGroup(front_RightyMotor, back_RightyMotor);
   private MotorControllerGroup louie = new MotorControllerGroup(front_LeftyMotor, back_LeftyMotor);
@@ -77,9 +77,9 @@ public class Robot extends TimedRobot {
   Timer timmy = new Timer();
   SpyLord archie = new SpyLord("archie");
   Wheels wally = new Wheels("wally", .7);
-  Intake izzy = new Intake("izzy");
+  Intake izzy = new Intake("izzy"); // Can id 6
   Driver driver = new Driver("driver", 0);
-  Arm amy = new Arm("amy");
+  Arm amy = new Arm("amy"); // Can id 8
 
 
   public class Driver{
@@ -87,6 +87,8 @@ public class Robot extends TimedRobot {
     private XboxController joy;
     private int apple = 0; // hopefully A xbox button
     private int bread = 1; // hopefully B xbox button
+    //private int yoke = 2; hopefully Y xbox button
+    //private int xcited =3; hopefully X xbox button
 
     public Driver(String _name, int port_num){
         name = _name;
@@ -113,11 +115,18 @@ public class Robot extends TimedRobot {
       public boolean no_cargo(){
         return get_but(bread);
       }
+     // public boolean amy_up(){
+       //return get_but(yoke);
+     //}
+     // public booleam amy_down(){
+       //return get_but(xcited;
+     //}
+     
     }
 
   public class Arm{
     private String name;
-    private String state; //lifting, lowering
+    private String state; //lifting, laying
 
     public Arm(String _name){
       name = _name;
@@ -128,16 +137,18 @@ public class Robot extends TimedRobot {
       System.out.println(" Hello, I'm " + name + " I move the izzy and help her collect cargo ");
     }
     public void check(){
-      //if(drier.no_cargo){
-        // lower();
-     // }
+      if(state.equals("laying")){
+        if(driver.wants_cargo()){
+          lay();
+        }
+      }
     }
     public void lift(){
       state = "lifting";
       // Tell motor to lift the arm upwards
     }
-    public void lower(){
-      state = "lowering";
+    public void lay(){
+      state = "laying";
       // Tell the motor to lower 
     }
 
