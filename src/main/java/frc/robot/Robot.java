@@ -19,6 +19,8 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 //import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.ctre.phoenix.motorcontrol.*;
+import com.ctre.phoenix.motorcontrol.can.*;
 
 public class Robot extends TimedRobot {
   //Create motors and controllers and stuff
@@ -28,6 +30,8 @@ public class Robot extends TimedRobot {
   private CANSparkMax back_LeftyMotor = new CANSparkMax(3, MotorType.kBrushless);
   private CANSparkMax front_RightyMotor = new CANSparkMax(1, MotorType.kBrushless);
   private CANSparkMax back_RightyMotor = new CANSparkMax(2, MotorType.kBrushless);
+  private CANSparkMax izzys_motor = new CANSparkMax(6, MotorType.kBrushless);
+  private VictorSPX amys_motor = new VictorSPX(8);
 
   private MotorControllerGroup rodger = new MotorControllerGroup(front_RightyMotor, back_RightyMotor);
   private MotorControllerGroup louie = new MotorControllerGroup(front_LeftyMotor, back_LeftyMotor);
@@ -85,10 +89,12 @@ public class Robot extends TimedRobot {
   public class Driver{
     private String name;
     private XboxController joy;
-    private int apple = 0; // hopefully A xbox button
-    private int bread = 1; // hopefully B xbox button
-    //private int yoke = 2; hopefully Y xbox button
-    //private int xcited =3; hopefully X xbox button
+    private int apple = 1; // hopefully A xbox button
+    private int bread = 2; // hopefully B xbox button
+    private int yoke = 4; // hopefully Y xbox button
+    private int xcited =3; // hopefully X xbox button
+
+    
 
     public Driver(String _name, int port_num){
         name = _name;
@@ -97,9 +103,6 @@ public class Robot extends TimedRobot {
       }
       public void check(){}
 
-      public void talk(){
-        System.out.println(" Hi, I'm " + name + " I am the one who drives, Kachow! ");
-      }
       public void rumble(){
         joy.setRumble(RumbleType.kLeftRumble, 1);
       }
@@ -115,50 +118,39 @@ public class Robot extends TimedRobot {
       public boolean no_cargo(){
         return get_but(bread);
       }
-     // public boolean amy_up(){
-       //return get_but(yoke);
-     //}
-     // public booleam amy_down(){
-       //return get_but(xcited;
-     //}
+      public boolean amy_up(){
+       return get_but(yoke);
+      }
+      public boolean amy_down(){
+       return get_but(xcited);
+      }
      
     }
 
   public class Arm{
     private String name;
-    private String state; //lifting, laying
-
+    
     public Arm(String _name){
       name = _name;
       System.out.println(name + " I am here  for support ");
     }
-
-    public void talk(){
-      System.out.println(" Hello, I'm " + name + " I move the izzy and help her collect cargo ");
-    }
     public void check(){
-      if(state.equals("laying")){
-        if(driver.wants_cargo()){
-          lay();
-        }
+      if(driver.amy_up()){
+        amys_motor.set(ControlMode.PercentOutput,.2);
+      }
+      else if(driver.amy_down()){
+        amys_motor.set(ControlMode.PercentOutput, -.2);
+      }
+      else{
+        amys_motor.set(ControlMode.PercentOutput, 0);
       }
     }
-    public void lift(){
-      state = "lifting";
-      // Tell motor to lift the arm upwards
-    }
-    public void lay(){
-      state = "laying";
-      // Tell the motor to lower 
-    }
-
 
   }
 
 
   public class Intake{
     private String name;
-    private String state; //eating, resting
 
     public Intake(String _name){
       name = _name;
@@ -166,21 +158,15 @@ public class Robot extends TimedRobot {
     }
 
     public void check(){
-      if(driver.no_cargo()){
-        rest(); 
+      if(driver.wants_cargo()){
+        izzys_motor.set(.3);
       }
-    }
-
-    public void talk(){
-      System.out.println(" Hi, I'm " + name + " I reach out and collect cargo");
-    }
-    public void eat(){
-      state = "eating";
-      //Deploy intake turn motor on to take in Cargo
-    }
-    public void rest(){
-      state = "resting";
-      //Tell motors to bring back izzy and stop moving
+      else if(driver.no_cargo()){
+        izzys_motor.set(-.3);
+      }
+      else{
+        izzys_motor.set(0);
+      }
     }
   }
 
@@ -194,22 +180,18 @@ public class Robot extends TimedRobot {
       System.out.println(name + " has waddled in ");
     }
 
-    public void talk(){
-      System.out.println( " Hi, I'm " + name + " I run the wheels, vroom vroom, Our max speed limit is " + max_speed);
-    }
-
     private void check(double speed, double turn){
       sensitive(speed, turn);
     }
 
 
     private void drive(double speed, double turn){
-      drivechain.arcadeDrive(speed, turn);
+      drivechain.arcadeDrive(speed, -turn);
     }
 
-    private void sensitive(double speed, double turn){
-      turn = Math.pow(turn, 2.0);
-      if (turn < 0){
+    private void sensitive(double speed, double raw_turn){
+      double turn = Math.pow(raw_turn, 2.0);
+      if (raw_turn < 0){
         turn = -turn;
       }
       speed = max_speed * speed;
@@ -313,11 +295,7 @@ public class Robot extends TimedRobot {
     
 
     // Agents will announce themselves
-    archie.talk();
-    wally.talk();
-    izzy.talk();
-    driver.talk();
-    amy.talk();
+    archie.talk(); 
   }
 
   @Override
