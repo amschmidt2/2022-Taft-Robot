@@ -74,7 +74,7 @@ public class Robot extends TimedRobot {
 
   */
 
-  Timer timmy = new Timer();
+  Timer timmy = new Timer(); // lil_sam is a timed event
   SpyLord archie = new SpyLord("archie");
   Wheels wally = new Wheels("wally", .7);
   CargoChief bobby = new CargoChief("bobby");
@@ -91,19 +91,32 @@ public class Robot extends TimedRobot {
     private XboxController joy;
     private int apple = 0; // hopefully A xbox button
     private int bread = 1; // hopefully B xbox button
+    private double lil_sam;
+    private boolean rumbling = false;
 
     public Driver(String _name, int port_num){
         name = _name;
         joy = new XboxController(port_num);
         System.out.println(name + " coming in hot ");
       }
-      public void check(){}
+      public void check(){
+        if(rumbling){
+          if(timmy.get() > lil_sam){
+            joy.setRumble(RumbleType.kLeftRumble, 0);
+          }
+        }
+        // Hey, timmy thinks it would be cool if we were able 
+        // to count x amount of seconds then make the controller rumble
+        // signalling that the driver/gunner should start the climbing procces
+      }
 
       public void talk(){
         System.out.println(" Hi, I'm " + name + " I am the one who drives, Kachow! ");
       }
-      public void rumble(){
+      public void rumble(double lil_tim){
         joy.setRumble(RumbleType.kLeftRumble, 1);
+        lil_sam = timmy.get() + lil_tim;
+        rumbling = true;
       }
       public boolean get_but(int but_num){
         return joy.getRawButton(but_num);
@@ -123,15 +136,29 @@ public class Robot extends TimedRobot {
   public class Gunner{
     private String name;
     private XboxController joy;
-
+    private double lil_sam;
+    private boolean rumbling;
+    
     public Gunner(String _name, int port_num){
       name = _name;
       joy = new XboxController(port_num);
       System.out.println(name + " coming in hot ");
       }
 
+      public void check(){
+         if(rumbling){
+          if(timmy.get() > lil_sam){
+            joy.setRumble(RumbleType.kLeftRumble, 0);
+          }
+        }
+      }
       public void talk(){
       System.out.println(" Hi, I'm " + name + " I work with the weapons, pew pew! ");
+      }
+      public void rumble(double lil_tim){
+      joy.setRumble(RumbleType.kLeftRumble, 1);
+      lil_sam = timmy.get() + lil_tim;
+      rumbling = true;
       }
       public boolean get_but(int but_num){
         return joy.getRawButton(but_num);
@@ -179,7 +206,7 @@ public class Robot extends TimedRobot {
 
   public class Intake{
     private String name;
-    private String state; //eating, resting
+    private String state; //eating, sleeping
 
     public Intake(String _name){
       name = _name;
@@ -188,9 +215,13 @@ public class Robot extends TimedRobot {
 
     public void check(){
       if(driver.no_cargo()){
-        rest(); 
+        sleep(); 
       }
     }
+
+    public String get_state(){
+      return state;
+    } 
 
     public void talk(){
       System.out.println(" Hi, I'm " + name + " I reach out and collect cargo");
@@ -199,8 +230,8 @@ public class Robot extends TimedRobot {
       state = "eating";
       //Deploy intake turn motor on to take in Cargo
     }
-    public void rest(){
-      state = "resting";
+    public void sleep(){
+      state = "sleeping";
       //Tell motors to bring back izzy and stop moving
     }
   }
@@ -209,7 +240,7 @@ public class Robot extends TimedRobot {
   public class Conveyor{
     private String name;
     private boolean full;
-    private String state; // eating, full, moving, firing, sleeping
+    private String state; // eating, moving, firing, sleeping
     private double lil_sam;
 
     private boolean ballroom[] = {false, false};
@@ -221,24 +252,23 @@ public class Robot extends TimedRobot {
     }
 
     public void check(){
-      if(driver.wants_cargo()){
-        if (full){
-          driver.rumble(); //Need to state how long it rumbles for
-        }
-        else{
-          eat();
-          izzy.eat();
-        }
-      }
       if(state.equals("moving")){
         if(timmy.get() > lil_sam){
+          //backwards, this is when it stops moving (lil_sam knows)
           System.out.println(" stoping le motors ");
           ballroom[1] = true;
           color_cargo[1] = color_cargo[0];
-          // TODO: settle connors state, maybe check with izzy
+          if (izzy.get_state().equals("eating")){
+            state = "eating";
+          }
+          else{
+            state = "sleeping";
+            System.out.println(" Motors stop moving, you shall not pass ");
+          }
         }
       }
-      if(state.equals("firing")){
+      
+      else if(state.equals("firing")){
         if(timmy.get() > lil_sam){
           move_piston("down"); 
           ballroom[1] = false; 
@@ -247,13 +277,34 @@ public class Robot extends TimedRobot {
           }
         }
       }
-      if(state.equals("eating")){
+      
+      else if(state.equals("eating")){
         if(cargo_det.get()){
           update_cargo();
+          if(ballroom[1]){
+            state = "sleeping";
+            // Motors stop moving
+            full = true;
+            driver.rumble(2.0);
+            gunner.rumble(2.0);
+          }
+          else{
+            move();
+          }
         }
       }
 
-      if(state.equals("sleeping")){}
+      else if(state.equals("sleeping")){
+        if(driver.wants_cargo()){
+          if (full){
+            driver.rumble(2.0); //Need to state how long it rumbles for
+          }
+          else{
+            eat();
+            izzy.eat();
+          }
+        }
+      }
 
     }
     public void move(){
