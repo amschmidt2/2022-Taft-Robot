@@ -19,8 +19,8 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 //import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.ctre.phoenix.motorcontrol.*;
-import com.ctre.phoenix.motorcontrol.can.*;
+//import com.ctre.phoenix.motorcontrol.*; VictorSPX imports
+//import com.ctre.phoenix.motorcontrol.can.*; VictorSPX imports
 
 public class Robot extends TimedRobot {
   //Create motors and controllers and stuff
@@ -31,7 +31,7 @@ public class Robot extends TimedRobot {
   private CANSparkMax front_RightyMotor = new CANSparkMax(1, MotorType.kBrushless);
   private CANSparkMax back_RightyMotor = new CANSparkMax(2, MotorType.kBrushless);
   private CANSparkMax amys_motor = new CANSparkMax(8, MotorType.kBrushless);
-  private VictorSPX izzys_motor = new VictorSPX(6);
+  private CANSparkMax izzys_motor = new CANSparkMax(11, MotorType.kBrushless);
 
   private MotorControllerGroup rodger = new MotorControllerGroup(front_RightyMotor, back_RightyMotor);
   private MotorControllerGroup louie = new MotorControllerGroup(front_LeftyMotor, back_LeftyMotor);
@@ -161,13 +161,13 @@ public class Robot extends TimedRobot {
 
     public void check(){
       if(driver.wants_cargo()){
-        izzys_motor.set(ControlMode.PercentOutput,.3);
+        izzys_motor.set(.3);
       }
       else if(driver.no_cargo()){
-        izzys_motor.set(ControlMode.PercentOutput,-.3);
+        izzys_motor.set(-.3);
       }
       else{
-        izzys_motor.set(ControlMode.PercentOutput,0);
+        izzys_motor.set(0);
       }
     }
   }
@@ -258,23 +258,6 @@ public class Robot extends TimedRobot {
 
 
 
-
- 
-  private void dumpTruck(boolean up, boolean down) {
-
-    if (up) {
-      System.out.println("dumpTruck moves up");
-    }
-
-    else if (down) {
-      System.out.println("dumpTruck moves up");
-    }
-
-    else {
-      System.out.println("dumpTruck off");
-    }
-
-  }
 
   boolean[] event_chk(boolean now, boolean past){
     boolean partyroom[] = {false, false};
