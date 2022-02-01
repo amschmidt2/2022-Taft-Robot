@@ -31,7 +31,7 @@ public class Robot extends TimedRobot {
   private CANSparkMax front_RightyMotor = new CANSparkMax(1, MotorType.kBrushless);
   private CANSparkMax back_RightyMotor = new CANSparkMax(2, MotorType.kBrushless);
   private CANSparkMax amys_motor = new CANSparkMax(8, MotorType.kBrushless);
-  private CANSparkMax izzys_motor = new CANSparkMax(11, MotorType.kBrushless);
+  private CANSparkMax izzys_motor = new CANSparkMax(11, MotorType.kBrushed);
 
   private MotorControllerGroup rodger = new MotorControllerGroup(front_RightyMotor, back_RightyMotor);
   private MotorControllerGroup louie = new MotorControllerGroup(front_LeftyMotor, back_LeftyMotor);
