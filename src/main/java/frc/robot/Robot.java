@@ -47,9 +47,10 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
-  //homework please
+  // tiny two frames (ttt), tiny 3 lines tl
   // make a strings list of button ids
-  String buttons_list[] = {"x", "a", "a"};
+  String buttons_list[] = {"na", "a", "b", "x", "y", "l_bum", "r_bum", "ttt", "tl"};
+  String axis_list[] = {"na", "l_stick", "l_trig", "r_trig", "r_stick"};
 
   public boolean team_blue = true;
   DigitalInput cargo_det = new DigitalInput(0);
