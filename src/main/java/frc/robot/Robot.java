@@ -43,10 +43,20 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
-  // tiny two frames (ttt), tiny 3 lines tl
+  // tiny two frames (ttt), tiny 3 lines (tl)
   // make a strings list of button ids
   String buttons_list[] = {"na", "a", "b", "x", "y", "l_bum", "r_bum", "ttt", "tl"};
   String axis_list[] = {"na", "l_stick", "l_trig", "r_trig", "r_stick"};
+
+  public int find_but(String button){
+    int count_but;
+    for(int i = 0; i < buttons_list.length; i++ ){
+      // maybe do something useful ;)
+    }
+
+    return 5;
+  }
+
 
   public boolean team_blue = true;
   DigitalInput cargo_det = new DigitalInput(0);
@@ -285,6 +295,7 @@ public class Robot extends TimedRobot {
           if(ballroom[1]){
             state = "sleeping";
             // Motors stop moving
+            izzy.sleep();
             full = true;
             driver.rumble(2.0);
             gunner.rumble(2.0);
@@ -292,6 +303,10 @@ public class Robot extends TimedRobot {
           else{
             move();
           }
+        }
+        if(driver.no_cargo()){
+          state = "sleeping";
+          // Motors stop moving 
         }
       }
 
@@ -431,7 +446,6 @@ public class Robot extends TimedRobot {
         autonomous_counter++;
         briefcase(spyroom[autonomous_counter][0]);
         lil_sam = lil_sam + Double.parseDouble(spyroom[autonomous_counter][2]);
-
       }
     }
 
