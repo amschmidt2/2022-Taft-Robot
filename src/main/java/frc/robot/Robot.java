@@ -19,6 +19,8 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 
 public class Robot extends TimedRobot {
   //Create motors and controllers and stuff
@@ -46,15 +48,29 @@ public class Robot extends TimedRobot {
   // tiny two frames (ttt), tiny 3 lines (tl)
   // make a strings list of button ids
   String buttons_list[] = {"na", "a", "b", "x", "y", "l_bum", "r_bum", "ttt", "tl"};
-  String axis_list[] = {"na", "l_stick", "l_trig", "r_trig", "r_stick"};
+  String axis_list[] = {"l_stick_x", "l_stick_y", "l_trig", "r_trig", "r_stick_x", "r_stick_y"}; //this is broken
 
-  public int find_but(String button){
-    int count_but;
+  public int count_but = 0;
+  public int find_but(String button){  
+    count_but = 0;  
     for(int i = 0; i < buttons_list.length; i++ ){
-      // maybe do something useful ;)
+      count_but = i;
+      if(buttons_list[i].equals(button)){
+        break;
+      }
     }
-
-    return 5;
+    return count_but;
+  }
+  public int count_airplane = 0;
+  public int find_axis(String axis){
+    count_airplane = 0;
+    for(int i = 0; i < axis_list.length; i++){
+      count_airplane = i;
+      if(axis_list[i].equals(axis)){
+        break;
+      }
+    }
+    return count_airplane;
   }
 
 
@@ -88,20 +104,21 @@ public class Robot extends TimedRobot {
   Timer timmy = new Timer(); // lil_sam is a timed event
   SpyLord archie = new SpyLord("archie");
   Wheels wally = new Wheels("wally", .7);
-  CargoChief bobby = new CargoChief("bobby");
+  // CargoChief bobby = new CargoChief("bobby");
   Intake izzy = new Intake("izzy");
   Conveyor conner = new Conveyor("conner");
   Shooter sunny = new Shooter("sunny");
   Driver driver = new Driver("driver", 0);
   Gunner gunner = new Gunner("gunner", 1);
+  NeoPixel nia = new NeoPixel("nia");
 
 
 
   public class Driver{
     private String name;
     private XboxController joy;
-    private int apple = 0; // hopefully A xbox button
-    private int bread = 1; // hopefully B xbox button
+    private String wants_cargo_button = "x";
+    private String no_cargo_button = "y";
     private double lil_sam;
     private boolean rumbling = false;
 
@@ -129,17 +146,17 @@ public class Robot extends TimedRobot {
         lil_sam = timmy.get() + lil_tim;
         rumbling = true;
       }
-      public boolean get_but(int but_num){
-        return joy.getRawButton(but_num);
+      public boolean get_but(String but_name){
+        return joy.getRawButton(find_but(but_name));
       }
-      public double get_axis(int raw_axis){
-        return joy.getRawAxis(raw_axis);
+      public double get_axis(String axis_plane){
+        return joy.getRawAxis(find_axis(axis_plane));
       }
       public boolean wants_cargo(){
-        return get_but(apple);
+        return get_but(wants_cargo_button);
       }
       public boolean no_cargo(){
-        return get_but(bread);
+        return get_but(no_cargo_button);
       }
     }
 
@@ -179,40 +196,6 @@ public class Robot extends TimedRobot {
       }
     }
 
-
-  public class CargoChief{
-    private String name;
-    boolean wants_cargo[] = {false, false};
-    String state = "idle";
-
-    public CargoChief(String _name){
-      name = _name;
-      System.out.println(name + " better bob is here ");
-    }
-
-    public void talk(){
-      System.out.println(" Hi, I'm " + name + " I tell you knowledge about cargo");
-    }
-    public void check(){
-      boolean ahhh [] = {false, false};
-      ahhh = event_chk(driver.get_but(1), wants_cargo[1]);
-      if (ahhh[0]){
-
-        if (ahhh[1]){
-          System.out.println("move all this to some other function make code clean like below");
-        }
-
-      }
-      // This is the code I want to see in bobby's maing check function
-      // if(wants_to_fire()){
-      //   state = "firing";
-      // }
-      // else if(wants_cargo()){
-      //   state = "get_cargo";
-      // }
-
-    }
-  }
 
 
   public class Intake{
@@ -382,6 +365,9 @@ public class Robot extends TimedRobot {
   public class Wheels{
     private String name;
     private double max_speed;
+    // make axis here
+    private String turn_axis = "l_stick_x";
+    private String speed_axis = "l_stick_y";
 
     public Wheels(String _name, double _max_speed){
       name = _name;
@@ -393,8 +379,9 @@ public class Robot extends TimedRobot {
       System.out.println( " Hi, I'm " + name + " I run the wheels, vroom vroom, Our max speed limit is " + max_speed);
     }
 
-    private void check(double speed, double turn){
-      sensitive(speed, turn);
+    private void check(){
+      sensitive(driver.get_axis(speed_axis), driver.get_axis(turn_axis));
+
     }
 
 
@@ -414,7 +401,7 @@ public class Robot extends TimedRobot {
   }
 
 
-  public class SpyLord {
+  public class SpyLord{
     private String spyroom [][]= {
         {"Back move", "Stop move", "2.0"},
         {"Forward move", "Stop move", "2.5"},
@@ -466,6 +453,23 @@ public class Robot extends TimedRobot {
 
   }
 
+  public class NeoPixel{
+    private String name;
+    private AddressableLED m_led;
+    private AddressableLEDBuffer m_ledBuffer;
+    // Store what the last hue of the first pixel is
+    private int m_rainbowFirstPixelHue;
+    
+    public NeoPixel(String _name){
+      name = _name;
+      System.out.println("nice to meet you i'm" + name + " I shine bring with colors! ");
+    }
+
+    public void talk(){
+      System.out.println(" Hi, I'm " + name + " I am the color master and can tell you different agents moods");
+    }
+   
+  }
 
 
 
@@ -522,7 +526,7 @@ public class Robot extends TimedRobot {
     // Agents will announce themselves
     archie.talk();
     wally.talk();
-    bobby.talk();
+    nia.talk();
     izzy.talk();
     conner.talk();
     sunny.talk();
@@ -573,24 +577,13 @@ public class Robot extends TimedRobot {
     // Shooter (2m, SparkMax, Neo)
     // Conveyer (2m/2m, victorsSPX,775)
 
-    // Xbox A, B, Y, X, tiny two frames (TTF.), tiny three line(T3L), Dpad
-    // Right Bummper, Left Bummper, Right Trigger, Left Trigger, Top Joystick, Bottom Joystick
-    // This was the shooter speed these are not things to look at buttons wise.
-    // boolean xbox_A = joy0.getRawButton(1); // xbox A
-    // boolean xbox_B = joy0.getRawButton(2); // xbox B
-    // boolean xbox_X = driver.get_but(3); // xbox X
-    // boolean xbox_Y = driver.get_but(4); // xbox Y
-
-    dumpTruck(driver.get_but(3), driver.get_but(4));
-    // climber(xbox_A, xbox_B);
-
-    //double joy_Left = driver.get_axis(1);
-    //double joy_Right = driver.get_axis(0);
-
-
-    wally.check(driver.get_axis(1), driver.get_axis(0));
-    // bobby.check();
-    //wally.check(left=driver.get_axis('x'), right=driver.get_axis('y'))
+    // having a talk talk, yes yes check check
+    driver.check();
+    wally.check();
+    conner.check();
+    izzy.check();
+    
+    //wally.check(speed=driver.get_axis('l_stick_y'), turn=driver.get_axis('r_stick_x'))
 
   }
 
@@ -609,4 +602,40 @@ public class Robot extends TimedRobot {
   public void testInit() {}
   @Override
   public void testPeriodic() {}
+
+  
+  // public class CargoChief{
+  //   private String name;
+  //   boolean wants_cargo[] = {false, false};
+  //   String state = "idle";
+
+  //   public CargoChief(String _name){
+  //     name = _name;
+  //     System.out.println(name + " better bob is here ");
+  //   }
+
+  //   public void talk(){
+  //     System.out.println(" Hi, I'm " + name + " I tell you knowledge about cargo");
+  //   }
+  //   public void check(){
+  //     boolean ahhh [] = {false, false};
+  //     ahhh = event_chk(driver.get_but(1), wants_cargo[1]);
+  //     if (ahhh[0]){
+
+  //       if (ahhh[1]){
+  //         System.out.println("move all this to some other function make code clean like below");
+  //       }
+
+  //     }
+  //     // This is the code I want to see in bobby's maing check function
+  //     // if(wants_to_fire()){
+  //     //   state = "firing";
+  //     // }
+  //     // else if(wants_cargo()){
+  //     //   state = "get_cargo";
+  //     // }
+
+  //   }
+  // }
+
 }  // <--- Leave this close brace
