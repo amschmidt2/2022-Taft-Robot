@@ -6,6 +6,9 @@ package frc.robot;
 //package edu.wpi.first.wpilibj.arcadedrivexboxcontroller;
 
 
+// -------EVERYBOT--------------
+
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -50,7 +53,7 @@ public class Robot extends TimedRobot {
   // tiny two frames (ttt), tiny 3 lines tl
   // make a strings list of button ids
   String buttons_list[] = {"na", "a", "b", "x", "y", "l_bum", "r_bum", "ttt", "tl"};
-  String axis_list[] = {"na", "l_stick", "l_trig", "r_trig", "r_stick"};
+  String axis_list[] = {"l_stick_x", "l_stick_y", "l_trig", "r_trig", "r_stick"};
 
   public boolean team_blue = true;
   DigitalInput cargo_det = new DigitalInput(0);
@@ -119,11 +122,11 @@ public class Robot extends TimedRobot {
       public boolean no_cargo(){
         return get_but(bread);
       }
-      public boolean amy_up(){
-       return get_but(yoke);
+      public double amy_up(){
+       return get_axis(2);
       }
-      public boolean amy_down(){
-       return get_but(xcited);
+      public double amy_down(){
+       return get_axis(3);
       }
      
     }
@@ -136,12 +139,12 @@ public class Robot extends TimedRobot {
       System.out.println(name + " I am here  for support ");
     }
     public void check(){
-      if(driver.amy_up()){
-        amys_motor.set(.5);
+      if(driver.amy_up() > 0.0){
+        amys_motor.set(driver.amy_up());
         System.out.println( " Do you see me? ");
       }
-      else if(driver.amy_down()){
-        amys_motor.set(-.5);
+      else if(driver.amy_down() > 0.0){
+        amys_motor.set(-driver.amy_down());
         System.out.println( " Can you still see me? ");
       }
       else{
