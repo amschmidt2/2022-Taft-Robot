@@ -179,6 +179,7 @@ public class Robot extends TimedRobot {
   public class Wheels{
     private String name;
     private double max_speed;
+    private double max_turn = 0.4; 
 
     public Wheels(String _name, double _max_speed){
       name = _name;
@@ -187,7 +188,7 @@ public class Robot extends TimedRobot {
     }
 
     private void check(double speed, double turn){
-      sensitive(speed, turn);
+      sensitive(speed, turn); 
     }
 
 
@@ -201,6 +202,7 @@ public class Robot extends TimedRobot {
         turn = -turn;
       }
       speed = max_speed * speed;
+      turn = max_turn * turn;
 
       drive(speed, turn);
     }
