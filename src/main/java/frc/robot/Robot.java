@@ -9,6 +9,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController;
@@ -21,6 +22,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.Solenoid;
 
 public class Robot extends TimedRobot {
   //Create motors and controllers and stuff
@@ -35,6 +37,8 @@ public class Robot extends TimedRobot {
   private MotorControllerGroup louie = new MotorControllerGroup(front_LeftyMotor, back_LeftyMotor);
 
   private final DifferentialDrive drivechain = new DifferentialDrive(louie, rodger);
+
+
 
   // private final XboxController joy0 = new XboxController(0);
   // private final XboxController joy1 = new XboxController(1);
@@ -201,6 +205,7 @@ public class Robot extends TimedRobot {
   public class Intake{
     private String name;
     private String state; //eating, sleeping
+    private Solenoid lil_iz = new Solenoid(PneumaticsModuleType.CTREPCM, 1);
 
     public Intake(String _name){
       name = _name;
@@ -213,6 +218,10 @@ public class Robot extends TimedRobot {
       }
     }
 
+    public void test(){
+      lil_iz.set(driver.get_but("x"));
+    }
+  
     public String get_state(){
       return state;
     } 
@@ -222,6 +231,7 @@ public class Robot extends TimedRobot {
     }
     public void eat(){
       state = "eating";
+      
       //Deploy intake turn motor on to take in Cargo
     }
     public void sleep(){
