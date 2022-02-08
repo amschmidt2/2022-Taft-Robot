@@ -15,14 +15,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+// import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Solenoid;
+
+// ***** VictorSPX Code *****
+// import com.ctre.phoenix.motorcontrol.*;
+// import com.ctre.phoenix.motorcontrol.can.*;
+// private VictorSPX izzys_motor = new VictorSPX(6);
+// izzys_motor.set(ControlMode.PercentOutput, .3);
 
 public class Robot extends TimedRobot {
   //Create motors and controllers and stuff
@@ -94,14 +99,17 @@ public class Robot extends TimedRobot {
   Wally the Wheels (4m, SparkMax, Neo's)
 
   bobby the BallHandler | Is like a conductor, Interests: gunner and driver and cares a lot about balls
-  izzy the Intake (1m, VictorSPX, 775, pnem. 2)    *musician
+  izzy the Intake (1m, SparkMax, 775, pnem. 2)    *musician
+  izzy solenoid (1,2,3,4)
   conner the Conveyor (2m, ?, ?)                *musician
+  conner solenoid (5,6)
+  
   sunny the Shooter (2m, SparkMax, Neo's, pnem. 1)  *musician
 
   with the possible future inclustion of:
   todd the Turret
   lucy the LimeLight
-  ellie the Elevator (2m/2m, VictorSPX, 775)
+  ellie the Elevator (2m/2m, Neos or 550Neos <-- coder feed back, 775)
 
   */
 
@@ -206,6 +214,7 @@ public class Robot extends TimedRobot {
     private String name;
     private String state; //eating, sleeping
     private Solenoid lil_iz = new Solenoid(PneumaticsModuleType.CTREPCM, 1);
+    
 
     public Intake(String _name){
       name = _name;
