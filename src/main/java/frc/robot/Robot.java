@@ -9,6 +9,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,7 +23,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Solenoid;
-
+import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 // ***** VictorSPX Code *****
 // import com.ctre.phoenix.motorcontrol.*;
 // import com.ctre.phoenix.motorcontrol.can.*;
@@ -33,15 +34,7 @@ public class Robot extends TimedRobot {
   //Create motors and controllers and stuff
 
 
-  private CANSparkMax front_LeftyMotor = new CANSparkMax(1, MotorType.kBrushless);
-  private CANSparkMax back_LeftyMotor = new CANSparkMax(2, MotorType.kBrushless);
-  private CANSparkMax front_RightyMotor = new CANSparkMax(3, MotorType.kBrushless);
-  private CANSparkMax back_RightyMotor = new CANSparkMax(4, MotorType.kBrushless);
-
-  private MotorControllerGroup rodger = new MotorControllerGroup(front_RightyMotor, back_RightyMotor);
-  private MotorControllerGroup louie = new MotorControllerGroup(front_LeftyMotor, back_LeftyMotor);
-
-  private final DifferentialDrive drivechain = new DifferentialDrive(louie, rodger);
+  
 
 
 
@@ -209,11 +202,12 @@ public class Robot extends TimedRobot {
     }
 
 
-
   public class Intake{
     private String name;
     private String state; //eating, sleeping
-    private Solenoid lil_iz = new Solenoid(PneumaticsModuleType.CTREPCM, 1);
+   // private DoubleSolenoid lil_iz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 1);
+   private DoubleSolenoid lil_iz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 1, 2);
+   private DoubleSolenoid jr_liliz = new DoubleSolenoid(9, PneumaticsModuleType.REVPH, 4, 5);
     
 
     public Intake(String _name){
@@ -228,7 +222,15 @@ public class Robot extends TimedRobot {
     }
 
     public void test(){
-      lil_iz.set(driver.get_but("x"));
+      //lil_iz.set(driver.get_but("x"));
+      if(driver.get_but("x")){
+        lil_iz.set(kForward);
+        jr_liliz.set(kForward);
+      }
+      else{
+        lil_iz.set(kReverse);
+        jr_liliz.set(kReverse);
+      }
     }
   
     public String get_state(){
@@ -387,7 +389,16 @@ public class Robot extends TimedRobot {
     // make axis here
     private String turn_axis = "l_stick_x";
     private String speed_axis = "l_stick_y";
+    private CANSparkMax front_LeftyMotor = new CANSparkMax(16, MotorType.kBrushless);
+    private CANSparkMax back_LeftyMotor = new CANSparkMax(13, MotorType.kBrushless);
+    private CANSparkMax front_RightyMotor = new CANSparkMax(12, MotorType.kBrushless);
+    private CANSparkMax back_RightyMotor = new CANSparkMax(7, MotorType.kBrushless);
 
+    private MotorControllerGroup rodger = new MotorControllerGroup(front_RightyMotor, back_RightyMotor);
+    private MotorControllerGroup louie = new MotorControllerGroup(front_LeftyMotor, back_LeftyMotor);
+
+    private final DifferentialDrive drivechain = new DifferentialDrive(louie, rodger);
+    
     public Wheels(String _name, double _max_speed){
       name = _name;
       max_speed = _max_speed;
@@ -472,6 +483,7 @@ public class Robot extends TimedRobot {
 
   }
 
+
   public class NeoPixel{
     private String name;
     private AddressableLED m_led;
@@ -491,37 +503,6 @@ public class Robot extends TimedRobot {
   }
 
 
-
-  private void climber(boolean up, boolean down) {
-    if (up){
-      System.out.println("Elevator moves up");
-    }
-
-    else if(down){
-      System.out.println("Elevator moves down");
-    }
-
-    else{
-      System.out.println("Elevator stops");
-    }
-
-  }
-
-  private void dumpTruck(boolean up, boolean down) {
-
-    if (up) {
-      System.out.println("dumpTruck moves up");
-    }
-
-    else if (down) {
-      System.out.println("dumpTruck moves up");
-    }
-
-    else {
-      System.out.println("dumpTruck off");
-    }
-
-  }
 
   boolean[] event_chk(boolean now, boolean past){
     boolean partyroom[] = {false, false};
@@ -555,8 +536,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {}
-
-
 
   @Override
   public void autonomousInit() {
@@ -620,41 +599,17 @@ public class Robot extends TimedRobot {
   @Override
   public void testInit() {}
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+    izzy.test();
+    //sunny.test();
+    //conner.test();
+    //todd.test();
+    //elle.test();
+
+
+  }
 
   
-  // public class CargoChief{
-  //   private String name;
-  //   boolean wants_cargo[] = {false, false};
-  //   String state = "idle";
-
-  //   public CargoChief(String _name){
-  //     name = _name;
-  //     System.out.println(name + " better bob is here ");
-  //   }
-
-  //   public void talk(){
-  //     System.out.println(" Hi, I'm " + name + " I tell you knowledge about cargo");
-  //   }
-  //   public void check(){
-  //     boolean ahhh [] = {false, false};
-  //     ahhh = event_chk(driver.get_but(1), wants_cargo[1]);
-  //     if (ahhh[0]){
-
-  //       if (ahhh[1]){
-  //         System.out.println("move all this to some other function make code clean like below");
-  //       }
-
-  //     }
-  //     // This is the code I want to see in bobby's maing check function
-  //     // if(wants_to_fire()){
-  //     //   state = "firing";
-  //     // }
-  //     // else if(wants_cargo()){
-  //     //   state = "get_cargo";
-  //     // }
-
-  //   }
-  // }
+  
 
 }  // <--- Leave this close brace
