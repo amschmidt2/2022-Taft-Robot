@@ -188,9 +188,9 @@ public class Robot extends TimedRobot {
     private String name;
     private String state; //eating, sleeping
    // private DoubleSolenoid lil_iz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 1);
-   private DoubleSolenoid lil_iz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 1, 2);
-   private DoubleSolenoid jr_liliz = new DoubleSolenoid(9, PneumaticsModuleType.REVPH, 4, 5);
-   private CANSparkMax motor = new CANSparkMax(99, MotorType.kBrushless);
+   private DoubleSolenoid lil_iz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
+   private DoubleSolenoid jr_liliz = new DoubleSolenoid(PneumaticsModuleType.REVPH, 4, 5);
+   private CANSparkMax motor = new CANSparkMax(9, MotorType.kBrushless);
     
 
     public Intake(String _name){
@@ -250,8 +250,8 @@ public class Robot extends TimedRobot {
 
     private boolean ballroom[] = {false, false};
     private boolean color_cargo[] = {false, true};
-    private CANSparkMax motor_1 = new CANSparkMax(99, MotorType.kBrushless);
-    private CANSparkMax motor_2 = new CANSparkMax(99, MotorType.kBrushless);
+    private CANSparkMax motor_1 = new CANSparkMax(97, MotorType.kBrushless);
+    private CANSparkMax motor_2 = new CANSparkMax(98, MotorType.kBrushless);
 
     public Conveyor(String _name){
       name = _name;
@@ -375,8 +375,8 @@ public class Robot extends TimedRobot {
 
   public class Shooter{
     private String name;
-    private CANSparkMax motor_1 = new CANSparkMax(99, MotorType.kBrushless);
-    private CANSparkMax motor_2 = new CANSparkMax(99, MotorType.kBrushless);
+    private CANSparkMax motor_1 = new CANSparkMax(20, MotorType.kBrushless);
+    private CANSparkMax motor_2 = new CANSparkMax(16, MotorType.kBrushless);
     private boolean ready_to_fire = false;
 
     public Shooter(String _name){
@@ -418,10 +418,10 @@ public class Robot extends TimedRobot {
     // make axis here
     private String turn_axis = "l_stick_x";
     private String speed_axis = "l_stick_y";
-    private CANSparkMax front_LeftyMotor = new CANSparkMax(16, MotorType.kBrushless);
-    private CANSparkMax back_LeftyMotor = new CANSparkMax(13, MotorType.kBrushless);
-    private CANSparkMax front_RightyMotor = new CANSparkMax(12, MotorType.kBrushless);
-    private CANSparkMax back_RightyMotor = new CANSparkMax(7, MotorType.kBrushless);
+    private CANSparkMax front_LeftyMotor = new CANSparkMax(13, MotorType.kBrushless);
+    private CANSparkMax back_LeftyMotor = new CANSparkMax(6, MotorType.kBrushless);
+    private CANSparkMax front_RightyMotor = new CANSparkMax(7, MotorType.kBrushless);
+    private CANSparkMax back_RightyMotor = new CANSparkMax(12, MotorType.kBrushless);
 
     private MotorControllerGroup rodger = new MotorControllerGroup(front_RightyMotor, back_RightyMotor);
     private MotorControllerGroup louie = new MotorControllerGroup(front_LeftyMotor, back_LeftyMotor);
@@ -535,7 +535,7 @@ public class Robot extends TimedRobot {
 
   public class Turret{
     private String name;
-    private CANSparkMax motor = new CANSparkMax(99, MotorType.kBrushless);
+    private CANSparkMax motor = new CANSparkMax(96, MotorType.kBrushless);
 
     public Turret(String _name){
       name = _name;
@@ -576,8 +576,8 @@ public class Robot extends TimedRobot {
 
   public class Elevator{
     private String name;
-    private CANSparkMax motor_1 = new CANSparkMax(99, MotorType.kBrushless);
-    private CANSparkMax motor_2 = new CANSparkMax(99, MotorType.kBrushless);
+    private CANSparkMax motor_1 = new CANSparkMax(95, MotorType.kBrushless);
+    private CANSparkMax motor_2 = new CANSparkMax(94, MotorType.kBrushless);
 
     public Elevator(String _name){
       name = _name;
