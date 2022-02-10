@@ -189,7 +189,7 @@ public class Robot extends TimedRobot {
     private String state; //eating, sleeping
    // private DoubleSolenoid lil_iz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 1);
    private DoubleSolenoid lil_iz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
-   private DoubleSolenoid jr_liliz = new DoubleSolenoid(PneumaticsModuleType.REVPH, 4, 5);
+   private DoubleSolenoid jr_liliz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 4, 5);
    private CANSparkMax motor = new CANSparkMax(9, MotorType.kBrushless);
     
 
