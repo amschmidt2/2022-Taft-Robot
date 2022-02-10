@@ -92,7 +92,7 @@ public class Robot extends TimedRobot {
   LimeLight lucy = new LimeLight("lucy");
   Elevator elle = new Elevator("elle");
 
-
+                                                                     
   public class Driver{
     private String name;
     private XboxController joy;
@@ -116,6 +116,15 @@ public class Robot extends TimedRobot {
         // to count x amount of seconds then make the controller rumble
         // signalling that the driver/gunner should start the climbing procces
       }
+      public void test(){
+         if(get_but("tl")){
+          joy.setRumble(RumbleType.kLeftRumble, 1);
+        }
+        else{
+          joy.setRumble(RumbleType.kLeftRumble, 0);
+        }
+      }
+
 
       public void talk(){
         System.out.println(" Hi, I'm " + name + " I am the one who drives, Kachow! ");
@@ -147,6 +156,8 @@ public class Robot extends TimedRobot {
     private boolean rumbling;
     private String prep_takeoff_button = "a";
     private String firing_cargo_button = "b";
+    private String top_dog_button = "x";
+    private boolean top_dog = false;
     
     public Gunner(String _name, int port_num){
       name = _name;
@@ -160,7 +171,23 @@ public class Robot extends TimedRobot {
             joy.setRumble(RumbleType.kLeftRumble, 0);
           }
         }
+
+        top_dog = get_but(top_dog_button);
+
       }
+      public void test(){
+        if(get_but("tl")){
+          joy.setRumble(RumbleType.kLeftRumble, 1);
+        }
+        else{
+          joy.setRumble(RumbleType.kLeftRumble, 0);
+        }
+      }
+      
+      public boolean is_top_dog(){
+        return top_dog;
+      }
+
       public void talk(){
       System.out.println(" Hi, I'm " + name + " I work with the weapons, pew pew! ");
       }
@@ -245,7 +272,7 @@ public class Robot extends TimedRobot {
   public class Conveyor{
     private String name;
     private boolean full;
-    private String state; // eating, moving, firing, sleeping
+    private String state = "sleeping"; // eating, moving, firing, sleeping
     private double lil_sam;
 
     private boolean ballroom[] = {false, false};
@@ -440,8 +467,12 @@ public class Robot extends TimedRobot {
     }
 
     private void check(){
+      if(gunner.is_top_dog()){
+        System.out.println(" you know I am top dog! ");
+      }
+      else{
       sensitive(driver.get_axis(speed_axis), driver.get_axis(turn_axis));
-
+      }
     }
 
 
@@ -716,4 +747,4 @@ public class Robot extends TimedRobot {
   
   
 
-}  // <--- Leave this close brace
+}  // <--- Leave this close brace (Look at those numbers!)
