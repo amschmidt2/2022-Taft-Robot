@@ -263,6 +263,7 @@ public class Robot extends TimedRobot {
     }
 
     public void check(){
+      //This is where the code is stopping
       if(state.equals("moving")){
         if(timmy.get() > lil_sam){
           //backwards, this is when it stops moving (lil_sam knows)
