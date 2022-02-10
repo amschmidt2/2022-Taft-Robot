@@ -249,7 +249,7 @@ public class Robot extends TimedRobot {
   public class Conveyor{
     private String name;
     private boolean full;
-    private String state; // eating, moving, firing, sleeping
+    private String state="sleeping"; // eating, moving, firing, sleeping
     private double lil_sam;
 
     private boolean ballroom[] = {false, false};
@@ -263,7 +263,6 @@ public class Robot extends TimedRobot {
     }
 
     public void check(){
-      //This is where the code is stopping
       if(state.equals("moving")){
         if(timmy.get() > lil_sam){
           //backwards, this is when it stops moving (lil_sam knows)
