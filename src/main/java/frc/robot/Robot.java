@@ -22,6 +22,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.Compressor;
+
 //import edu.wpi.first.wpilibj.Solenoid;
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 
@@ -91,6 +93,8 @@ public class Robot extends TimedRobot {
   Turret todd = new Turret("todd");
   LimeLight lucy = new LimeLight("lucy");
   Elevator elle = new Elevator("elle");
+  Compressor pcmCompressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
+
 
 
   public class Driver{
@@ -636,6 +640,7 @@ public class Robot extends TimedRobot {
     todd.talk();
     elle.talk();
     lucy.talk();
+    pcmCompressor.enableDigital();
   }
 
   @Override
