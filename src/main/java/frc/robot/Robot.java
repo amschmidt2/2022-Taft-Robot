@@ -123,7 +123,7 @@ public class Robot extends TimedRobot {
         return get_but(bread);
       }
       public double amy_up(){
-       return get_axis(4);
+       return get_axis(2);
       }
       public double amy_down(){
        return get_axis(3);
