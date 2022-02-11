@@ -141,11 +141,11 @@ public class Robot extends TimedRobot {
     public void check(){
       if(driver.amy_up() > 0.1){
         amys_motor.set(driver.amy_up()/2);
-        System.out.println( " Do you see me? ");
+       //System.out.println( " Do you see me? ");
       }
       else if(driver.amy_down() > 0.1){
         amys_motor.set(-driver.amy_down()/2);
-        System.out.println( " Can you still see me? ");
+       //System.out.println( " Can you still see me? ");
       }
       else{
         amys_motor.set(0);
