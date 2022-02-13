@@ -49,7 +49,7 @@ public class Robot extends TimedRobot {
   // tiny two frames (ttt), tiny 3 lines (tl)
   // make a strings list of button ids
   String buttons_list[] = {"na", "a", "b", "x", "y", "l_bum", "r_bum", "ttt", "tl"};
-  String axis_list[] = {"l_stick_x", "l_stick_y", "l_trig", "r_trig", "r_stick_x", "r_stick_y"}; //this is broken
+  String axis_list[] = {"l_stick_x", "l_stick_y", "l_trig", "r_trig", "r_stick_x", "r_stick_y"};
 
   public int count_but = 0;
   public int find_but(String button){  
@@ -551,10 +551,39 @@ public class Robot extends TimedRobot {
     private AddressableLEDBuffer m_ledBuffer;
     // Store what the last hue of the first pixel is
     private int m_rainbowFirstPixelHue;
+    private String state = "rainbow";
     
     public NeoPixel(String _name){
       name = _name;
       System.out.println("nice to meet you i'm" + name + " I shine bring with colors! ");
+    }
+
+    public void check(){
+      if(state.equals("rainbow")){
+        rainbow();
+      }
+
+      m_led.setData(m_ledBuffer);
+    }
+
+    private void rainbow() {
+      // For every pixel
+      for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+        // Calculate the hue - hue is easier for rainbows because the color
+        // shape is a circle so only one value needs to precess
+        final var hue = (m_rainbowFirstPixelHue + (i * 180 / m_ledBuffer.getLength())) % 180;
+        // Set the value
+        m_ledBuffer.setHSV(i, hue, 255, 128);
+      }
+      
+      // Increase by to make the rainbow "move"
+      m_rainbowFirstPixelHue += 3;
+      // Check bounds
+      m_rainbowFirstPixelHue %= 180;
+    }
+
+    public void init(){
+      m_led = new AddressableLED(9);
     }
 
     public void talk(){
@@ -654,6 +683,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Auto choices", m_chooser);
    // rodger.setInverted(true);
     conner.set_team();
+    nia.init();
 
     // Agents will announce themselves
     archie.talk();
