@@ -20,10 +20,14 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 // import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import org.opencv.core.Mat;
+
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 //import edu.wpi.first.wpilibj.Solenoid;
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
+import edu.wpi.first.math.controller.PIDController;
 
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
@@ -123,6 +127,7 @@ public class Robot extends TimedRobot {
         else{
           joy.setRumble(RumbleType.kLeftRumble, 0);
         }
+
       }
 
 
@@ -157,6 +162,7 @@ public class Robot extends TimedRobot {
     private String prep_takeoff_button = "a";
     private String firing_cargo_button = "b";
     private String top_dog_button = "x";
+    private String lock_on_button = "y";
     private boolean top_dog = false;
     
     public Gunner(String _name, int port_num){
@@ -208,6 +214,9 @@ public class Robot extends TimedRobot {
       public boolean firing_cargo(){
         return get_but(firing_cargo_button);
       }
+      public boolean lock_on(){
+        return get_but(lock_on_button);
+      }
     }
 
 
@@ -226,9 +235,10 @@ public class Robot extends TimedRobot {
     }
 
     public void check(){
-      if(driver.no_cargo()){
+      if(driver.no_cargo() || gunner.is_top_dog()){
         sleep(); 
       }
+   
     }
 
     public void test(){
@@ -547,8 +557,8 @@ public class Robot extends TimedRobot {
 
   public class NeoPixel{
     private String name;
-    private AddressableLED m_led;
-    private AddressableLEDBuffer m_ledBuffer;
+    private AddressableLED billy_strip;
+    private AddressableLEDBuffer billy_buffer;
     // Store what the last hue of the first pixel is
     private int m_rainbowFirstPixelHue;
     private String state = "rainbow";
@@ -563,17 +573,33 @@ public class Robot extends TimedRobot {
         rainbow();
       }
 
-      m_led.setData(m_ledBuffer);
+      billy_strip.setData(billy_buffer);
+    }
+
+    public void whole_strip(int red, int green, int blue){
+      for(int i = 0; i < billy_buffer.getLength(); i++){
+        billy_buffer.setRGB(i, red, green, blue);
+      }
+    }
+
+    public void see(){
+      for(int i = 0; i < billy_buffer.getLength(); i++){
+        if(i < 10){
+          if(izzy.get_state().equals("sleeping")){
+            billy_buffer.setRGB(i, 50, 0, 0);
+          }
+        }       
+      }
     }
 
     private void rainbow() {
       // For every pixel
-      for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+      for (var i = 0; i < billy_buffer.getLength(); i++) {
         // Calculate the hue - hue is easier for rainbows because the color
         // shape is a circle so only one value needs to precess
-        final var hue = (m_rainbowFirstPixelHue + (i * 180 / m_ledBuffer.getLength())) % 180;
+        final var hue = (m_rainbowFirstPixelHue + (i * 180 / billy_buffer.getLength())) % 180;
         // Set the value
-        m_ledBuffer.setHSV(i, hue, 255, 128);
+        billy_buffer.setHSV(i, hue, 255, 128);
       }
       
       // Increase by to make the rainbow "move"
@@ -583,7 +609,11 @@ public class Robot extends TimedRobot {
     }
 
     public void init(){
-      m_led = new AddressableLED(9);
+      billy_strip = new AddressableLED(9);
+      billy_buffer = new AddressableLEDBuffer(60);
+      billy_strip.setLength(billy_buffer.getLength());
+      billy_strip.setData(billy_buffer);
+      billy_strip.start();
     }
 
     public void talk(){
@@ -596,13 +626,32 @@ public class Robot extends TimedRobot {
   public class Turret{
     private String name;
     private CANSparkMax motor = new CANSparkMax(96, MotorType.kBrushless);
+    private PIDController m_pidController = new PIDController(kP, kI, kD);
+
+    private double initial_setpoint = 0.0;
+
+    private static final double kP = 5.0;
+    private static final double kI = 0.02;
+    private static final double kD = 2.0;
 
     public Turret(String _name){
       name = _name;
       System.out.println(name + " I spin right round, when we go down ");
     }
+    
+    public void init(){     
+      m_pidController.setSetpoint(initial_setpoint);
+    }
 
-    public void check(){}
+    public void check(){
+      double pidOut = m_pidController.calculate(new_setpoint());
+      motor.set(pidOut);
+    }
+
+    public double new_setpoint(){
+      //get new setpoint from lucy and check for out of range
+      return 0.0;
+    }
     public void test(){
        if(driver.get_but("b")){
         motor.set(0.4);
@@ -623,16 +672,37 @@ public class Robot extends TimedRobot {
     private NetworkTableEntry tx = table.getEntry("tx");
     private NetworkTableEntry ty = table.getEntry("ty");
     private NetworkTableEntry ta = table.getEntry("ta");
+    private double crossroads[] = {0,0};
+    private double le_pixels[] = {0,0};
+    private double le_angles[] = {0,0};
 
     public LimeLight(String _name){
       name = _name;
       System.out.println(name + " i see all, dun dun dun ");
     }
+    public void check(){
+      if(gunner.lock_on()){
+        vogue();
+      }
+    }
 
     public void talk(){
       System.out.println(" Hi, I'm " + name + " I am the camera which captures all angles, vogue! ");
     }
+
+    public void vogue(){
+      le_pixels[0] = tx.getDouble(0.0);
+      le_pixels[1] = ty.getDouble(0.0);
+      
+      crossroads[0] = (1/160) * (le_pixels[0] - 159.5);
+      crossroads[1] = (1/120) * (119.5 - le_pixels[1]);
+
+      le_angles[0] = Math.atan2(1,(2.0 * Math.tan(54/2))/2 * crossroads[0]);
+      le_angles[1] = Math.atan2(1,(2.0 * Math.tan(41/2))/2 * crossroads[1]);
+    }
+
   }
+  
 
   public class Elevator{
     private String name;
@@ -684,7 +754,7 @@ public class Robot extends TimedRobot {
    // rodger.setInverted(true);
     conner.set_team();
     nia.init();
-
+    
     // Agents will announce themselves
     archie.talk();
     wally.talk();
