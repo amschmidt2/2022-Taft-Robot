@@ -368,6 +368,10 @@ public class Robot extends TimedRobot {
       }
     }
     
+    public String get_state(){
+      return state;
+    } 
+
     public void move(){
       System.out.println(" Motors please move conner he is lazy ");
       state = "moving";
@@ -412,6 +416,7 @@ public class Robot extends TimedRobot {
 
   public class Shooter{
     private String name;
+    private String state;
     private CANSparkMax motor_1 = new CANSparkMax(20, MotorType.kBrushless);
     private CANSparkMax motor_2 = new CANSparkMax(16, MotorType.kBrushless);
     private boolean ready_to_fire = false;
@@ -441,6 +446,18 @@ public class Robot extends TimedRobot {
         motor_1.set(0);
         motor_2.set(0);
       }
+    }
+
+    public String get_state(){
+      return state;
+    } 
+
+    public void sleep(){
+      state = "sleeping";
+    }
+
+    public void fire(){
+      state = "firing";
     }
 
     public void talk(){
@@ -562,6 +579,7 @@ public class Robot extends TimedRobot {
     // Store what the last hue of the first pixel is
     private int m_rainbowFirstPixelHue;
     private String state = "rainbow";
+    private int groovey_counter = 0;
     
     public NeoPixel(String _name){
       name = _name;
@@ -573,6 +591,14 @@ public class Robot extends TimedRobot {
         rainbow();
       }
 
+      if(state.equals("seeing")){
+        see();
+      }
+
+      if(state.equals("wave")){
+        wave();
+      }
+
       billy_strip.setData(billy_buffer);
     }
 
@@ -582,13 +608,59 @@ public class Robot extends TimedRobot {
       }
     }
 
+
     public void see(){
       for(int i = 0; i < billy_buffer.getLength(); i++){
         if(i < 10){
           if(izzy.get_state().equals("sleeping")){
             billy_buffer.setRGB(i, 50, 0, 0);
           }
-        }       
+          else if(izzy.get_state().equals("eating")){
+            billy_buffer.setRGB(i, 0, 0, 50);
+          } 
+          else{
+            billy_buffer.setRGB(i, 0, 0 ,0);
+          }
+        } 
+        else if(i < 20){
+          if(conner.get_state().equals("sleeping")){
+            billy_buffer.setRGB(i, 50, 0 ,0);
+          }
+          else if(conner.get_state().equals("eating")){
+            billy_buffer.setRGB(i, 0, 00, 50);
+          }
+          else if(conner.get_state().equals("moving")){
+            billy_buffer.setRGB(i, 50, 0, 50);
+          }
+          else if(conner.get_state().equals("firing")){
+            billy_buffer.setRGB(i, 0, 50, 0);
+          }
+          else{
+            billy_buffer.setRGB(i, 0, 0, 0);
+          }
+        }  
+        else if(i < 30){
+          if(todd.get_state().equals("sleeping")){
+            billy_buffer.setRGB(i, 50, 0 ,0);
+          }
+          else if(todd.get_state().equals("firing")){
+            billy_buffer.setRGB(i, 0, 50, 0);
+          }
+          else{
+            billy_buffer.setRGB(i, 0, 0, 0);
+          }
+        }  
+        else if(i < 40){
+          if(sunny.get_state().equals("sleeping")){
+            billy_buffer.setRGB(i, 50, 0, 0);
+          }
+          else if(sunny.get_state().equals("firing")){
+            billy_buffer.setRGB(i, 0, 50, 0);
+          }
+          else{
+            billy_buffer.setRGB(i, 0, 0, 0);
+          }
+        }
       }
     }
 
@@ -608,9 +680,22 @@ public class Robot extends TimedRobot {
       m_rainbowFirstPixelHue %= 180;
     }
 
+    private void wave(){
+      for (var i = 0;  i < billy_buffer.getLength(); i++){
+        if (i - groovey_counter <= 0 && i - groovey_counter  <= 3){
+          billy_buffer.setRGB(i, 50, 0, 100);
+        }
+        else{
+          billy_buffer.setRGB(i, 0, 0, 0);
+        }
+      }
+      groovey_counter++;
+    }
+
+
     public void init(){
       billy_strip = new AddressableLED(9);
-      billy_buffer = new AddressableLEDBuffer(60);
+      billy_buffer = new AddressableLEDBuffer(60); // <-- total # of led
       billy_strip.setLength(billy_buffer.getLength());
       billy_strip.setData(billy_buffer);
       billy_strip.start();
@@ -625,6 +710,7 @@ public class Robot extends TimedRobot {
 
   public class Turret{
     private String name;
+    private String state;
     private CANSparkMax motor = new CANSparkMax(96, MotorType.kBrushless);
     private PIDController m_pidController = new PIDController(kP, kI, kD);
 
@@ -646,6 +732,18 @@ public class Robot extends TimedRobot {
     public void check(){
       double pidOut = m_pidController.calculate(new_setpoint());
       motor.set(pidOut);
+    }
+
+    public String get_state(){
+      return state;
+    } 
+
+    public void sleep(){
+      state = "sleeping";
+    }
+
+    public void fire(){
+      state = "firing";
     }
 
     public double new_setpoint(){
