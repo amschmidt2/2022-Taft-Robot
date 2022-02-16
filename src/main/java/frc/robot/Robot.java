@@ -83,12 +83,11 @@ public class Robot extends TimedRobot {
   */
 
   Timer timmy = new Timer();
-  SpyLord archie = new SpyLord("archie");
-  Wheels wally = new Wheels("wally", .7);
-  Intake izzy = new Intake("izzy"); 
-  Driver driver = new Driver("driver", 0);
-  Arm amy = new Arm("amy"); 
-
+  SpyLord archie = new SpyLord("archie"); //archie stands alone 
+  Wheels wally = new Wheels("wally", .7); // speed for wheels, .x
+  Intake izzy = new Intake("izzy", .5); // speed for intake, .x
+  Driver driver = new Driver("driver", 0); // controller number
+  Arm amy = new Arm("amy", .5); //speed for arm, .x    (name, max_speed)
 
   public class Driver{
     private String name;
@@ -133,18 +132,20 @@ public class Robot extends TimedRobot {
 
   public class Arm{
     private String name;
+    private double max_speed; //this is
     
-    public Arm(String _name){
+    public Arm(String _name, double max_speed){
       name = _name;
+      this.max_speed = max_speed; //this is
       System.out.println(name + " I am here  for support ");
     }
     public void check(){
       if(driver.amy_up() > 0.1){
-        amys_motor.set(driver.amy_up()/2);
+        amys_motor.set(driver.amy_up() * max_speed);
        //System.out.println( " Do you see me? ");
       }
       else if(driver.amy_down() > 0.1){
-        amys_motor.set(-driver.amy_down()/2);
+        amys_motor.set(-driver.amy_down() * max_speed);
        //System.out.println( " Can you still see me? ");
       }
       else{
@@ -157,18 +158,20 @@ public class Robot extends TimedRobot {
 
   public class Intake{
     private String name;
+    private double max_speed;
 
-    public Intake(String _name){
+    public Intake(String _name, double _max_speed){
       name = _name;
+      max_speed = _max_speed;
       System.out.println(name + " izzy is on the scene ");
     }
 
     public void check(){
       if(driver.wants_cargo()){
-        izzys_motor.set(.3);
+        izzys_motor.set(max_speed);
       }
       else if(driver.no_cargo()){
-        izzys_motor.set(-.3);
+        izzys_motor.set(-max_speed);
       }
       else{
         izzys_motor.set(0);
