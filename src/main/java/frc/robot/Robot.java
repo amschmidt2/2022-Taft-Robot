@@ -85,7 +85,7 @@ public class Robot extends TimedRobot {
   Timer timmy = new Timer();
   SpyLord archie = new SpyLord("archie"); //archie stands alone 
   Wheels wally = new Wheels("wally", .7); // speed for wheels, .x
-  Intake izzy = new Intake("izzy", .5); // speed for intake, .x
+  Intake izzy = new Intake("izzy", .7); // speed for intake, .x
   Driver driver = new Driver("driver", 0); // controller number
   Arm amy = new Arm("amy", .5); //speed for arm, .x    (name, max_speed)
 
