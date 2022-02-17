@@ -102,6 +102,7 @@ public class Robot extends TimedRobot {
     private XboxController joy;
     private String wants_cargo_button = "x";
     private String no_cargo_button = "y";
+    private String colors_button = "ttt";
     private double lil_sam;
     private boolean rumbling = false;
 
@@ -151,6 +152,9 @@ public class Robot extends TimedRobot {
       public boolean no_cargo(){
         return get_but(no_cargo_button);
       }
+      public boolean color(){
+        return get_but(colors_button);
+      }
     }
 
 
@@ -164,6 +168,8 @@ public class Robot extends TimedRobot {
     private String top_dog_button = "x";
     private String lock_on_button = "y";
     private boolean top_dog = false;
+    
+    
     
     public Gunner(String _name, int port_num){
       name = _name;
@@ -211,8 +217,12 @@ public class Robot extends TimedRobot {
       public boolean prep_takeoff(){
         return get_but(prep_takeoff_button);
       }
-      public boolean firing_cargo(){
-        return get_but(firing_cargo_button);
+      public void fire(){
+        if(get_but(firing_cargo_button)){
+          if(conner.RTF() && sunny.RTF() && todd.RTF()){
+            System.out.println("This code is on firreeeeeee!!");
+          }
+        }
       }
       public boolean lock_on(){
         return get_but(lock_on_button);
@@ -224,8 +234,8 @@ public class Robot extends TimedRobot {
     private String name;
     private String state; //eating, sleeping
    // private DoubleSolenoid lil_iz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 1);
-   private DoubleSolenoid lil_iz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
-   private DoubleSolenoid jr_liliz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 4, 5);
+   private DoubleSolenoid lil_iz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1); //double check #
+   private DoubleSolenoid jr_liliz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 4, 5); //double check #
    private CANSparkMax motor = new CANSparkMax(9, MotorType.kBrushless);
     
 
@@ -289,6 +299,7 @@ public class Robot extends TimedRobot {
     private boolean color_cargo[] = {false, true};
     private CANSparkMax motor_1 = new CANSparkMax(97, MotorType.kBrushless);
     private CANSparkMax motor_2 = new CANSparkMax(98, MotorType.kBrushless);
+    private boolean ready_to_fire = false;
 
     public Conveyor(String _name){
       name = _name;
@@ -367,7 +378,11 @@ public class Robot extends TimedRobot {
         motor_2.set(0);
       }
     }
-    
+
+     public boolean RTF(){
+      return ready_to_fire;
+    }
+
     public String get_state(){
       return state;
     } 
@@ -429,7 +444,7 @@ public class Robot extends TimedRobot {
     public void check(){
       if(gunner.prep_takeoff()){
         motor_1.set(0.4);
-        motor_2.set(0.4);
+        motor_2.set(-0.4);
       }
       else{
         motor_1.set(0);
@@ -440,12 +455,16 @@ public class Robot extends TimedRobot {
     public void test(){
        if(driver.get_but("a")){
         motor_1.set(0.4);
-        motor_2.set(0.4);
+        motor_2.set(-0.4);
       }
       else{
         motor_1.set(0);
         motor_2.set(0);
       }
+    }
+
+    public boolean RTF(){
+      return ready_to_fire;
     }
 
     public String get_state(){
@@ -491,6 +510,10 @@ public class Robot extends TimedRobot {
 
     public void talk(){
       System.out.println( " Hi, I'm " + name + " I run the wheels, vroom vroom, Our max speed limit is " + max_speed);
+    }
+
+    private void test(){
+      sensitive(driver.get_axis(speed_axis), driver.get_axis(turn_axis));
     }
 
     private void check(){
@@ -580,6 +603,8 @@ public class Robot extends TimedRobot {
     private int m_rainbowFirstPixelHue;
     private String state = "rainbow";
     private int groovey_counter = 0;
+    private int funky_counter = 0;
+    private boolean lightroom[] = {false, false};
     
     public NeoPixel(String _name){
       name = _name;
@@ -587,16 +612,45 @@ public class Robot extends TimedRobot {
     }
 
     public void check(){
-      if(state.equals("rainbow")){
+      lightroom = event_chk(driver.color(), lightroom[1]);
+      if(lightroom[0]){  // we saw an event  on the button
+        funky_counter++; 
+        if(funky_counter == 4){
+          funky_counter = 0;
+        }
+        // set nia's new state
+        if(funky_counter == 0){
+          state = "rainbow";
+        }
+        else if(funky_counter == 1){
+          state = "seeing";
+        }
+        else if(funky_counter == 2){
+          state = "wave";
+        }
+        else if(funky_counter == 3){
+          state = "sleeping";
+        }
+        else{
+          System.out.println("I should not be here, I don't know this emotion");
+        }
+      }
+      
+
+      if(state.equals("rainbow")){ //0
         rainbow();
       }
 
-      if(state.equals("seeing")){
+      if(state.equals("seeing")){ //1
         see();
       }
 
-      if(state.equals("wave")){
+      if(state.equals("wave")){  //2
         wave();
+      }
+
+      if(state.equals("sleeping")){ //3
+        sleep();
       }
 
       billy_strip.setData(billy_buffer);
@@ -608,6 +662,9 @@ public class Robot extends TimedRobot {
       }
     }
 
+    public void sleep(){
+      whole_strip(0, 0, 0);
+    }
 
     public void see(){
       for(int i = 0; i < billy_buffer.getLength(); i++){
@@ -682,7 +739,7 @@ public class Robot extends TimedRobot {
 
     private void wave(){
       for (var i = 0;  i < billy_buffer.getLength(); i++){
-        if (i - groovey_counter <= 0 && i - groovey_counter  <= 3){
+        if (i - groovey_counter >= 0 && i - groovey_counter  <= 3){
           billy_buffer.setRGB(i, 50, 0, 100);
         }
         else{
@@ -713,6 +770,7 @@ public class Robot extends TimedRobot {
     private String state;
     private CANSparkMax motor = new CANSparkMax(96, MotorType.kBrushless);
     private PIDController m_pidController = new PIDController(kP, kI, kD);
+    private boolean ready_to_fire = false;
 
     private double initial_setpoint = 0.0;
 
@@ -732,6 +790,10 @@ public class Robot extends TimedRobot {
     public void check(){
       double pidOut = m_pidController.calculate(new_setpoint());
       motor.set(pidOut);
+    }
+
+     public boolean RTF(){
+      return ready_to_fire;
     }
 
     public String get_state(){
@@ -837,11 +899,11 @@ public class Robot extends TimedRobot {
     boolean partyroom[] = {false, false};
     if (now != past){
       partyroom[0] = true;
-        if(!past){
+        if(now){
           partyroom[1] = true;
         }
     }
-    return partyroom;
+    return partyroom;  //{event, button state}
   }
 
   @Override
@@ -910,10 +972,16 @@ public class Robot extends TimedRobot {
 
     // having a talk talk, yes yes check check
     driver.check();
+    gunner.check();
+    lucy.check();
     wally.check();
     conner.check();
     izzy.check();
-    
+    todd.check();
+    sunny.check();
+    nia.check();
+    gunner.fire();
+    // \(^u^ /) hi
     //wally.check(speed=driver.get_axis('l_stick_y'), turn=driver.get_axis('r_stick_x'))
 
   }
@@ -938,6 +1006,8 @@ public class Robot extends TimedRobot {
     conner.test();
     todd.test();
     elle.test();
+    wally.test(); 
+    nia.check();
 
 
   }
