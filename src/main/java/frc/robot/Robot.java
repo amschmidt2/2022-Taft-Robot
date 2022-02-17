@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import org.opencv.core.Mat;
+//import org.opencv.core.Mat;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
@@ -235,7 +235,7 @@ public class Robot extends TimedRobot {
     private String state; //eating, sleeping
    // private DoubleSolenoid lil_iz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 1);
    private DoubleSolenoid lil_iz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1); //double check #
-   private DoubleSolenoid jr_liliz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 4, 5); //double check #
+   private DoubleSolenoid jr_liliz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 2, 3); //double check #
    private CANSparkMax motor = new CANSparkMax(9, MotorType.kBrushless);
     
 
@@ -751,7 +751,7 @@ public class Robot extends TimedRobot {
 
 
     public void init(){
-      billy_strip = new AddressableLED(9);
+      billy_strip = new AddressableLED(2);
       billy_buffer = new AddressableLEDBuffer(60); // <-- total # of led
       billy_strip.setLength(billy_buffer.getLength());
       billy_strip.setData(billy_buffer);
