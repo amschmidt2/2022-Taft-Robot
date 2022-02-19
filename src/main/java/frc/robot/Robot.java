@@ -25,6 +25,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.Compressor;
+
 //import edu.wpi.first.wpilibj.Solenoid;
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 import edu.wpi.first.math.controller.PIDController;
@@ -95,6 +97,8 @@ public class Robot extends TimedRobot {
   Turret todd = new Turret("todd");
   LimeLight lucy = new LimeLight("lucy");
   Elevator elle = new Elevator("elle");
+  Compressor pcmCompressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
+
 
                                                                      
   public class Driver{
@@ -236,8 +240,10 @@ public class Robot extends TimedRobot {
     private String name;
     private String state; //eating, sleeping
    // private DoubleSolenoid lil_iz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 1);
-   private DoubleSolenoid lil_iz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1); //double check #
-   private DoubleSolenoid jr_liliz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 2, 3); //double check #
+
+   private DoubleSolenoid lil_iz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
+   private DoubleSolenoid jr_liliz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 2, 3);
+
    private CANSparkMax motor = new CANSparkMax(9, MotorType.kBrushless);
     
 
@@ -295,6 +301,7 @@ public class Robot extends TimedRobot {
     private String name;
     private boolean full;
     private String state = "sleeping"; // eating, moving, firing, sleeping
+
     private double lil_sam;
 
     private boolean ballroom[] = {false, false};
@@ -929,6 +936,7 @@ public class Robot extends TimedRobot {
     todd.talk();
     elle.talk();
     lucy.talk();
+    pcmCompressor.enableDigital();
   }
 
   @Override
