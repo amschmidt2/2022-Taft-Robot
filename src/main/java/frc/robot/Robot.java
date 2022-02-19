@@ -123,6 +123,7 @@ public class Robot extends TimedRobot {
       }
       public void test(){
          if(get_but("tl")){
+           System.out.println("driver test");
           joy.setRumble(RumbleType.kLeftRumble, 1);
         }
         else{
@@ -189,6 +190,7 @@ public class Robot extends TimedRobot {
       }
       public void test(){
         if(get_but("tl")){
+          System.out.println("tiny lines");
           joy.setRumble(RumbleType.kLeftRumble, 1);
         }
         else{
@@ -297,8 +299,8 @@ public class Robot extends TimedRobot {
 
     private boolean ballroom[] = {false, false};
     private boolean color_cargo[] = {false, true};
-    private CANSparkMax motor_1 = new CANSparkMax(97, MotorType.kBrushless);
-    private CANSparkMax motor_2 = new CANSparkMax(98, MotorType.kBrushless);
+    private CANSparkMax motor_1 = new CANSparkMax(14, MotorType.kBrushless);
+    private CANSparkMax motor_2 = new CANSparkMax(3, MotorType.kBrushless);
     private boolean ready_to_fire = false;
 
     public Conveyor(String _name){
@@ -1001,13 +1003,15 @@ public class Robot extends TimedRobot {
   public void testInit() {}
   @Override
   public void testPeriodic() {
+    driver.test();
+    gunner.test();
     izzy.test();
-    sunny.test();
-    conner.test();
-    todd.test();
-    elle.test();
+    //sunny.test();
+    //conner.test();
+    //todd.test();
+    //elle.test();
     wally.test(); 
-    nia.check();
+    //nia.check();
 
 
   }
