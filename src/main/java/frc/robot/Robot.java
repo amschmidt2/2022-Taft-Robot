@@ -25,6 +25,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.Compressor;
+
 //import edu.wpi.first.wpilibj.Solenoid;
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 import edu.wpi.first.math.controller.PIDController;
@@ -95,6 +97,8 @@ public class Robot extends TimedRobot {
   Turret todd = new Turret("todd");
   LimeLight lucy = new LimeLight("lucy");
   Elevator elle = new Elevator("elle");
+  Compressor pcmCompressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
+
 
                                                                      
   public class Driver{
@@ -123,6 +127,7 @@ public class Robot extends TimedRobot {
       }
       public void test(){
          if(get_but("tl")){
+           System.out.println("driver test");
           joy.setRumble(RumbleType.kLeftRumble, 1);
         }
         else{
@@ -189,6 +194,7 @@ public class Robot extends TimedRobot {
       }
       public void test(){
         if(get_but("tl")){
+          System.out.println("tiny lines");
           joy.setRumble(RumbleType.kLeftRumble, 1);
         }
         else{
@@ -234,8 +240,10 @@ public class Robot extends TimedRobot {
     private String name;
     private String state; //eating, sleeping
    // private DoubleSolenoid lil_iz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 1);
-   private DoubleSolenoid lil_iz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1); //double check #
-   private DoubleSolenoid jr_liliz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 2, 3); //double check #
+
+   private DoubleSolenoid lil_iz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
+   private DoubleSolenoid jr_liliz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 2, 3);
+
    private CANSparkMax motor = new CANSparkMax(9, MotorType.kBrushless);
     
 
@@ -293,12 +301,13 @@ public class Robot extends TimedRobot {
     private String name;
     private boolean full;
     private String state = "sleeping"; // eating, moving, firing, sleeping
+
     private double lil_sam;
 
     private boolean ballroom[] = {false, false};
     private boolean color_cargo[] = {false, true};
-    private CANSparkMax motor_1 = new CANSparkMax(97, MotorType.kBrushless);
-    private CANSparkMax motor_2 = new CANSparkMax(98, MotorType.kBrushless);
+    private CANSparkMax motor_1 = new CANSparkMax(14, MotorType.kBrushless);
+    private CANSparkMax motor_2 = new CANSparkMax(3, MotorType.kBrushless);
     private boolean ready_to_fire = false;
 
     public Conveyor(String _name){
@@ -927,6 +936,7 @@ public class Robot extends TimedRobot {
     todd.talk();
     elle.talk();
     lucy.talk();
+    pcmCompressor.enableDigital();
   }
 
   @Override
@@ -1001,13 +1011,15 @@ public class Robot extends TimedRobot {
   public void testInit() {}
   @Override
   public void testPeriodic() {
+    driver.test();
+    gunner.test();
     izzy.test();
-    sunny.test();
-    conner.test();
-    todd.test();
-    elle.test();
+    //sunny.test();
+    //conner.test();
+    //todd.test();
+    //elle.test();
     wally.test(); 
-    nia.check();
+    //nia.check();
 
 
   }
