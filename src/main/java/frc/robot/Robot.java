@@ -244,7 +244,7 @@ public class Robot extends TimedRobot {
    private DoubleSolenoid lil_iz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
    private DoubleSolenoid jr_liliz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 2, 3);
 
-   private CANSparkMax motor = new CANSparkMax(9, MotorType.kBrushless);
+   private CANSparkMax motor = new CANSparkMax(9, MotorType.kBrushed);
     
 
     public Intake(String _name){
@@ -264,6 +264,7 @@ public class Robot extends TimedRobot {
       if(driver.get_but("x")){
         lil_iz.set(kForward);
         jr_liliz.set(kForward);
+        System.out.println("I should be moving! ");
       }
       else{
         lil_iz.set(kReverse);
@@ -272,6 +273,7 @@ public class Robot extends TimedRobot {
 
       if(driver.get_but("tl")){
         motor.set(0.4);
+        System.out.println("can you see me move?");
       }
       else{
         motor.set(0);
@@ -380,7 +382,7 @@ public class Robot extends TimedRobot {
     public void test(){
       if(driver.get_but("y")){
         motor_1.set(0.4);
-        motor_2.set(0.4);
+        motor_2.set(-0.4);
       }
       else{
         motor_1.set(0);
@@ -1014,8 +1016,8 @@ public class Robot extends TimedRobot {
     driver.test();
     gunner.test();
     izzy.test();
-    //sunny.test();
-    //conner.test();
+    sunny.test();
+    conner.test();
     //todd.test();
     //elle.test();
     wally.test(); 
