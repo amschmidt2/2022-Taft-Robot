@@ -585,10 +585,15 @@ public class Robot extends TimedRobot {
 
   public class SpyLord{
     private String spyroom [][]= {
-        {"Back move", "Stop move", "2.0"},
-        {"Forward move", "Stop move", "2.5"},
-        {"Shoot Cargo", "Stay off", "4.5"},
-        {"Back move", "Stop move", "5.0"},
+        {"Moving back", "Stop move", "2.0"},
+        {"Starting Sunny", "None", "2.5"},
+        {"Starting Conner", "Stop", "4.5"},
+        {"Starting Izzy", "None", "0.1"},
+        {"Moving forward", "Stop move", "5.0"},
+        {"Stop", "None", "0.1"},
+        {"Moving back", "Stop move", "2.0"},
+        {"Starting Sunny", "None", "2.5"},
+        {"Starting Conner", "Stop", "4.5"},
         {"Done", "this will never run", "999.9"}
       };
     private int autonomous_counter = 0;
@@ -621,9 +626,34 @@ public class Robot extends TimedRobot {
     private void briefcase(String task){
       System.out.println(task);
       switch(task){
-        case "Back move":
+        case "Moving back":
           System.out.println("The wheels are moving back!");
-          // drivechain.arcadeDrive(speed, turn);
+          wally.drive(-.1, 0);
+        case "Moving forward":
+          System.out.println("Going Forward");
+          wally.drive(.1, 0);
+        case "Stop move":
+          System.out.println("Stop Moving");
+          wally.drive(0, 0);
+        case "Starting Sunny":
+          System.out.println("Sunny Starting");
+          sunny.set_motors(.6);
+        case "None":
+          System.out.println("Nothing");
+        case "Starting Conner":
+          System.out.println("Conner Starting");
+          conner.set_motors(.5);
+        case "Starting Izzy":
+          System.out.println("Izzy Starting");
+          izzy.move_out(true);
+          izzy.set_motors(.8);
+        case "Stop":
+          System.out.println("Stopping");
+          sunny.set_motors(0);
+          conner.set_motors(0);
+          wally.drive(0, 0);
+          izzy.set_motors(0);
+          izzy.move_out(false);
         default:
           break;
       }
