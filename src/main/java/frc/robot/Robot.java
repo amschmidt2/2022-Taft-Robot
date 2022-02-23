@@ -265,23 +265,36 @@ public class Robot extends TimedRobot {
     public void test(){
       //lil_iz.set(driver.get_but("x"));
       if(driver.get_but("x")){
+        move_out(true);
+      }
+      else{
+        move_out(false);
+      }
+
+      if(driver.get_but("tl")){
+        set_motors(0.8);
+      }
+      else{
+        set_motors(0);
+      }
+    }
+
+    private void set_motors(double speed){
+      motor.set(speed);
+    }
+
+    public void move_out(boolean direction){
+      if(direction){
         lil_iz.set(kForward);
         jr_liliz.set(kForward);
-        System.out.println("I should be moving! ");
       }
       else{
         lil_iz.set(kReverse);
         jr_liliz.set(kReverse);
       }
 
-      if(driver.get_but("tl")){
-        motor.set(0.8);
-        System.out.println("can you see me move?");
-      }
-      else{
-        motor.set(0);
-      }
     }
+      
   
     public String get_state(){
       return state;
@@ -387,14 +400,17 @@ public class Robot extends TimedRobot {
 
     public void test(){
       if(driver.get_but("y")){
-        motor_1.set(0.4);
-        motor_2.set(-0.4);
+        set_motors(.4);
       }
       else{
-        motor_1.set(0);
-        motor_2.set(0);
+        set_motors(0);
       }
       SmartDashboard.putNumber("con_enc", motor_1_encoder.getPosition());
+    }
+
+    public void set_motors(double speed){
+      motor_1.set(speed);
+      motor_2.set(-speed);
     }
 
      public boolean RTF(){
@@ -472,13 +488,16 @@ public class Robot extends TimedRobot {
 
     public void test(){
        if(driver.get_but("a")){
-        motor_1.set(0.4);
-        motor_2.set(-0.4);
+        set_motors(.8);
       }
       else{
-        motor_1.set(0);
-        motor_2.set(0);
+        set_motors(.8);
       }
+    }
+
+    public void set_motors(double speed){
+      motor_1.set(speed);
+      motor_2.set(-speed);
     }
 
     public boolean RTF(){
