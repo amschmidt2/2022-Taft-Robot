@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 // import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
 
 //import org.opencv.core.Mat;
 
@@ -35,6 +36,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+
+//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // ***** VictorSPX Code *****
 // import com.ctre.phoenix.motorcontrol.*;
 // import com.ctre.phoenix.motorcontrol.can.*;
@@ -244,7 +247,7 @@ public class Robot extends TimedRobot {
    private DoubleSolenoid lil_iz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
    private DoubleSolenoid jr_liliz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 2, 3);
 
-   private CANSparkMax motor = new CANSparkMax(9, MotorType.kBrushless);
+   private CANSparkMax motor = new CANSparkMax(9, MotorType.kBrushed);
     
 
     public Intake(String _name){
@@ -262,6 +265,26 @@ public class Robot extends TimedRobot {
     public void test(){
       //lil_iz.set(driver.get_but("x"));
       if(driver.get_but("x")){
+        move_out(true);
+      }
+      else{
+        move_out(false);
+      }
+
+      if(driver.get_but("tl")){
+        set_motors(0.8);
+      }
+      else{
+        set_motors(0);
+      }
+    }
+
+    private void set_motors(double speed){
+      motor.set(speed);
+    }
+
+    public void move_out(boolean direction){
+      if(direction){
         lil_iz.set(kForward);
         jr_liliz.set(kForward);
       }
@@ -270,13 +293,8 @@ public class Robot extends TimedRobot {
         jr_liliz.set(kReverse);
       }
 
-      if(driver.get_but("tl")){
-        motor.set(0.4);
-      }
-      else{
-        motor.set(0);
-      }
     }
+      
   
     public String get_state(){
       return state;
@@ -308,13 +326,16 @@ public class Robot extends TimedRobot {
     private boolean color_cargo[] = {false, true};
     private CANSparkMax motor_1 = new CANSparkMax(14, MotorType.kBrushless);
     private CANSparkMax motor_2 = new CANSparkMax(3, MotorType.kBrushless);
+    RelativeEncoder motor_1_encoder;
     private boolean ready_to_fire = false;
 
     public Conveyor(String _name){
       name = _name;
       System.out.println(name + " has rolled in ");
     }
-
+    public void init(){
+      motor_1_encoder = motor_1.getEncoder();
+    }
     public void check(){
       if(state.equals("moving")){
         if(timmy.get() > lil_sam){
@@ -379,13 +400,17 @@ public class Robot extends TimedRobot {
 
     public void test(){
       if(driver.get_but("y")){
-        motor_1.set(0.4);
-        motor_2.set(0.4);
+        set_motors(.4);
       }
       else{
-        motor_1.set(0);
-        motor_2.set(0);
+        set_motors(0);
       }
+      SmartDashboard.putNumber("con_enc", motor_1_encoder.getPosition());
+    }
+
+    public void set_motors(double speed){
+      motor_1.set(speed);
+      motor_2.set(-speed);
     }
 
      public boolean RTF(){
@@ -463,13 +488,16 @@ public class Robot extends TimedRobot {
 
     public void test(){
        if(driver.get_but("a")){
-        motor_1.set(0.4);
-        motor_2.set(-0.4);
+        set_motors(.8);
       }
       else{
-        motor_1.set(0);
-        motor_2.set(0);
+        set_motors(.8);
       }
+    }
+
+    public void set_motors(double speed){
+      motor_1.set(speed);
+      motor_2.set(-speed);
     }
 
     public boolean RTF(){
@@ -497,6 +525,7 @@ public class Robot extends TimedRobot {
   public class Wheels{
     private String name;
     private double max_speed;
+    private double max_turn = .7;
     // make axis here
     private String turn_axis = "l_stick_x";
     private String speed_axis = "l_stick_y";
@@ -539,12 +568,15 @@ public class Robot extends TimedRobot {
       drivechain.arcadeDrive(speed, turn);
     }
 
-    private void sensitive(double speed, double turn){
-      turn = Math.pow(turn, 2.0);
-      if (turn < 0){
+    private void sensitive(double speed, double raw_turn){
+      double turn = Math.pow(raw_turn, 2.0);
+      if (raw_turn < 0){
         turn = -turn;
       }
       speed = max_speed * speed;
+      turn = max_turn * turn;
+
+      drive(speed, turn);
 
       drive(speed, turn);
     }
@@ -923,6 +955,7 @@ public class Robot extends TimedRobot {
    // rodger.setInverted(true);
     conner.set_team();
     nia.init();
+    conner.init();
     
     // Agents will announce themselves
     archie.talk();
@@ -1014,8 +1047,8 @@ public class Robot extends TimedRobot {
     driver.test();
     gunner.test();
     izzy.test();
-    //sunny.test();
-    //conner.test();
+    sunny.test();
+    conner.test();
     //todd.test();
     //elle.test();
     wally.test(); 
