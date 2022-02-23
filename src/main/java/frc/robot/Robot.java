@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 // import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
 
 //import org.opencv.core.Mat;
 
@@ -35,6 +36,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+
+//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // ***** VictorSPX Code *****
 // import com.ctre.phoenix.motorcontrol.*;
 // import com.ctre.phoenix.motorcontrol.can.*;
@@ -272,7 +275,7 @@ public class Robot extends TimedRobot {
       }
 
       if(driver.get_but("tl")){
-        motor.set(0.4);
+        motor.set(0.8);
         System.out.println("can you see me move?");
       }
       else{
@@ -310,13 +313,16 @@ public class Robot extends TimedRobot {
     private boolean color_cargo[] = {false, true};
     private CANSparkMax motor_1 = new CANSparkMax(14, MotorType.kBrushless);
     private CANSparkMax motor_2 = new CANSparkMax(3, MotorType.kBrushless);
+    RelativeEncoder motor_1_encoder;
     private boolean ready_to_fire = false;
 
     public Conveyor(String _name){
       name = _name;
       System.out.println(name + " has rolled in ");
     }
-
+    public void init(){
+      motor_1_encoder = motor_1.getEncoder();
+    }
     public void check(){
       if(state.equals("moving")){
         if(timmy.get() > lil_sam){
@@ -388,6 +394,7 @@ public class Robot extends TimedRobot {
         motor_1.set(0);
         motor_2.set(0);
       }
+      SmartDashboard.putNumber("con_enc", motor_1_encoder.getPosition());
     }
 
      public boolean RTF(){
@@ -499,6 +506,7 @@ public class Robot extends TimedRobot {
   public class Wheels{
     private String name;
     private double max_speed;
+    private double max_turn = .7;
     // make axis here
     private String turn_axis = "l_stick_x";
     private String speed_axis = "l_stick_y";
@@ -541,12 +549,15 @@ public class Robot extends TimedRobot {
       drivechain.arcadeDrive(speed, turn);
     }
 
-    private void sensitive(double speed, double turn){
-      turn = Math.pow(turn, 2.0);
-      if (turn < 0){
+    private void sensitive(double speed, double raw_turn){
+      double turn = Math.pow(raw_turn, 2.0);
+      if (raw_turn < 0){
         turn = -turn;
       }
       speed = max_speed * speed;
+      turn = max_turn * turn;
+
+      drive(speed, turn);
 
       drive(speed, turn);
     }
@@ -925,6 +936,7 @@ public class Robot extends TimedRobot {
    // rodger.setInverted(true);
     conner.set_team();
     nia.init();
+    conner.init();
     
     // Agents will announce themselves
     archie.talk();
