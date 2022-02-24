@@ -85,7 +85,7 @@ public class Robot extends TimedRobot {
 
 
   public boolean team_blue = true;
-  DigitalInput cargo_det = new DigitalInput(0);
+  
   
   Timer timmy = new Timer(); // lil_sam is a timed event
   SpyLord archie = new SpyLord("archie");
@@ -318,23 +318,26 @@ public class Robot extends TimedRobot {
   public class Conveyor{
     private String name;
     private boolean full;
-    private String state = "sleeping"; // eating, moving, firing, sleeping
+    private String state = "sleeping"; // digesting, firing, sleeping, munching
 
     private double lil_sam;
+    private double sir_sam;
 
     private boolean ballroom[] = {false, false};
     private boolean color_cargo[] = {false, true};
     private CANSparkMax motor_1 = new CANSparkMax(14, MotorType.kBrushless);
     private CANSparkMax motor_2 = new CANSparkMax(3, MotorType.kBrushless);
-    RelativeEncoder motor_1_encoder;
+    RelativeEncoder meat_coder;
     private boolean ready_to_fire = false;
+    DigitalInput cargo_det = new DigitalInput(0);
+    
 
     public Conveyor(String _name){
       name = _name;
       System.out.println(name + " has rolled in ");
     }
     public void init(){
-      motor_1_encoder = motor_1.getEncoder();
+      meat_coder = motor_1.getEncoder();
     }
     public void check(){
       if(state.equals("moving")){
@@ -396,6 +399,16 @@ public class Robot extends TimedRobot {
         }
       }
 
+      else if(state.equals("digesting")){
+        meat_coder.getPosition();
+        if(meat_coder.getPosition() > sir_sam){
+          //we need to finish le code le later
+          //this is going to be similar to the moving function in conner
+        }
+      }
+
+      else if(state.equals("munching")){}
+
     }
 
     public void test(){
@@ -405,7 +418,7 @@ public class Robot extends TimedRobot {
       else{
         set_motors(0);
       }
-      SmartDashboard.putNumber("con_enc", motor_1_encoder.getPosition());
+      SmartDashboard.putNumber("con_enc", meat_coder.getPosition());
     }
 
     public void set_motors(double speed){
