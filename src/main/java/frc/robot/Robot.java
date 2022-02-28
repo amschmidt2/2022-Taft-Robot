@@ -85,7 +85,7 @@ public class Robot extends TimedRobot {
 
 
   public boolean team_blue = true;
-  DigitalInput cargo_det = new DigitalInput(0);
+  
   
   Timer timmy = new Timer(); // lil_sam is a timed event
   SpyLord archie = new SpyLord("archie");
@@ -176,6 +176,8 @@ public class Robot extends TimedRobot {
     private String top_dog_button = "x";
     private String lock_on_button = "y";
     private boolean top_dog = false;
+    private String move_todd_button = "r_stick_x";
+    
     
     
     
@@ -212,6 +214,7 @@ public class Robot extends TimedRobot {
       public void talk(){
       System.out.println(" Hi, I'm " + name + " I work with the weapons, pew pew! ");
       }
+      
       public void rumble(double lil_tim){
       joy.setRumble(RumbleType.kLeftRumble, 1);
       lil_sam = timmy.get() + lil_tim;
@@ -235,6 +238,9 @@ public class Robot extends TimedRobot {
       }
       public boolean lock_on(){
         return get_but(lock_on_button);
+      }
+      public double move_todd(){
+        return get_axis(move_todd_button);
       }
     }
 
@@ -279,7 +285,7 @@ public class Robot extends TimedRobot {
       }
     }
 
-    private void set_motors(double speed){
+    public void set_motors(double speed){
       motor.set(speed);
     }
 
@@ -318,23 +324,30 @@ public class Robot extends TimedRobot {
   public class Conveyor{
     private String name;
     private boolean full;
-    private String state = "sleeping"; // eating, moving, firing, sleeping
+    private String state = "sleeping"; // digesting, firing, sleeping, munching
 
     private double lil_sam;
+    private double sir_sam;
 
     private boolean ballroom[] = {false, false};
     private boolean color_cargo[] = {false, true};
     private CANSparkMax motor_1 = new CANSparkMax(14, MotorType.kBrushless);
     private CANSparkMax motor_2 = new CANSparkMax(3, MotorType.kBrushless);
-    RelativeEncoder motor_1_encoder;
+    RelativeEncoder meat_coder;
     private boolean ready_to_fire = false;
+    DigitalInput cargo_det = new DigitalInput(0);
+    
+    // Front receiver 0
+    // Front emitter 1 
+    // Back emitter 2 
+    // Back reciecer 3
 
     public Conveyor(String _name){
       name = _name;
       System.out.println(name + " has rolled in ");
     }
     public void init(){
-      motor_1_encoder = motor_1.getEncoder();
+      meat_coder = motor_1.getEncoder();
     }
     public void check(){
       if(state.equals("moving")){
@@ -396,6 +409,16 @@ public class Robot extends TimedRobot {
         }
       }
 
+      else if(state.equals("digesting")){
+        meat_coder.getPosition();
+        if(meat_coder.getPosition() > sir_sam){
+          //we need to finish le code le later
+          //this is going to be similar to the moving function in conner
+        }
+      }
+
+      else if(state.equals("munching")){}
+
     }
 
     public void test(){
@@ -405,7 +428,7 @@ public class Robot extends TimedRobot {
       else{
         set_motors(0);
       }
-      SmartDashboard.putNumber("con_enc", motor_1_encoder.getPosition());
+      SmartDashboard.putNumber("con_enc", meat_coder.getPosition());
     }
 
     public void set_motors(double speed){
@@ -491,7 +514,7 @@ public class Robot extends TimedRobot {
         set_motors(.8);
       }
       else{
-        set_motors(.8);
+        set_motors(0);
       }
     }
 
@@ -839,15 +862,19 @@ public class Robot extends TimedRobot {
   public class Turret{
     private String name;
     private String state;
-    private CANSparkMax motor = new CANSparkMax(96, MotorType.kBrushless);
+    private CANSparkMax motor = new CANSparkMax(19, MotorType.kBrushless);
     private PIDController m_pidController = new PIDController(kP, kI, kD);
     private boolean ready_to_fire = false;
+    private double lil_louie = -50.0;
+    private double lil_rodger = 50.0;
 
     private double initial_setpoint = 0.0;
 
     private static final double kP = 5.0;
     private static final double kI = 0.02;
     private static final double kD = 2.0;
+
+    RelativeEncoder spyeye_coder;
 
     public Turret(String _name){
       name = _name;
@@ -856,13 +883,28 @@ public class Robot extends TimedRobot {
     
     public void init(){     
       m_pidController.setSetpoint(initial_setpoint);
+      spyeye_coder = motor.getEncoder();
     }
 
     public void check(){
-      double pidOut = m_pidController.calculate(new_setpoint());
-      motor.set(pidOut);
+      if(gunner.get_but(gunner.lock_on_button)){
+        // looking at you lucy ;)
+        motor.set(m_pidController.calculate(new_setpoint()));
+      }
+      else{       
+        if(lil_louie > spyeye_coder.getPosition() || lil_rodger < spyeye_coder.getPosition()){
+          gunner.rumble(.25);
+          motor.set(0); 
+        }
+        else{
+          set_motors(gunner.move_todd());
+        }
+      }
     }
 
+    public void set_motors(double speed){
+      motor.set(speed);
+    }
      public boolean RTF(){
       return ready_to_fire;
     }
@@ -881,8 +923,14 @@ public class Robot extends TimedRobot {
 
     public double new_setpoint(){
       //get new setpoint from lucy and check for out of range
-      return 0.0;
+      double desired_pos = spyeye_coder.getPosition() + lucy.angles()[0];
+     
+      if(lil_louie < desired_pos || lil_rodger > desired_pos) {
+        return desired_pos;
+      }
+      return spyeye_coder.getPosition(); 
     }
+    
     public void test(){
        if(driver.get_but("b")){
         motor.set(0.4);
@@ -930,6 +978,10 @@ public class Robot extends TimedRobot {
 
       le_angles[0] = Math.atan2(1,(2.0 * Math.tan(54/2))/2 * crossroads[0]);
       le_angles[1] = Math.atan2(1,(2.0 * Math.tan(41/2))/2 * crossroads[1]);
+    }
+
+    public double[] angles(){
+      return le_angles;
     }
 
   }
@@ -986,6 +1038,7 @@ public class Robot extends TimedRobot {
     conner.set_team();
     nia.init();
     conner.init();
+    todd.init();
     
     // Agents will announce themselves
     archie.talk();
