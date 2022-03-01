@@ -422,6 +422,7 @@ public class Robot extends TimedRobot {
         set_motors(0);
       }
       SmartDashboard.putNumber("con_enc", eyespy_coder.getPosition());
+      //System.out.println(" There should be cargo here " + izzys_spoon.get());
     }
 
     public void set_motors(double speed){
@@ -955,12 +956,12 @@ public class Robot extends TimedRobot {
 
   public class LimeLight{
     private String name;
-    private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    private NetworkTableEntry tx = table.getEntry("tx");
-    private NetworkTableEntry ty = table.getEntry("ty");
-    private NetworkTableEntry ta = table.getEntry("ta");
-    private double crossroads[] = {0,0};
-    private double le_pixels[] = {0,0};
+    public NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    public NetworkTableEntry tx = table.getEntry("tx");
+    public NetworkTableEntry ty = table.getEntry("ty");
+    public NetworkTableEntry ta = table.getEntry("ta");
+    public double crossroads[] = {0,0};
+    public double le_pixels[] = {0,0};
     private double le_angles[] = {0,0};
 
     public LimeLight(String _name){
@@ -973,6 +974,14 @@ public class Robot extends TimedRobot {
       }
     }
 
+    public void test(){
+      vogue();
+      lights(true);
+      SmartDashboard.putNumber("lucy_cam0", le_pixels[0]);
+      SmartDashboard.putNumber("lucy_cam1", le_pixels[1]);
+      //System.out.println("tests " + table.getEntry("ta").get);
+    }
+
     public void talk(){
       System.out.println(" Hi, I'm " + name + " I am the camera which captures all angles, vogue! ");
     }
@@ -980,6 +989,7 @@ public class Robot extends TimedRobot {
     public void vogue(){
       le_pixels[0] = tx.getDouble(0.0);
       le_pixels[1] = ty.getDouble(0.0);
+      //System.out.println("lucy" + le_pixels[0] + " " + le_pixels[1]);
       
       crossroads[0] = (1/160) * (le_pixels[0] - 159.5);
       crossroads[1] = (1/120) * (119.5 - le_pixels[1]);
@@ -990,6 +1000,15 @@ public class Robot extends TimedRobot {
 
     public double[] angles(){
       return le_angles;
+    }
+
+    public void lights(boolean on){
+      if(on){
+      table.getEntry("ledMode").setNumber(3);
+      }
+      else{
+        table.getEntry("ledMode").setNumber(1);
+      }
     }
 
   }
@@ -1046,12 +1065,15 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
-   // rodger.setInverted(true);
+    // rodger.setInverted(true);
     conner.set_team();
     nia.init();
     conner.init();
     todd.init();
-    
+
+    lucy.table.getEntry("ledMode").setNumber(2);
+    //lucy.lights(true);
+
     // Agents will announce themselves
     archie.talk();
     wally.talk();
@@ -1134,7 +1156,10 @@ public class Robot extends TimedRobot {
     // joy0.setRumble(RumbleType.kRightRumble, 0.0);
   }
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    lucy.test();
+
+  }
   @Override
   public void testInit() {}
   @Override
@@ -1148,6 +1173,7 @@ public class Robot extends TimedRobot {
     //elle.test();
     wally.test(); 
     //nia.check();
+    lucy.test();
 
 
   }
