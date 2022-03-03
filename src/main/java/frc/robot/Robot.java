@@ -577,6 +577,7 @@ public class Robot extends TimedRobot {
     private MotorControllerGroup louie = new MotorControllerGroup(front_LeftyMotor, back_LeftyMotor);
 
     private final DifferentialDrive drivechain = new DifferentialDrive(louie, rodger);
+    public double[] shut_up = {0.0, 0.0};
     
     public Wheels(String _name, double _max_speed){
       name = _name;
@@ -617,6 +618,15 @@ public class Robot extends TimedRobot {
       turn = max_turn * turn;
 
       drive(speed, turn);
+    }
+
+    public void auto(double speed, double turn){
+      shut_up[0] = speed;
+      shut_up[1] = turn;
+    }
+
+    public void shutupstupidbabyshutup(){
+      drive(shut_up[0], shut_up[1]);
     }
   }
 
@@ -666,32 +676,40 @@ public class Robot extends TimedRobot {
       switch(task){
         case "Moving back":
           System.out.println("The wheels are moving back!");
-          wally.drive(-.1, 0);
+          wally.auto(-.1, 0);
+          break;
         case "Moving forward":
           System.out.println("Going Forward");
-          wally.drive(.1, 0);
+          wally.auto(.1, 0);
+          break;
         case "Stop move":
           System.out.println("Stop Moving");
-          wally.drive(0, 0);
+          wally.auto(0, 0);
+          break;
         case "Starting Sunny":
           System.out.println("Sunny Starting");
           sunny.set_motors(.6);
+          break;
         case "None":
           System.out.println("Nothing");
+          break;
         case "Starting Conner":
           System.out.println("Conner Starting");
           conner.set_motors(.5);
+          break;
         case "Starting Izzy":
           System.out.println("Izzy Starting");
           izzy.move_out(true);
           izzy.set_motors(.8);
+          break;
         case "Stop":
           System.out.println("Stopping");
           sunny.set_motors(0);
           conner.set_motors(0);
-          wally.drive(0, 0);
+          wally.auto(0, 0);
           izzy.set_motors(0);
           izzy.move_out(false);
+          break;
         default:
           break;
       }
@@ -1139,6 +1157,7 @@ public class Robot extends TimedRobot {
       case kDefaultAuto:
       default:
         archie.check();
+        wally.shutupstupidbabyshutup();
     }
   }
 
