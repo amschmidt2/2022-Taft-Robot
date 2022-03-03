@@ -888,8 +888,9 @@ public class Robot extends TimedRobot {
     
     public void init(){     
       mr_pid_peter.setSetpoint(initial_setpoint);
-      spyeye_coder.setPositionConversionFactor(0.03157894736842105263157894736842); //  revolutions  ==>  38:144 1:3 make this degrees   1/360deg  11.3rev
       spyeye_coder = motor.getEncoder();
+      spyeye_coder.setPositionConversionFactor(0.032); //  revolutions  ==>  38:144 1:3 make this degrees   1/360deg  11.3rev
+
     }
 
     public void check(){
@@ -1176,7 +1177,9 @@ public class Robot extends TimedRobot {
 
   }
   @Override
-  public void testInit() {}
+  public void testInit() {
+   
+  }
   @Override
   public void testPeriodic() {
     driver.test();
@@ -1184,11 +1187,13 @@ public class Robot extends TimedRobot {
     izzy.test("x", "x");
     sunny.test("b");
     conner.test("b");
-    todd.test("r_trig", "l_trig");
+    //todd.test("r_trig", "l_trig");
     elle.test("l_bum", "r_bum");
     wally.test(); 
     //nia.check();
     lucy.test();
+
+    todd.set_motors(.3);
 
 
   }
