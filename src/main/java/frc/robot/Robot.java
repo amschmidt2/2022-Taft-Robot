@@ -112,6 +112,8 @@ public class Robot extends TimedRobot {
     private String colors_button = "ttt";
     private double lil_sam;
     private boolean rumbling = false;
+    private String control_stick[] = {"l_stick_y", "l_stick_x"};  // speed, turn
+    private double stick_control[] = {0.0, 0.0};
 
     public Driver(String _name, int port_num){
         name = _name;
@@ -143,6 +145,14 @@ public class Robot extends TimedRobot {
       public void talk(){
         System.out.println(" Hi, I'm " + name + " I am the one who drives, Kachow! ");
       }
+      
+      public double[] control_panel(){
+        for(int i = 0; i < stick_control.length; i++){ // length of list returns 2
+          stick_control[i] = get_axis(control_stick[i]);
+        }
+        return stick_control;
+      }
+
       public void rumble(double lil_tim){
         joy.setRumble(RumbleType.kLeftRumble, 1);
         lil_sam = timmy.get() + lil_tim;
@@ -287,16 +297,16 @@ public class Robot extends TimedRobot {
       }
     }
 
-    public void test(){
+    public void test(String xcited, String tiny_lines){
       //lil_iz.set(driver.get_but("x"));
-      if(driver.get_but("x")){
+      if(driver.get_but(xcited)){
         move_out(true);
       }
       else{
         move_out(false);
       }
 
-      if(driver.get_but("tl")){
+      if(driver.get_but(tiny_lines)){
         set_motors(0.8);
       }
       else{
@@ -414,8 +424,8 @@ public class Robot extends TimedRobot {
 
     }
 
-    public void test(){
-      if(driver.get_but("y")){
+    public void test(String yoke){
+      if(driver.get_but(yoke)){
         set_motors(.4);
       }
       else{
@@ -505,8 +515,8 @@ public class Robot extends TimedRobot {
       }
     }
 
-    public void test(){
-       if(driver.get_but("a")){
+    public void test(String apple){
+       if(driver.get_but(apple)){
         set_motors(.8);
       }
       else{
@@ -578,8 +588,9 @@ public class Robot extends TimedRobot {
         System.out.println(" you know I am top dog! ");
       }
       else{
-      sensitive(driver.get_axis(speed_axis), driver.get_axis(turn_axis));
+      sensitive(driver.control_panel()[0],driver.control_panel()[1]);
       }
+     
     }
 
 
@@ -852,7 +863,7 @@ public class Robot extends TimedRobot {
    
   }
 
- //conner fails his test F, izzy tops the class A+
+ 
   public class Turret{
     private String name;
     private String state;
@@ -877,6 +888,7 @@ public class Robot extends TimedRobot {
     
     public void init(){     
       mr_pid_peter.setSetpoint(initial_setpoint);
+      spyeye_coder.setPositionConversionFactor(0.03157894736842105263157894736842); //  revolutions  ==>  38:144 1:3 make this degrees   1/360deg  11.3rev
       spyeye_coder = motor.getEncoder();
     }
 
@@ -939,13 +951,19 @@ public class Robot extends TimedRobot {
       return spyeye_coder.getPosition(); 
     }
     
-    public void test(){
-       if(driver.get_but("b")){
-        motor.set(0.4);
+
+
+    public void test(String left_triangle, String right_triangle){
+      if(gunner.get_axis(left_triangle) > 0.05){
+        motor.set(-gunner.get_axis(left_triangle));
+      }
+      else if(gunner.get_axis(right_triangle) > 0.05){
+        motor.set(gunner.get_axis(right_triangle));
       }
       else{
         motor.set(0);
       }
+    
     }
 
     public void talk(){
@@ -960,9 +978,9 @@ public class Robot extends TimedRobot {
     public NetworkTableEntry tx = table.getEntry("tx");
     public NetworkTableEntry ty = table.getEntry("ty");
     public NetworkTableEntry ta = table.getEntry("ta");
-    public double crossroads[] = {0,0};
-    public double le_pixels[] = {0,0};
-    private double le_angles[] = {0,0};
+    // public double crossroads[] = {0,0};
+    // public double le_pixels[] = {0,0};
+    public double le_angles[] = {0,0};
 
     public LimeLight(String _name){
       name = _name;
@@ -977,9 +995,9 @@ public class Robot extends TimedRobot {
     public void test(){
       vogue();
       lights(true);
-      SmartDashboard.putNumber("lucy_cam0", le_pixels[0]);
-      SmartDashboard.putNumber("lucy_cam1", le_pixels[1]);
-      //System.out.println("tests " + table.getEntry("ta").get);
+      SmartDashboard.putNumber("lucy_cam0", le_angles[0]);
+      SmartDashboard.putNumber("lucy_cam1", le_angles[1]);
+    
     }
 
     public void talk(){
@@ -987,15 +1005,14 @@ public class Robot extends TimedRobot {
     }
 
     public void vogue(){
-      le_pixels[0] = tx.getDouble(0.0);
-      le_pixels[1] = ty.getDouble(0.0);
-      //System.out.println("lucy" + le_pixels[0] + " " + le_pixels[1]);
+      le_angles[0] = tx.getDouble(0.0);
+      le_angles[1] = ty.getDouble(0.0);
       
-      crossroads[0] = (1/160) * (le_pixels[0] - 159.5);
-      crossroads[1] = (1/120) * (119.5 - le_pixels[1]);
+      // crossroads[0] = (1/160) * (le_pixels[0] - 159.5);
+      // crossroads[1] = (1/120) * (119.5 - le_pixels[1]);
 
-      le_angles[0] = Math.atan2(1,(2.0 * Math.tan(54/2))/2 * crossroads[0]);
-      le_angles[1] = Math.atan2(1,(2.0 * Math.tan(41/2))/2 * crossroads[1]);
+      // le_angles[0] = Math.atan2(1,(2.0 * Math.tan(54/2))/2 * crossroads[0]);
+      // le_angles[1] = Math.atan2(1,(2.0 * Math.tan(41/2))/2 * crossroads[1]);
     }
 
     public double[] angles(){
@@ -1025,12 +1042,12 @@ public class Robot extends TimedRobot {
     }
 
     public void check(){}
-    public void test(){
-      if(driver.get_but("r_bum")){
+    public void test(String right_bum, String left_bum){
+      if(driver.get_but(right_bum)){
         motor_1.set(0.4);
         motor_2.set(0.4);
       }
-      else if(driver.get_but("l_bum")){
+      else if(driver.get_but(left_bum)){
         motor_1.set(-0.3);
         motor_2.set(-0.3);
       }
@@ -1071,8 +1088,6 @@ public class Robot extends TimedRobot {
     conner.init();
     todd.init();
 
-    lucy.table.getEntry("ledMode").setNumber(2);
-    //lucy.lights(true);
 
     // Agents will announce themselves
     archie.talk();
@@ -1166,11 +1181,11 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
     driver.test();
     gunner.test();
-    izzy.test();
-    sunny.test();
-    conner.test();
-    //todd.test();
-    //elle.test();
+    izzy.test("x", "x");
+    sunny.test("b");
+    conner.test("b");
+    todd.test("r_trig", "l_trig");
+    elle.test("l_bum", "r_bum");
     wally.test(); 
     //nia.check();
     lucy.test();
@@ -1178,7 +1193,7 @@ public class Robot extends TimedRobot {
 
   }
 
-  
+
   
 
 }  // <--- Leave this close brace (Look at those numbers!)
