@@ -241,7 +241,7 @@ public class Robot extends TimedRobot {
       }
       public void fire(){
         if(get_but(firing_cargo_button)){
-          if(conner.RTF() && sunny.RTF() && todd.RTF()){
+          if(conner.RTF() && sunny.RTF()){
             System.out.println("This code is on firreeeeeee!!");
           }
         }
@@ -387,7 +387,6 @@ public class Robot extends TimedRobot {
     }
     public void check(){
       
-      
       if(state.equals("firing")){
         if(eyespy_coder.getPosition() > sir_sam){ //are we done?
           ballroom[0] = false; 
@@ -395,14 +394,16 @@ public class Robot extends TimedRobot {
           state = "sleeping";
           full = false;
           set_motors(0);
+          ready_to_fire = false;
         }
       }
 
-      else if(state.equals("sleeping")){
-        if(izzys_spoon.get()){
+      else if(state.equals("sleeping")){  
+        if(!izzys_spoon.get()){
           if(!ballroom[0]){ //we has no cargo
             munch(big_bow_wow);
             ballroom[0] = true;  // {true, false}
+            ready_to_fire = true;
           }
           else{ // has 1 in ballroom[0]
             munch(lil_bow_wow);
@@ -498,6 +499,9 @@ public class Robot extends TimedRobot {
     private CANSparkMax motor_1 = new CANSparkMax(20, MotorType.kBrushless);
     private CANSparkMax motor_2 = new CANSparkMax(16, MotorType.kBrushless);
     private boolean ready_to_fire = false;
+    // private double sgt_sam; 
+    RelativeEncoder rhino = motor_1.getEncoder();
+    private double lil_rhino = 50; 
 
     public Shooter(String _name){
       name = _name;
@@ -505,13 +509,19 @@ public class Robot extends TimedRobot {
     }
 
     public void check(){
+      ready_to_fire = false;
       if(gunner.prep_takeoff()){
-        motor_1.set(0.4);
-        motor_2.set(-0.4);
+        if(rhino.getVelocity() > lil_rhino){
+          set_motors(0.8);
+          ready_to_fire = true;
+        }
+        else{
+          set_motors(1);
+          ready_to_fire = false;
+        }
       }
       else{
-        motor_1.set(0);
-        motor_2.set(0);
+        set_motors(0);
       }
     }
 
@@ -698,6 +708,8 @@ public class Robot extends TimedRobot {
     private String name;
     private AddressableLED billy_strip;
     private AddressableLEDBuffer billy_buffer;
+
+    private int NUM_LEDS = 24;
     // Store what the last hue of the first pixel is
     private int m_rainbowFirstPixelHue;
     private String state = "rainbow";
@@ -851,7 +863,7 @@ public class Robot extends TimedRobot {
 
     public void init(){
       billy_strip = new AddressableLED(2);
-      billy_buffer = new AddressableLEDBuffer(60); // <-- total # of led
+      billy_buffer = new AddressableLEDBuffer(NUM_LEDS); // <-- total # of led
       billy_strip.setLength(billy_buffer.getLength());
       billy_strip.setData(billy_buffer);
       billy_strip.start();
@@ -1187,13 +1199,13 @@ public class Robot extends TimedRobot {
     izzy.test("x", "x");
     sunny.test("b");
     conner.test("b");
-    //todd.test("r_trig", "l_trig");
+    todd.test("r_trig", "l_trig");
     elle.test("l_bum", "r_bum");
     wally.test(); 
     //nia.check();
     lucy.test();
 
-    todd.set_motors(.3);
+    //todd.set_motors(.3);
 
 
   }
