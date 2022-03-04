@@ -633,6 +633,7 @@ public class Robot extends TimedRobot {
 
   public class SpyLord{
     private String spyroom [][]= {
+        {"None", "None","0.1"},
         {"Moving back", "Stop move", "2.0"},
         {"Starting Sunny", "None", "2.5"},
         {"Starting Conner", "Stop", "4.5"},
@@ -642,7 +643,7 @@ public class Robot extends TimedRobot {
         {"Moving back", "Stop move", "2.0"},
         {"Starting Sunny", "None", "2.5"},
         {"Starting Conner", "Stop", "4.5"},
-        {"Done", "this will never run", "999.9"}
+        {"Done", "this will never run", "999.9"},
       };
     private int autonomous_counter = 0;
     private double lil_sam = 0;
@@ -676,11 +677,11 @@ public class Robot extends TimedRobot {
       switch(task){
         case "Moving back":
           System.out.println("The wheels are moving back!");
-          wally.auto(-.1, 0);
+          wally.auto(-.4, 0);
           break;
         case "Moving forward":
           System.out.println("Going Forward");
-          wally.auto(.1, 0);
+          wally.auto(.4, 0);
           break;
         case "Stop move":
           System.out.println("Stop Moving");
