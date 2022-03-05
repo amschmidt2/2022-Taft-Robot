@@ -92,8 +92,8 @@ public class Robot extends TimedRobot {
   Wheels wally = new Wheels("wally", .7);
   // CargoChief bobby = new CargoChief("bobby");
   Intake izzy = new Intake("izzy", .5);
-  Conveyor conner = new Conveyor("conner", .5);
-  Shooter sunny = new Shooter("sunny", .5);
+  Conveyor conner = new Conveyor("conner", 1);
+  Shooter sunny = new Shooter("sunny", .7);
   Driver driver = new Driver("driver", 0);
   Gunner gunner = new Gunner("gunner", 1);
   NeoPixel nia = new NeoPixel("nia");
@@ -606,17 +606,31 @@ public class Robot extends TimedRobot {
 
   public class SpyLord{
     private String spyroom [][]= {
-        {"None", "None","0.1"},
-        {"Moving back", "Stop move", "2.0"},
+        //auto 2 ball
+        {"Starting Izzy", "None", "0.1"},
+        {"Moving back", "Stop move", "3.0"},
+        {"Stop", "None", "0.1"},
+        {"Moving forward", "Stop move", "1.2"},
+        {"Starting Sunny", "None", "2.5"},
+        {"Starting Conner", "None", "4.5"},
+        {"Moving back", "Stop", "1.0"},
+        {"Done", "this will never run", "999.9"},
+        // 4 ball auto
+        /*{"Starting Izzy", "None", "0.1"},
+        {"Moving back", "Stop move", "3.0"},
+        {"Stop", "None", "0.1"},
+        {"Moving forward", "Stop move", "1.2"},
         {"Starting Sunny", "None", "2.5"},
         {"Starting Conner", "Stop", "4.5"},
-        {"Starting Izzy", "None", "0.1"},
-        {"Moving forward", "Stop move", "5.0"},
-        {"Stop", "None", "0.1"},
+        {"Starting Izzy", "None", "5.0"},
+        {"Left back", "None", "2.0"},
         {"Moving back", "Stop move", "2.0"},
+        {"Moving forward", "None", "2.0"},
+        //{"Right forward", "Stop move", "3.0"},
         {"Starting Sunny", "None", "2.5"},
         {"Starting Conner", "Stop", "4.5"},
         {"Done", "this will never run", "999.9"},
+        */
       };
     private int autonomous_counter = 0;
     private double lil_sam = 0;
@@ -662,20 +676,27 @@ public class Robot extends TimedRobot {
           break;
         case "Starting Sunny":
           System.out.println("Sunny Starting");
-          sunny.set_motors(.6);
+          sunny.set_motors(.78);
           break;
         case "None":
           System.out.println("Nothing");
           break;
         case "Starting Conner":
           System.out.println("Conner Starting");
-          conner.set_motors(.5);
+          conner.set_motors(.7);
           break;
         case "Starting Izzy":
           System.out.println("Izzy Starting");
           izzy.move_out(true);
           izzy.set_motors(.8);
           break;
+        case "Left back":
+          System.out.println("Turning left back");
+          wally.auto(-.4,.3);
+          break;
+        case "Right forward":
+        System.out.println("Turning right forward");
+        wally.auto(.4, .3);
         case "Stop":
           System.out.println("Stopping");
           sunny.set_motors(0);
@@ -958,10 +979,10 @@ public class Robot extends TimedRobot {
     
     public void test(String left_triangle, String right_triangle){
       if(gunner.get_axis(left_triangle) > 0.05){
-        motor.set(-gunner.get_axis(left_triangle) * .3);
+        motor.set(-gunner.get_axis(left_triangle)*0.3 );
       }
       else if(gunner.get_axis(right_triangle) > 0.05){
-        motor.set(gunner.get_axis(right_triangle) * .3);
+        motor.set(gunner.get_axis(right_triangle) *0.3);
       }
       else{
         motor.set(0);
