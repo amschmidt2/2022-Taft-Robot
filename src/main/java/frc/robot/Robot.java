@@ -93,7 +93,7 @@ public class Robot extends TimedRobot {
   // CargoChief bobby = new CargoChief("bobby");
   Intake izzy = new Intake("izzy", .5);
   Conveyor conner = new Conveyor("conner", .5);
-  Shooter sunny = new Shooter("sunny");
+  Shooter sunny = new Shooter("sunny", .5);
   Driver driver = new Driver("driver", 0);
   Gunner gunner = new Gunner("gunner", 1);
   NeoPixel nia = new NeoPixel("nia");
@@ -257,10 +257,8 @@ public class Robot extends TimedRobot {
 
   public class Intake{
     private String name;
-    private String state; //eating, sleeping, vomiting
+    private String state = "sleeping"; //eating, sleeping, vomiting
     private double inhale;
-    // private DoubleSolenoid lil_iz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 1);
-
     private DoubleSolenoid lil_iz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
     private DoubleSolenoid jr_liliz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 2, 3);
     private CANSparkMax motor = new CANSparkMax(9, MotorType.kBrushed);
@@ -270,7 +268,6 @@ public class Robot extends TimedRobot {
       name = _name;
       System.out.println(name + " izzy is on the scene ");
       inhale = _inhale;
-
     }
 
     public void check(){
@@ -285,6 +282,7 @@ public class Robot extends TimedRobot {
           sleep();
         }
       }
+      
       else if(state.equals("sleeping")){
         if(driver.wants_cargo()){
           if(conner.full){
@@ -298,7 +296,6 @@ public class Robot extends TimedRobot {
     }
 
     public void test(String xcited, String tiny_lines){
-      //lil_iz.set(driver.get_but("x"));
       if(driver.get_but(xcited)){
         move_out(true);
       }
@@ -329,7 +326,6 @@ public class Robot extends TimedRobot {
       }
     }
       
-  
     public String get_state(){
       return state;
     } 
@@ -337,17 +333,17 @@ public class Robot extends TimedRobot {
     public void talk(){
       System.out.println(" Hi, I'm " + name + " I reach out and collect cargo");
     }
+
     public void eat(){
       state = "eating";
       set_motors(inhale);
       move_out(true);
-      //Deploy intake turn motor on to take in Cargo
     }
+
     public void sleep(){
       state = "sleeping";
       set_motors(0);
       move_out(false);
-      //Tell motors to bring back izzy and stop moving
     }
   }
 
@@ -372,21 +368,17 @@ public class Robot extends TimedRobot {
     public double lil_bow_wow = 20.0;
     public double sir_bow_wow = 85.0;
 
-    // Front receiver 0
-    // Front emitter 1 
-    // Back emitter 2 
-    // Back reciecer 3
-
     public Conveyor(String _name, double flush){
       name = _name;
       System.out.println(name + " has rolled in ");
       this.flush = flush;
     }
+
     public void init(){
       eyespy_coder = motor_1.getEncoder();
     }
+
     public void check(){
-      
       if(state.equals("firing")){
         if(eyespy_coder.getPosition() > sir_sam){ //are we done?
           ballroom[0] = false; 
@@ -417,12 +409,10 @@ public class Robot extends TimedRobot {
 
       else if(state.equals("munching")){
         if(eyespy_coder.getPosition() > sir_sam){
-          //we need to finish le code le later
           set_motors(0);
           state = "sleeping";
         }
       }
-
     }
 
     public void test(String yoke){
@@ -432,6 +422,7 @@ public class Robot extends TimedRobot {
       else{
         set_motors(0);
       }
+
       SmartDashboard.putNumber("con_enc", eyespy_coder.getPosition());
       //System.out.println(" There should be cargo here " + izzys_spoon.get());
     }
@@ -457,54 +448,37 @@ public class Robot extends TimedRobot {
 
     }
 
-    public void move_piston(String move_dirt){
-      System.out.println(" i am a pistion I go up and down ");
-      if(move_dirt.equals("up")){
-        System.out.println(" Moving up! ");
-      }
-      else if(move_dirt.equals("down")){
-        System.out.println(" Moving down down down! ");
-      }
-      else{
-        System.out.println(" I stopped moving up/down :) haha ");
-      }
-    }
     public void fire(){
       state = "firing";
       sir_sam = eyespy_coder.getPosition() + sir_bow_wow;
       set_motors(flush);
     }
 
-    public void eat(){
-      //Motor turns on, nom nom.
-      //break;
-    }
     public void talk(){
       System.out.println(" Hi, I'm " + name + " I move the cargo ");
     }
+
     public void set_team(){
       color_cargo[0] = team_blue;
-    }
-    public void update_cargo(){
-      //Needs to know that color there is
-      //Add x color to color cargo
-      ballroom[0] = true;
     }
   }
 
 
   public class Shooter{
     private String name;
-    private String state;
+    private String state = "sleeping";
     private CANSparkMax motor_1 = new CANSparkMax(20, MotorType.kBrushless);
     private CANSparkMax motor_2 = new CANSparkMax(16, MotorType.kBrushless);
     private boolean ready_to_fire = false;
     // private double sgt_sam; 
     RelativeEncoder rhino = motor_1.getEncoder();
     private double lil_rhino = 50; 
+    private double max_speed;
+    
 
-    public Shooter(String _name){
+    public Shooter(String _name, double speed){
       name = _name;
+      this.max_speed = speed;
       System.out.println(name + " i am very happy ");
     }
 
@@ -527,7 +501,7 @@ public class Robot extends TimedRobot {
 
     public void test(String apple){
        if(driver.get_but(apple)){
-        set_motors(.8);
+        set_motors(max_speed);
       }
       else{
         set_motors(0);
@@ -565,7 +539,6 @@ public class Robot extends TimedRobot {
     private String name;
     private double max_speed;
     private double max_turn = .7;
-    // make axis here
     private String turn_axis = "l_stick_x";
     private String speed_axis = "l_stick_y";
     private CANSparkMax front_LeftyMotor = new CANSparkMax(13, MotorType.kBrushless);
@@ -599,11 +572,10 @@ public class Robot extends TimedRobot {
         System.out.println(" you know I am top dog! ");
       }
       else{
-      sensitive(driver.control_panel()[0],driver.control_panel()[1]);
+        sensitive(driver.control_panel()[0], driver.control_panel()[1]);
       }
      
     }
-
 
     private void drive(double speed, double turn){
       drivechain.arcadeDrive(-speed, turn);
@@ -614,6 +586,7 @@ public class Robot extends TimedRobot {
       if (raw_turn < 0){
         turn = -turn;
       }
+      
       speed = max_speed * speed;
       turn = max_turn * turn;
 
@@ -748,7 +721,6 @@ public class Robot extends TimedRobot {
         if(funky_counter == 4){
           funky_counter = 0;
         }
-        // set nia's new state
         if(funky_counter == 0){
           state = "rainbow";
         }
@@ -897,14 +869,15 @@ public class Robot extends TimedRobot {
  
   public class Turret{
     private String name;
-    private String state;
+    private String state = "sleeping";
     private CANSparkMax motor = new CANSparkMax(19, MotorType.kBrushless);
     private PIDController mr_pid_peter = new PIDController(kP, kI, kD);
     private boolean ready_to_fire = false;
-    private double lil_louie = -50.0;
-    private double lil_rodger = 50.0;
 
     private double initial_setpoint = 0.0;
+    private double lil_louie = -270.0;
+    private double lil_rodger = 90.0;
+
 
     private static final double kP = 5.0;
     private static final double kI = 0.02;
@@ -925,8 +898,7 @@ public class Robot extends TimedRobot {
     }
 
     public void check(){
-      if(gunner.get_but(gunner.lock_on_button)){
-        // looking at you lucy ;)
+      if(gunner.get_but(gunner.lock_on_button)){ // looking at you lucy ;)
         motor.set(mr_pid_peter.calculate(new_setpoint()));
       }
       else{       
@@ -957,6 +929,7 @@ public class Robot extends TimedRobot {
     public void set_motors(double speed){
       motor.set(speed);
     }
+
      public boolean RTF(){
       return ready_to_fire;
     }
@@ -983,19 +956,16 @@ public class Robot extends TimedRobot {
       return spyeye_coder.getPosition(); 
     }
     
-
-
     public void test(String left_triangle, String right_triangle){
       if(gunner.get_axis(left_triangle) > 0.05){
-        motor.set(-gunner.get_axis(left_triangle));
+        motor.set(-gunner.get_axis(left_triangle) * .3);
       }
       else if(gunner.get_axis(right_triangle) > 0.05){
-        motor.set(gunner.get_axis(right_triangle));
+        motor.set(gunner.get_axis(right_triangle) * .3);
       }
       else{
         motor.set(0);
       }
-    
     }
 
     public void talk(){
@@ -1018,6 +988,7 @@ public class Robot extends TimedRobot {
       name = _name;
       System.out.println(name + " i see all, dun dun dun ");
     }
+
     public void check(){
       if(gunner.lock_on()){
         vogue();
@@ -1053,7 +1024,7 @@ public class Robot extends TimedRobot {
 
     public void lights(boolean on){
       if(on){
-      table.getEntry("ledMode").setNumber(3);
+        table.getEntry("ledMode").setNumber(3);
       }
       else{
         table.getEntry("ledMode").setNumber(1);
@@ -1073,7 +1044,10 @@ public class Robot extends TimedRobot {
       System.out.println(name + " I can get really tall watch! ");
     }
 
-    public void check(){}
+    public void check(){
+      // Sunny wishes for work T^T 
+    }
+
     public void test(String right_bum, String left_bum){
       if(driver.get_but(right_bum)){
         motor_1.set(0.4);
@@ -1092,7 +1066,6 @@ public class Robot extends TimedRobot {
     public void talk(){
       System.out.println(" Hello! " + name + " I can carry the whole robot on the monkey bars!");
     }
-
   }
   
 
@@ -1145,6 +1118,7 @@ public class Robot extends TimedRobot {
     // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + m_autoSelected);
     System.out.println("We are starting autonomous mode");
+    archie.autonomous_counter = 0;
     archie.start();
   }
 
