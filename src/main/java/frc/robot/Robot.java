@@ -91,9 +91,9 @@ public class Robot extends TimedRobot {
   SpyLord archie = new SpyLord("archie");
   Wheels wally = new Wheels("wally", .7);
   // CargoChief bobby = new CargoChief("bobby");
-  Intake izzy = new Intake("izzy", .5);
+  Intake izzy = new Intake("izzy", .7);
   Conveyor conner = new Conveyor("conner", 1);
-  Shooter sunny = new Shooter("sunny", .7);
+  Shooter sunny = new Shooter("sunny", .6);
   Driver driver = new Driver("driver", 0);
   Gunner gunner = new Gunner("gunner", 1);
   NeoPixel nia = new NeoPixel("nia");
@@ -243,6 +243,7 @@ public class Robot extends TimedRobot {
         if(get_but(firing_cargo_button)){
           if(conner.RTF() && sunny.RTF()){
             System.out.println("This code is on firreeeeeee!!");
+            conner.fire();
           }
         }
       }
@@ -472,7 +473,7 @@ public class Robot extends TimedRobot {
     private boolean ready_to_fire = false;
     // private double sgt_sam; 
     RelativeEncoder rhino = motor_1.getEncoder();
-    private double lil_rhino = 50; 
+    private double lil_rhino = 2500; 
     private double max_speed;
     
 
@@ -486,7 +487,7 @@ public class Robot extends TimedRobot {
       ready_to_fire = false;
       if(gunner.prep_takeoff()){
         if(rhino.getVelocity() > lil_rhino){
-          set_motors(0.8);
+          set_motors(max_speed);
           ready_to_fire = true;
         }
         else{
@@ -497,6 +498,8 @@ public class Robot extends TimedRobot {
       else{
         set_motors(0);
       }
+      // System.out.println(conner.ready_to_fire + " :) " + ready_to_fire);
+      //System.out.println(" I should be a movin " + rhino.getVelocity() + ready_to_fire);
     }
 
     public void test(String apple){
@@ -896,13 +899,13 @@ public class Robot extends TimedRobot {
     private boolean ready_to_fire = false;
 
     private double initial_setpoint = 0.0;
-    private double lil_louie = -270.0;
-    private double lil_rodger = 90.0;
+    private double lil_louie = -30.0;
+    private double lil_rodger = 270.0;
 
 
-    private static final double kP = 5.0;
-    private static final double kI = 0.02;
-    private static final double kD = 2.0;
+    private static final double kP = 0.004;
+    private static final double kI = 0.0;
+    private static final double kD = 0.0;
 
     RelativeEncoder spyeye_coder;
 
@@ -914,13 +917,13 @@ public class Robot extends TimedRobot {
     public void init(){     
       mr_pid_peter.setSetpoint(initial_setpoint);
       spyeye_coder = motor.getEncoder();
-      spyeye_coder.setPositionConversionFactor(0.032); //  revolutions  ==>  38:144 1:3 make this degrees   1/360deg  11.3rev
-
+      spyeye_coder.setPositionConversionFactor(1.9); //  revolutions  ==>  38:144 1:3 make this degrees   1/360deg  11.3rev
+      spyeye_coder.setPosition(initial_setpoint);
     }
 
     public void check(){
       if(gunner.get_but(gunner.lock_on_button)){ // looking at you lucy ;)
-        motor.set(mr_pid_peter.calculate(new_setpoint()));
+        motor.set(-mr_pid_peter.calculate(new_setpoint()));
       }
       else{       
         if(lil_louie > spyeye_coder.getPosition()){
@@ -945,6 +948,7 @@ public class Robot extends TimedRobot {
           set_motors(gunner.move_todd());
         }
       }
+      System.out.println(spyeye_coder.getPosition());
     }
 
     public void set_motors(double speed){
@@ -1011,9 +1015,11 @@ public class Robot extends TimedRobot {
     }
 
     public void check(){
-      if(gunner.lock_on()){
+      //if(gunner.lock_on()){
         vogue();
-      }
+      //}
+      SmartDashboard.putNumber("lucy_cam0", le_angles[0]);
+      SmartDashboard.putNumber("lucy_cam1", le_angles[1]);
     }
 
     public void test(){
@@ -1174,6 +1180,7 @@ public class Robot extends TimedRobot {
     // Conveyer (2m/2m, victorsSPX,775)
 
     // having a talk talk, yes yes check check
+
     driver.check();
     gunner.check();
     lucy.check();
@@ -1182,8 +1189,10 @@ public class Robot extends TimedRobot {
     izzy.check();
     todd.check();
     sunny.check();
-    nia.check();
+    // nia.check();
     gunner.fire();
+
+
     // \(^u^ /) hi
     //wally.check(speed=driver.get_axis('l_stick_y'), turn=driver.get_axis('r_stick_x'))
 
