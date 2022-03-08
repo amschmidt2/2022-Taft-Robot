@@ -123,7 +123,8 @@ public class Robot extends TimedRobot {
       public void check(){
         if(rumbling){
           if(timmy.get() > lil_sam){
-            joy.setRumble(RumbleType.kLeftRumble, 0);
+            joy.setRumble(RumbleType.kLeftRumble, 0.0);
+            rumbling = false;
           }
         }
         // Hey, timmy thinks it would be cool if we were able 
@@ -180,7 +181,7 @@ public class Robot extends TimedRobot {
     private String name;
     private XboxController joy;
     private double lil_sam;
-    private boolean rumbling;
+    private boolean rumbling = false;
     private String prep_takeoff_button = "a";
     private String firing_cargo_button = "b";
     private String top_dog_button = "x";
@@ -200,7 +201,8 @@ public class Robot extends TimedRobot {
       public void check(){
          if(rumbling){
           if(timmy.get() > lil_sam){
-            joy.setRumble(RumbleType.kLeftRumble, 0);
+            joy.setRumble(RumbleType.kLeftRumble, 0.0);
+            rumbling = false;
           }
         }
 
@@ -365,8 +367,8 @@ public class Robot extends TimedRobot {
     private boolean ready_to_fire = false;
     DigitalInput izzys_spoon = new DigitalInput(0);
     public double flush;
-    public double big_bow_wow = 40.0;
-    public double lil_bow_wow = 20.0;
+    public double big_bow_wow = 20.0;
+    public double lil_bow_wow = 10.0;
     public double sir_bow_wow = 85.0;
 
     public Conveyor(String _name, double flush){
@@ -608,33 +610,55 @@ public class Robot extends TimedRobot {
 
 
   public class SpyLord{
+    // private String spyroom [][]= {
+    //   //auto 2 ball
+    //   {"Starting Izzy", "None", "0.1"},
+    //   {"Moving back", "Stop move", "3.0"},
+    //   {"Stop", "None", "0.1"},
+    //   {"Moving forward", "Stop move", "1.2"},
+    //   {"Starting Sunny", "None", "2.5"},
+    //   {"Starting Conner", "None", "4.5"},
+    //   {"Moving back", "Stop", "1.0"},
+    //   {"Done", "this will never run", "999.9"},
+    // };
+
     private String spyroom [][]= {
-        //auto 2 ball
-        {"Starting Izzy", "None", "0.1"},
-        {"Moving back", "Stop move", "3.0"},
-        {"Stop", "None", "0.1"},
-        {"Moving forward", "Stop move", "1.2"},
-        {"Starting Sunny", "None", "2.5"},
-        {"Starting Conner", "None", "4.5"},
-        {"Moving back", "Stop", "1.0"},
-        {"Done", "this will never run", "999.9"},
-        // 4 ball auto
-        /*{"Starting Izzy", "None", "0.1"},
-        {"Moving back", "Stop move", "3.0"},
-        {"Stop", "None", "0.1"},
-        {"Moving forward", "Stop move", "1.2"},
-        {"Starting Sunny", "None", "2.5"},
-        {"Starting Conner", "Stop", "4.5"},
-        {"Starting Izzy", "None", "5.0"},
-        {"Left back", "None", "2.0"},
-        {"Moving back", "Stop move", "2.0"},
-        {"Moving forward", "None", "2.0"},
-        //{"Right forward", "Stop move", "3.0"},
-        {"Starting Sunny", "None", "2.5"},
-        {"Starting Conner", "Stop", "4.5"},
-        {"Done", "this will never run", "999.9"},
-        */
-      };
+      // 4 ball auto
+      {"Starting Izzy", "None", "0.1"},
+      {"Moving back", "Stop move", "3.0"},
+      {"Stop", "None", "0.1"},
+      {"Moving forward", "Stop move", "1.2"},
+      {"Starting Sunny Close", "None", "2.5"},
+      {"Starting Conner", "Stop", "4.5"},
+      {"Starting Izzy", "None", "5.0"},
+      {"Left back", "None", "2.0"},
+      {"Moving back", "Stop move", "2.0"},
+      {"Moving forward", "None", "2.0"},
+      {"Right forward", "Stop move", "3.0"},
+      {"Starting Sunny Close", "None", "2.5"},
+      {"Starting Conner", "Stop", "4.5"},
+      {"Done", "this will never run", "999.9"},
+    };
+
+    // private String spyroom [][]= {
+    //   // 4 ball auto testing
+    //   {"Starting Izzy", "None", "0.1"},
+    //   {"Moving back", "Stop move", "3.0"},
+    //   {"Stop", "None", "0.1"},
+    //   {"Moving forward", "Stop move", "1.2"},
+    //   {"Starting Sunny Close", "None", "2.5"},
+    //   {"Starting Conner", "Stop", "4.5"},
+    //   {"Starting Izzy", "None", "5.0"},
+    //   {"Left back", "None", "2.0"},
+    //   {"Moving back", "Stop move", "2.0"},
+    //   {"Moving forward", "None", "2.0"},
+    //   {"Right forward", "Stop move", "3.0"},
+    //   {"Starting Sunny Far", "None", "2.5"},
+    //   {"Starting Conner", "Stop", "4.5"},
+    //   {"Done", "this will never run", "999.9"},
+    // };
+
+
     private int autonomous_counter = 0;
     private double lil_sam = 0;
     private String name;
@@ -677,8 +701,8 @@ public class Robot extends TimedRobot {
           System.out.println("Stop Moving");
           wally.auto(0, 0);
           break;
-        case "Starting Sunny":
-          System.out.println("Sunny Starting");
+        case "Starting Sunny Close":
+          System.out.println("Sunny Starting Close");
           sunny.set_motors(.78);
           break;
         case "None":
@@ -698,8 +722,9 @@ public class Robot extends TimedRobot {
           wally.auto(-.4,.3);
           break;
         case "Right forward":
-        System.out.println("Turning right forward");
-        wally.auto(.4, .3);
+          System.out.println("Turning right forward");
+          wally.auto(.4, .3);
+          break;
         case "Stop":
           System.out.println("Stopping");
           sunny.set_motors(0);
@@ -903,7 +928,7 @@ public class Robot extends TimedRobot {
     private double lil_rodger = 270.0;
 
 
-    private static final double kP = 0.004;
+    private static final double kP = -0.004;
     private static final double kI = 0.0;
     private static final double kD = 0.0;
 
@@ -923,7 +948,7 @@ public class Robot extends TimedRobot {
 
     public void check(){
       if(gunner.get_but(gunner.lock_on_button)){ // looking at you lucy ;)
-        motor.set(-mr_pid_peter.calculate(new_setpoint()));
+        motor.set(mr_pid_peter.calculate(new_setpoint()));
       }
       else{       
         if(lil_louie > spyeye_coder.getPosition()){
@@ -975,10 +1000,11 @@ public class Robot extends TimedRobot {
       //get new setpoint from lucy and check for out of range
       double desired_pos = spyeye_coder.getPosition() + lucy.angles()[0];
      
-      if(lil_louie < desired_pos || lil_rodger > desired_pos) {
-        return desired_pos;
-      }
-      return spyeye_coder.getPosition(); 
+      // if(lil_louie < desired_pos || lil_rodger > desired_pos) {
+      //   return desired_pos;
+      // }
+      // return spyeye_coder.getPosition(); 
+      return desired_pos;
     }
     
     public void test(String left_triangle, String right_triangle){
@@ -1230,11 +1256,13 @@ public class Robot extends TimedRobot {
     lucy.test();
 
     //todd.set_motors(.3);
-
+    
+    
 
   }
 
 
   
+ 
 
 }  // <--- Leave this close brace (Look at those numbers!)
