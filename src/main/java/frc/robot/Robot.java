@@ -616,7 +616,7 @@ public class Robot extends TimedRobot {
     //   {"Moving back", "Stop move", "3.0"},
     //   {"Stop", "None", "0.1"},
     //   {"Moving forward", "Stop move", "1.2"},
-    //   {"Starting Sunny", "None", "2.5"},
+    //   {"Starting Sunny Close", "None", "2.5"},
     //   {"Starting Conner", "None", "4.5"},
     //   {"Moving back", "Stop", "1.0"},
     //   {"Done", "this will never run", "999.9"},
@@ -632,31 +632,13 @@ public class Robot extends TimedRobot {
       {"Starting Conner", "Stop", "4.5"},
       {"Starting Izzy", "None", "5.0"},
       {"Left back", "None", "2.0"},
-      {"Moving back", "Stop move", "2.0"},
+      {"Moving back fast", "Stop move", "2.0"},
       {"Moving forward", "None", "2.0"},
       {"Right forward", "Stop move", "3.0"},
       {"Starting Sunny Close", "None", "2.5"},
       {"Starting Conner", "Stop", "4.5"},
       {"Done", "this will never run", "999.9"},
     };
-
-    // private String spyroom [][]= {
-    //   // 4 ball auto testing
-    //   {"Starting Izzy", "None", "0.1"},
-    //   {"Moving back", "Stop move", "3.0"},
-    //   {"Stop", "None", "0.1"},
-    //   {"Moving forward", "Stop move", "1.2"},
-    //   {"Starting Sunny Close", "None", "2.5"},
-    //   {"Starting Conner", "Stop", "4.5"},
-    //   {"Starting Izzy", "None", "5.0"},
-    //   {"Left back", "None", "2.0"},
-    //   {"Moving back", "Stop move", "2.0"},
-    //   {"Moving forward", "None", "2.0"},
-    //   {"Right forward", "Stop move", "3.0"},
-    //   {"Starting Sunny Far", "None", "2.5"},
-    //   {"Starting Conner", "Stop", "4.5"},
-    //   {"Done", "this will never run", "999.9"},
-    // };
 
 
     private int autonomous_counter = 0;
@@ -693,6 +675,10 @@ public class Robot extends TimedRobot {
           System.out.println("The wheels are moving back!");
           wally.auto(-.4, 0);
           break;
+        case "Moving back fast":
+          System.out.println("Going Back Fast");
+          wally.auto(-.4, 0);
+          break;
         case "Moving forward":
           System.out.println("Going Forward");
           wally.auto(.4, 0);
@@ -704,6 +690,10 @@ public class Robot extends TimedRobot {
         case "Starting Sunny Close":
           System.out.println("Sunny Starting Close");
           sunny.set_motors(.78);
+          break;
+        case "Starting Sunny Far":
+          System.out.println("Sunny Starting Far");
+          sunny.set_motors(1);
           break;
         case "None":
           System.out.println("Nothing");
