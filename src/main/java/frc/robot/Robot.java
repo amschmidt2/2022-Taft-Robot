@@ -249,11 +249,16 @@ public class Robot extends TimedRobot {
           }
         }
       }
+
       public boolean lock_on(){
         return get_but(lock_on_button);
       }
+
       public double move_todd(){
-        return get_axis(move_todd_button);
+        if(Math.abs(get_axis(move_todd_button)) < 0.05){
+          return 0; 
+        } 
+        return get_axis(move_todd_button) * 0.5;
       }
     }
 
@@ -954,13 +959,13 @@ public class Robot extends TimedRobot {
     public void init(){     
       mr_pid_peter.setSetpoint(initial_setpoint);
       spyeye_coder = motor.getEncoder();
-      spyeye_coder.setPositionConversionFactor(1.9); //  revolutions  ==>  38:144 1:3 make this degrees   1/360deg  11.3rev
+      spyeye_coder.setPositionConversionFactor(1.9); //  revolutions  -->  38:144 1:3 make this degrees   1/360deg  11.3rev
       spyeye_coder.setPosition(initial_setpoint);
     }
 
     public void check(){
       if(gunner.get_but(gunner.lock_on_button)){ // looking at you lucy ;)
-        motor.set(mr_pid_peter.calculate(new_setpoint()));
+        motor.set(mr_pid_peter.calculate(spyeye_coder.getPosition(), new_setpoint()));
       }
       else{       
         if(lil_louie > spyeye_coder.getPosition()){
