@@ -174,6 +174,9 @@ public class Robot extends TimedRobot {
       public boolean color(){
         return get_but(colors_button);
       }
+      public void rez(){
+        SmartDashboard.putBoolean(name, rumbling);
+      }
     }
 
 
@@ -259,6 +262,10 @@ public class Robot extends TimedRobot {
           return 0; 
         } 
         return get_axis(move_todd_button) * 0.5;
+      }
+
+      public void rez(){
+        SmartDashboard.putBoolean(name, rumbling);
       }
     }
 
@@ -352,6 +359,10 @@ public class Robot extends TimedRobot {
       state = "sleeping";
       set_motors(0);
       move_out(false);
+    }
+
+    public void rez(){
+      SmartDashboard.putString(name, state);
     }
   }
 
@@ -469,6 +480,9 @@ public class Robot extends TimedRobot {
     public void set_team(){
       color_cargo[0] = team_blue;
     }
+    public void rez(){
+      SmartDashboard.putString(name, state);
+    }
   }
 
 
@@ -541,6 +555,9 @@ public class Robot extends TimedRobot {
 
     public void talk(){
       System.out.println(" Hi, I'm " + name + " I get rid of cargo, pew pew, yuck!");
+    }
+    public void rez(){
+      SmartDashboard.putString(name, state);
     }
   }
 
@@ -929,6 +946,10 @@ public class Robot extends TimedRobot {
     public void talk(){
       System.out.println(" Hi, I'm " + name + " I am the color master and can tell you different agents moods");
     }
+
+    public void rez(){
+      SmartDashboard.putString(name, state);
+    }
    
   }
 
@@ -1038,6 +1059,9 @@ public class Robot extends TimedRobot {
 
     public void talk(){
       System.out.println(" Hi, I'm " + name + " I get rid of cargo, swoosh pew, bye bye!");
+    }
+    public void rez(){
+      SmartDashboard.putString(name, state);
     }
   }
 
@@ -1235,6 +1259,15 @@ public class Robot extends TimedRobot {
     // nia.check();
     gunner.fire();
 
+    driver.rez();
+    gunner.rez();
+    // lucy.rez();
+    // wally.rez();
+    conner.rez();
+    izzy.rez();
+    todd.rez();
+    sunny.rez();
+    // nia.rez();
 
     // \(^u^ /) hi
     //wally.check(speed=driver.get_axis('l_stick_y'), turn=driver.get_axis('r_stick_x'))
