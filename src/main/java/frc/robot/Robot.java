@@ -644,41 +644,39 @@ public class Robot extends TimedRobot {
     //   {"Done", "this will never run", "999.9"},
     // };
 
-    // private String spyroom [][]= {
-    //   // 4 ball auto
-    //   {"Starting Izzy", "None", "0.1"},
-    //   {"Moving back", "Stop move", "3.0"},
-    //   {"Stop", "None", "0.1"},
-    //   {"Moving forward", "Stop move", "1.2"},
-    //   {"Starting Sunny Close", "None", "2.8"},
-    //   {"Starting Conner", "Stop", "2.5"},
-    //   {"Starting Izzy", "None", "4.0"},
-    //   {"Left back", "None", "1.5"},
-    //   {"Moving back fast", "Stop move", "3.0"},
-    //   {"Moving forward", "None", "2.0"},
-    //   {"Right forward", "Stop move", "2.0"},
-    //   {"Starting Sunny Close", "None", "2.5"},
-    //   {"Starting Conner", "Stop", "4.5"},
-    //   {"Done", "this will never run", "999.9"},
-    // };
-
     private String spyroom [][]= {
-      // 4 ball auto
-      {"Starting Izzy", "None", "0.01"},
-      {"Starting Sunny Close", "None", "0.01"},
-      {"Moving back", "Stop move", "1.2"},
+      // 3 ball auto
+      {"Starting Izzy", "None", "0.1"},
+      {"Moving back", "Stop move", "3.0"},
+      {"Stop", "None", "0.1"},
       {"Moving forward", "Stop move", "1.2"},
-      {"Starting Conner", "Stop", "2.0"},
-      {"Left back", "None", "1.3"},
-      {"Starting Sunny Close", "None", "0.01"},
-      {"Starting Izzy", "None", "0.01"},
-      {"Moving back fast", "Stop move", "2.7"},
-      {"Starting Izzy", "None", "0.01"},
-      {"Moving forward fast", "None", "1.3"},
-      {"Right forward", "Stop move", "1.5"},
-      {"Starting Conner", "Stop", "2.0"},
+      {"Starting Sunny Close", "None", "2.8"},
+      {"Starting Conner", "Stop", "2.5"},
+      {"Right back", "Stop move", "2.0"},
+      {"Moving back", "Stop move", "3.0"},
+      {"Left back", "Stop move", "2.0"},
+      {"Starting Sunny", "none", "3.0"},
+      {"Starting Conner", "Stop", "3.0"},
       {"Done", "this will never run", "999.9"},
     };
+
+    // private String spyroom [][]= {
+    //   // 4 ball auto
+    //   {"Starting Izzy", "None", "0.01"},
+    //   {"Starting Sunny Close", "None", "0.01"},
+    //   {"Moving back fast", "Stop move", "1.2"},
+    //   {"Moving forward", "Stop move", "1.2"},
+    //   {"Starting Conner", "Stop", "2.0"},
+    //   {"Left back", "None", "1.3"},
+    //   {"Starting Sunny Close", "None", "0.01"},
+    //   {"Starting Izzy", "None", "0.01"},
+    //   {"Moving back fast", "Stop move", "2.2"},
+    //   {"Moving back", "Stop move", "0.5"},
+    //   {"Moving forward fast", "None", "1.3"},
+    //   {"Right forward", "Stop move", "1.5"},
+    //   {"Starting Conner", "Stop", "2.0"},
+    //   {"Done", "this will never run", "999.9"},
+    // };
 
     private int autonomous_counter = 0;
     private double lil_sam = 0;
@@ -712,7 +710,7 @@ public class Robot extends TimedRobot {
       switch(task){
         case "Moving back":
           System.out.println("The wheels are moving back!");
-          wally.auto(-.7, 0);
+          wally.auto(-.5, 0);
           break;
         case "Moving back fast":
           System.out.println("Going Back Fast");
@@ -755,6 +753,9 @@ public class Robot extends TimedRobot {
           System.out.println("Turning left back");
           wally.auto(-.4,.3);
           break;
+        case "Right back":
+          System.out.println("Turning right back");
+          wally.auto(.4, -.3);
         case "Right forward":
           System.out.println("Turning right forward");
           wally.auto(.4, -.27);
