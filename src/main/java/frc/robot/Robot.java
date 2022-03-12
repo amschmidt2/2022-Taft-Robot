@@ -488,6 +488,8 @@ public class Robot extends TimedRobot {
     public void rez(){
       SmartDashboard.putString(name, state);
       SmartDashboard.putBoolean("conner.full", full);
+      SmartDashboard.putNumber("conner_temp", motor_1.getMotorTemperature());
+      SmartDashboard.putNumber("conner_2temp", motor_2.getMotorTemperature());
     }
   }
 
@@ -867,7 +869,7 @@ public class Robot extends TimedRobot {
             billy_buffer.setRGB(i, 0, 0 ,0);
           }
         } 
-        else if(i < 12){
+        else if(i < 11){
           if(conner.get_state().equals("sleeping")){
             billy_buffer.setRGB(i, 50, 0 ,0);
           }
@@ -884,7 +886,7 @@ public class Robot extends TimedRobot {
             billy_buffer.setRGB(i, 0, 0, 0);
           }
         }  
-        else if(i < 18){
+        else if(i < 16){
           if(todd.get_state().equals("sleeping")){
             billy_buffer.setRGB(i, 50, 0 ,0);
           }
@@ -1143,7 +1145,7 @@ public class Robot extends TimedRobot {
     }
 
     public void check(){
-      // Sunny wishes for work T^T 
+      // elle wishes for work T^T 
     }
 
     public void test(String right_bum, String left_bum){
@@ -1302,7 +1304,7 @@ public class Robot extends TimedRobot {
     gunner.test();
     izzy.test("x", "x");
     sunny.test("r_trig");
-    conner.test("b", "ttt");
+   // conner.test("b", "ttt");
     //todd.test("r_trig", "l_trig");  //gunner
     elle.test("l_bum", "r_bum");
     wally.test(); 
