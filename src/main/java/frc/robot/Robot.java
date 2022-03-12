@@ -92,7 +92,7 @@ public class Robot extends TimedRobot {
   Wheels wally = new Wheels("wally", .7);
   // CargoChief bobby = new CargoChief("bobby");
   Intake izzy = new Intake("izzy", 1);
-  Conveyor conner = new Conveyor("conner", 1);
+  Conveyor conner = new Conveyor("conner", .7);
   Shooter sunny = new Shooter("sunny", .6);
   Driver driver = new Driver("driver", 0);
   Gunner gunner = new Gunner("gunner", 1);
@@ -124,6 +124,7 @@ public class Robot extends TimedRobot {
         if(rumbling){
           if(timmy.get() > lil_sam){
             joy.setRumble(RumbleType.kLeftRumble, 0.0);
+            System.out.println("You should stop rumbling");
             rumbling = false;
           }
         }
@@ -158,6 +159,7 @@ public class Robot extends TimedRobot {
         joy.setRumble(RumbleType.kLeftRumble, 1);
         lil_sam = timmy.get() + lil_tim;
         rumbling = true;
+        System.out.println("you should be rumbling");
       }
       public boolean get_but(String but_name){
         return joy.getRawButton(find_but(but_name));
@@ -258,7 +260,7 @@ public class Robot extends TimedRobot {
       }
 
       public double move_todd(){
-        if(Math.abs(get_axis(move_todd_button)) < 0.05){
+        if(Math.abs(get_axis(move_todd_button)) < 0.1){
           return 0; 
         } 
         return get_axis(move_todd_button) * 0.5;
@@ -434,9 +436,12 @@ public class Robot extends TimedRobot {
       }
     }
 
-    public void test(String yoke){
+    public void test(String yoke, String tf){
       if(driver.get_but(yoke)){
         set_motors(.4);
+      }
+      else if(driver.get_but(tf)){
+        set_motors(-.4);
       }
       else{
         set_motors(0);
@@ -482,6 +487,7 @@ public class Robot extends TimedRobot {
     }
     public void rez(){
       SmartDashboard.putString(name, state);
+      SmartDashboard.putBoolean("conner.full", full);
     }
   }
 
@@ -524,12 +530,8 @@ public class Robot extends TimedRobot {
     }
 
     public void test(String apple){
-       if(driver.get_but(apple)){
-        set_motors(max_speed);
-      }
-      else{
-        set_motors(0);
-      }
+      set_motors(gunner.get_axis(apple));
+      rez();
     }
 
     public void set_motors(double speed){
@@ -558,6 +560,7 @@ public class Robot extends TimedRobot {
     }
     public void rez(){
       SmartDashboard.putString(name, state);
+      SmartDashboard.putNumber("sir_rhino", rhino.getVelocity());
     }
   }
 
@@ -835,7 +838,7 @@ public class Robot extends TimedRobot {
       }
 
       if(state.equals("sleeping")){ //3
-        sleep();
+        rainbow();
       }
 
       billy_strip.setData(billy_buffer);
@@ -936,7 +939,7 @@ public class Robot extends TimedRobot {
 
 
     public void init(){
-      billy_strip = new AddressableLED(2);
+      billy_strip = new AddressableLED(0);
       billy_buffer = new AddressableLEDBuffer(NUM_LEDS); // <-- total # of led
       billy_strip.setLength(billy_buffer.getLength());
       billy_strip.setData(billy_buffer);
@@ -966,7 +969,7 @@ public class Robot extends TimedRobot {
     private double lil_rodger = 270.0;
 
 
-    private static final double kP = -0.004;
+    private static final double kP = 0.04;
     private static final double kI = 0.0;
     private static final double kD = 0.0;
 
@@ -1011,7 +1014,7 @@ public class Robot extends TimedRobot {
           set_motors(gunner.move_todd());
         }
       }
-      System.out.println(spyeye_coder.getPosition());
+     // System.out.println(spyeye_coder.getPosition());
     }
 
     public void set_motors(double speed){
@@ -1062,6 +1065,7 @@ public class Robot extends TimedRobot {
     }
     public void rez(){
       SmartDashboard.putString(name, state);
+      SmartDashboard.putNumber("peddle", spyeye_coder.getPosition());
     }
   }
 
@@ -1256,7 +1260,7 @@ public class Robot extends TimedRobot {
     izzy.check();
     todd.check();
     sunny.check();
-    // nia.check();
+    nia.check();
     gunner.fire();
 
     driver.rez();
@@ -1267,7 +1271,7 @@ public class Robot extends TimedRobot {
     izzy.rez();
     todd.rez();
     sunny.rez();
-    // nia.rez();
+    nia.rez();
 
     // \(^u^ /) hi
     //wally.check(speed=driver.get_axis('l_stick_y'), turn=driver.get_axis('r_stick_x'))
@@ -1297,9 +1301,9 @@ public class Robot extends TimedRobot {
     driver.test();
     gunner.test();
     izzy.test("x", "x");
-    sunny.test("b");
-    conner.test("b");
-    todd.test("r_trig", "l_trig");
+    sunny.test("r_trig");
+    conner.test("b", "ttt");
+    //todd.test("r_trig", "l_trig");  //gunner
     elle.test("l_bum", "r_bum");
     wally.test(); 
     nia.check();
