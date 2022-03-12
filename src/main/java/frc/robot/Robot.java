@@ -121,13 +121,13 @@ public class Robot extends TimedRobot {
         System.out.println(name + " coming in hot ");
       }
       public void check(){
-        if(rumbling){
-          if(timmy.get() > lil_sam){
-            joy.setRumble(RumbleType.kLeftRumble, 0.0);
-            System.out.println("You should stop rumbling");
-            rumbling = false;
-          }
-        }
+        // if(rumbling){
+        //   if(timmy.get() > lil_sam){
+        //     joy.setRumble(RumbleType.kLeftRumble, 0.0);
+        //     System.out.println("You should stop rumbling");
+        //     rumbling = false;
+        //   }
+        // }
         // Hey, timmy thinks it would be cool if we were able 
         // to count x amount of seconds then make the controller rumble
         // signalling that the driver/gunner should start the climbing procces
@@ -155,12 +155,12 @@ public class Robot extends TimedRobot {
         return stick_control;
       }
 
-      public void rumble(double lil_tim){
-        joy.setRumble(RumbleType.kLeftRumble, 1);
-        lil_sam = timmy.get() + lil_tim;
-        rumbling = true;
-        System.out.println("you should be rumbling");
-      }
+      // public void rumble(double lil_tim){
+      //   joy.setRumble(RumbleType.kLeftRumble, 1);
+      //   lil_sam = timmy.get() + lil_tim;
+      //   rumbling = true;
+      //   System.out.println("you should be rumbling");
+      // }
       public boolean get_but(String but_name){
         return joy.getRawButton(find_but(but_name));
       }
@@ -204,12 +204,12 @@ public class Robot extends TimedRobot {
       }
 
       public void check(){
-         if(rumbling){
-          if(timmy.get() > lil_sam){
-            joy.setRumble(RumbleType.kLeftRumble, 0.0);
-            rumbling = false;
-          }
-        }
+        // if(rumbling){
+        //   if(timmy.get() > lil_sam){
+        //     joy.setRumble(RumbleType.kLeftRumble, 0.0);
+        //     rumbling = false;
+        //   }
+        // }
 
         top_dog = get_but(top_dog_button);
 
@@ -232,11 +232,11 @@ public class Robot extends TimedRobot {
       System.out.println(" Hi, I'm " + name + " I work with the weapons, pew pew! ");
       }
       
-      public void rumble(double lil_tim){
-      joy.setRumble(RumbleType.kLeftRumble, 1);
-      lil_sam = timmy.get() + lil_tim;
-      rumbling = true;
-      }
+      // public void rumble(double lil_tim){
+      // joy.setRumble(RumbleType.kLeftRumble, 1);
+      // lil_sam = timmy.get() + lil_tim;
+      // rumbling = true;
+      // }
       public boolean get_but(String Stur_but){
         return joy.getRawButton(find_but(Stur_but));
       }
@@ -303,7 +303,7 @@ public class Robot extends TimedRobot {
       else if(state.equals("sleeping")){
         if(driver.wants_cargo()){
           if(conner.full){
-            driver.rumble(0.25);
+           // driver.rumble(0.25);
           }
           else{
             eat();
@@ -422,8 +422,8 @@ public class Robot extends TimedRobot {
             munch(lil_bow_wow);
             ballroom[1] = true;  // {true, true}  
             full = true;
-            driver.rumble(1.0);
-            gunner.rumble(1.0); 
+           // driver.rumble(1.0);
+           // gunner.rumble(1.0); 
           }
         }
       }
@@ -856,7 +856,7 @@ public class Robot extends TimedRobot {
 
     public void see(){
       for(int i = 0; i < billy_buffer.getLength(); i++){
-        if(i < 10){
+        if(i < 6){
           if(izzy.get_state().equals("sleeping")){
             billy_buffer.setRGB(i, 50, 0, 0);
           }
@@ -867,7 +867,7 @@ public class Robot extends TimedRobot {
             billy_buffer.setRGB(i, 0, 0 ,0);
           }
         } 
-        else if(i < 20){
+        else if(i < 12){
           if(conner.get_state().equals("sleeping")){
             billy_buffer.setRGB(i, 50, 0 ,0);
           }
@@ -884,7 +884,7 @@ public class Robot extends TimedRobot {
             billy_buffer.setRGB(i, 0, 0, 0);
           }
         }  
-        else if(i < 30){
+        else if(i < 18){
           if(todd.get_state().equals("sleeping")){
             billy_buffer.setRGB(i, 50, 0 ,0);
           }
@@ -895,7 +895,7 @@ public class Robot extends TimedRobot {
             billy_buffer.setRGB(i, 0, 0, 0);
           }
         }  
-        else if(i < 40){
+        else if(i < 24){
           if(sunny.get_state().equals("sleeping")){
             billy_buffer.setRGB(i, 50, 0, 0);
           }
@@ -994,7 +994,7 @@ public class Robot extends TimedRobot {
       else{       
         if(lil_louie > spyeye_coder.getPosition()){
           if(gunner.move_todd() < 0){
-            gunner.rumble(.25);
+            //gunner.rumble(.25);
             motor.set(0); 
           }
           else{
@@ -1003,7 +1003,7 @@ public class Robot extends TimedRobot {
         }
         else if(spyeye_coder.getPosition() > lil_rodger){
           if(gunner.move_todd() > 0){
-            gunner.rumble(.25);
+           // gunner.rumble(.25);
             motor.set(0);
           }
           else{
