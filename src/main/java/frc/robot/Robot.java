@@ -1313,7 +1313,9 @@ public class Robot extends TimedRobot {
     todd.check();
     sunny.check();
     nia.check();
+    elle.check();
     gunner.fire();
+    
 
     driver.rez();
     gunner.rez();
