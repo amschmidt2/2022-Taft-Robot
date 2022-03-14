@@ -44,6 +44,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 // private VictorSPX izzys_motor = new VictorSPX(6);
 // izzys_motor.set(ControlMode.PercentOutput, .3);
 
+
 public class Robot extends TimedRobot {
   //Create motors and controllers and stuff
   // private final XboxController joy0 = new XboxController(0);
@@ -110,10 +111,13 @@ public class Robot extends TimedRobot {
     private String wants_cargo_button = "x";
     private String no_cargo_button = "y";
     private String colors_button = "ttt";
+    private String elle_up = "r_bum";
+    private String elle_down = "l_bum";
     private double lil_sam;
     private boolean rumbling = false;
     private String control_stick[] = {"l_stick_y", "l_stick_x"};  // speed, turn
     private double stick_control[] = {0.0, 0.0};
+
 
     public Driver(String _name, int port_num){
         name = _name;
@@ -193,6 +197,7 @@ public class Robot extends TimedRobot {
     private String lock_on_button = "y";
     private boolean top_dog = false;
     private String move_todd_button = "l_stick_x";
+    private String lilprep_takeoff_button = "x";
     
     
     
@@ -246,9 +251,12 @@ public class Robot extends TimedRobot {
       public boolean prep_takeoff(){
         return get_but(prep_takeoff_button);
       }
+      public boolean lilprep_takeoff(){
+        return get_but(lilprep_takeoff_button);
+      }
       public void fire(){
         if(get_but(firing_cargo_button)){
-          if(conner.RTF() && sunny.RTF()){
+          if(sunny.RTF()){
             System.out.println("This code is on firreeeeeee!!");
             conner.fire();
           }
@@ -289,10 +297,7 @@ public class Robot extends TimedRobot {
 
     public void check(){
       if(state.equals("eating")){
-        if(conner.full){
-          sleep();
-        }
-        else if(driver.no_cargo()){
+        if(driver.no_cargo()){
           sleep();
         }
         else if(gunner.is_top_dog()){
@@ -302,12 +307,7 @@ public class Robot extends TimedRobot {
       
       else if(state.equals("sleeping")){
         if(driver.wants_cargo()){
-          if(conner.full){
-           // driver.rumble(0.25);
-          }
-          else{
-            eat();
-          }
+          eat();
         }
       }
     }
@@ -376,11 +376,13 @@ public class Robot extends TimedRobot {
 
     //private double lil_sam;
     private double sir_sam;
+    private int concon = 0;
+    private boolean concons_flag = false;
 
     private boolean ballroom[] = {false, false};
     private boolean color_cargo[] = {false, true};
-    private CANSparkMax motor_1 = new CANSparkMax(14, MotorType.kBrushless);
-    private CANSparkMax motor_2 = new CANSparkMax(3, MotorType.kBrushless);
+    private CANSparkMax motor_1 = new CANSparkMax(4, MotorType.kBrushless);
+    //private CANSparkMax motor_2 = new CANSparkMax(3, MotorType.kBrushless);
     RelativeEncoder eyespy_coder;
     private boolean ready_to_fire = false;
     DigitalInput izzys_spoon = new DigitalInput(0);
@@ -431,9 +433,29 @@ public class Robot extends TimedRobot {
       else if(state.equals("munching")){
         if(eyespy_coder.getPosition() > sir_sam){
           set_motors(0);
-          state = "sleeping";
+          state = "burping";
         }
       }
+
+      else if(state.equals("burping")){
+        // wait for motor to stop x num of times
+        if(Math.abs(eyespy_coder.getVelocity()) < 0.1 || concons_flag){ 
+          concon++;   
+          if(concon > 12){
+            // move back for x num of time quanta
+            set_motors(-.2);
+            if(concon < 24){
+              // return to other state and clean up
+              concon = 0;
+              set_motors(0);
+              state = "sleeping";
+            }
+          }
+        }
+      }
+
+      
+      
     }
 
     public void test(String yoke, String tf){
@@ -453,7 +475,7 @@ public class Robot extends TimedRobot {
 
     public void set_motors(double speed){
       motor_1.set(speed);
-      motor_2.set(-speed);
+      //motor_2.set(-speed);
     }
 
      public boolean RTF(){
@@ -489,7 +511,7 @@ public class Robot extends TimedRobot {
       SmartDashboard.putString(name, state);
       SmartDashboard.putBoolean("conner.full", full);
       SmartDashboard.putNumber("conner_temp", motor_1.getMotorTemperature());
-      SmartDashboard.putNumber("conner_2temp", motor_2.getMotorTemperature());
+      //SmartDashboard.putNumber("conner_2temp", motor_2.getMotorTemperature());
     }
   }
 
@@ -502,9 +524,14 @@ public class Robot extends TimedRobot {
     private boolean ready_to_fire = false;
     // private double sgt_sam; 
     RelativeEncoder rhino = motor_1.getEncoder();
-    private double lil_rhino = 2500; 
+    private double lil_rhino = 1397; 
     private double max_speed;
-    
+
+    private PIDController sir_pid_peter = new PIDController(kP, kI, kD);
+    private static final double kP = 0.04;
+    private static final double kI = 0.0;
+    private static final double kD = 0.0;
+
 
     public Shooter(String _name, double speed){
       name = _name;
@@ -514,7 +541,7 @@ public class Robot extends TimedRobot {
 
     public void check(){
       ready_to_fire = false;
-      if(gunner.prep_takeoff()){
+      if(gunner.lilprep_takeoff()){
         if(rhino.getVelocity() > lil_rhino){
           set_motors(max_speed);
           ready_to_fire = true;
@@ -523,6 +550,10 @@ public class Robot extends TimedRobot {
           set_motors(1);
           ready_to_fire = false;
         }
+      }
+      else if(gunner.prep_takeoff()){
+        //motor.set(mr_pid_peter.calculate(spyeye_coder.getPosition(), new_setpoint()));
+        set_motors(sir_pid_peter.calculate(rhino.getVelocity(), new_setpoint()));
       }
       else{
         set_motors(0);
@@ -555,6 +586,11 @@ public class Robot extends TimedRobot {
 
     public void fire(){
       state = "firing";
+      return;
+    }
+
+    public double new_setpoint(){
+      return -55.1 * lucy.le_angles[1] + 3862;
     }
 
     public void talk(){
@@ -963,14 +999,14 @@ public class Robot extends TimedRobot {
     private String name;
     private String state = "sleeping";
     private CANSparkMax motor = new CANSparkMax(19, MotorType.kBrushless);
-    private PIDController mr_pid_peter = new PIDController(kP, kI, kD);
+    
     private boolean ready_to_fire = false;
 
     private double initial_setpoint = 0.0;
     private double lil_louie = -30.0;
     private double lil_rodger = 270.0;
 
-
+    private PIDController mr_pid_peter = new PIDController(kP, kI, kD);
     private static final double kP = 0.04;
     private static final double kI = 0.0;
     private static final double kD = 0.0;
@@ -1146,6 +1182,15 @@ public class Robot extends TimedRobot {
 
     public void check(){
       // elle wishes for work T^T 
+      if(driver.get_but(driver.elle_up)){
+        set_motors(0.3);
+      }
+      else if(driver.get_but(driver.elle_down)){
+        set_motors(-0.3);
+      }
+      else{
+        set_motors(0);
+      }
     }
 
     public void test(String right_bum, String left_bum){
@@ -1161,6 +1206,11 @@ public class Robot extends TimedRobot {
         motor_1.set(0);
         motor_2.set(0);
       }
+    }
+
+    public void set_motors(double speed){
+      motor_1.set(speed);
+      motor_2.set(speed);
     }
     
     public void talk(){
