@@ -381,7 +381,7 @@ public class Robot extends TimedRobot {
 
     private boolean ballroom[] = {false, false};
     private boolean color_cargo[] = {false, true};
-    private CANSparkMax motor_1 = new CANSparkMax(4, MotorType.kBrushless);
+    private CANSparkMax motor_1 = new CANSparkMax(14, MotorType.kBrushless);
     //private CANSparkMax motor_2 = new CANSparkMax(3, MotorType.kBrushless);
     RelativeEncoder eyespy_coder;
     private boolean ready_to_fire = false;
