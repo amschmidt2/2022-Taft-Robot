@@ -191,10 +191,10 @@ public class Robot extends TimedRobot {
     private XboxController joy;
     private double lil_sam;
     private boolean rumbling = false;
-    private String prep_takeoff_button = "r_bum";
-    private String firing_cargo_button = "b";
-    private String top_dog_button = "l_bum";
-    private String lock_on_button = "y";
+    private String prep_takeoff_button = "b";
+    private String firing_cargo_button = "r_bum";
+    private String top_dog_button = "y";
+    private String lock_on_button = "l_bum";
     private boolean top_dog = false;
     private String move_todd_button = "l_stick_x";
     private String lilprep_takeoff_button = "x";
