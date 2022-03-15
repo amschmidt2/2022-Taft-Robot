@@ -444,11 +444,13 @@ public class Robot extends TimedRobot {
           if(concon > 12){
             // move back for x num of time quanta
             set_motors(-.2);
+            concons_flag = true;
             if(concon < 24){
               // return to other state and clean up
               concon = 0;
               set_motors(0);
               state = "sleeping";
+              concons_flag = false;
             }
           }
         }
@@ -521,8 +523,7 @@ public class Robot extends TimedRobot {
     private String state = "sleeping";
     private CANSparkMax motor_1 = new CANSparkMax(20, MotorType.kBrushless);
     private CANSparkMax motor_2 = new CANSparkMax(16, MotorType.kBrushless);
-    private boolean ready_to_fire = false;
-    // private double sgt_sam; 
+    private boolean ready_to_fire = false; 
     RelativeEncoder rhino = motor_1.getEncoder();
     private double lil_rhino = 1397; 
     private double max_speed;
@@ -551,12 +552,14 @@ public class Robot extends TimedRobot {
           ready_to_fire = false;
         }
       }
-      else if(gunner.prep_takeoff()){
+      else if(gunner.prep_takeoff()){ 
         //motor.set(mr_pid_peter.calculate(spyeye_coder.getPosition(), new_setpoint()));
-        set_motors(sir_pid_peter.calculate(rhino.getVelocity(), new_setpoint()));
+        set_motors(sgt_sam());
+        ready_to_fire = true;
       }
       else{
         set_motors(0);
+        ready_to_fire = false;
       }
       // System.out.println(conner.ready_to_fire + " :) " + ready_to_fire);
       //System.out.println(" I should be a movin " + rhino.getVelocity() + ready_to_fire);
@@ -570,6 +573,14 @@ public class Robot extends TimedRobot {
     public void set_motors(double speed){
       motor_1.set(speed);
       motor_2.set(-speed);
+    }
+
+    public double sgt_sam(){
+      double cap_sam = sir_pid_peter.calculate(rhino.getVelocity(), new_setpoint());
+      if(cap_sam <= 0){
+        return 0.6;
+      }  
+      return cap_sam;
     }
 
     public boolean RTF(){
@@ -1174,6 +1185,8 @@ public class Robot extends TimedRobot {
     private String name;
     private CANSparkMax motor_1 = new CANSparkMax(15, MotorType.kBrushless);
     private CANSparkMax motor_2 = new CANSparkMax(10, MotorType.kBrushless);
+    private CANSparkMax monke_motor = new CANSparkMax(3, MotorType.kBrushed);
+    private CANSparkMax motor_monke = new CANSparkMax(4, MotorType.kBrushed);
 
     public Elevator(String _name){
       name = _name;
@@ -1211,6 +1224,11 @@ public class Robot extends TimedRobot {
     public void set_motors(double speed){
       motor_1.set(speed);
       motor_2.set(speed);
+    }
+
+    public void move_monke(double speed){
+      monke_motor.set(speed);
+      motor_monke.set(speed);
     }
     
     public void talk(){
