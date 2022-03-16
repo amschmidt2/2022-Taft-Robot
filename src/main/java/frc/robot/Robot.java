@@ -2,6 +2,31 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+/*
+                __------__
+              /~          ~\
+             |    //^\\//^\|
+           /~~\  ||  o| |o|:~\
+          | |6   ||___|_|_||:|
+           \__.  /      o  \/'
+            |   (       O   )
+   /~~~~\    `\  \         /      written by: Angelina Bill
+  | |~~\ |     )  ~------~`\      mentored by: Andrew Wingate
+ /' |  | |   /     ____ /~~~)\      Robotic Eagles 2022
+(_/'   | | |     /'    |    ( | 
+       | | |     \    /   __)/ \
+       \  \ \      \/    /' \   `\
+         \  \|\        /   | |\___|
+           \ |  \____/     | |
+           /^~>  \        _/ <
+          |  |         \       \
+          |  | \        \        \
+          -^-\  \       |        )
+               `\_______/^\______/
+
+*/
+
+
 package frc.robot;
 //package edu.wpi.first.wpilibj.arcadedrivexboxcontroller;
 
