@@ -282,7 +282,7 @@ public class Robot extends TimedRobot {
       public void fire(){
         if(get_but(firing_cargo_button)){
           if(sunny.RTF()){
-            System.out.println("This code is on firreeeeeee!!");
+            //System.out.println("This code is on firreeeeeee!!");
             conner.fire();
           }
         }
@@ -412,8 +412,8 @@ public class Robot extends TimedRobot {
     private boolean ready_to_fire = false;
     DigitalInput izzys_spoon = new DigitalInput(0);
     public double flush;
-    public double big_bow_wow = 17.0; 
-    public double lil_bow_wow = 10.0;
+    public double big_bow_wow = 60.0; // 68 = 34
+    public double lil_bow_wow = 35.0; // 40 = 20
     public double sir_bow_wow = 85.0;
 
     public Conveyor(String _name, double flush){
@@ -550,13 +550,13 @@ public class Robot extends TimedRobot {
     private CANSparkMax motor_2 = new CANSparkMax(16, MotorType.kBrushless);
     private boolean ready_to_fire = false; 
     RelativeEncoder rhino = motor_1.getEncoder();
-    private double lil_rhino = 1397; 
+    private double lil_rhino = 500; 
     private double max_speed;
 
     private PIDController sir_pid_peter = new PIDController(kP, kI, kD);
-    private static final double kP = 0.04;
-    private static final double kI = 0.0;
-    private static final double kD = 0.0;
+    private static final double kP = 0.0004; // how much you mutiply the speed
+    private static final double kI = 0.00; // the amount of wiggle
+    private static final double kD = 0.00; // backseat driver, slow down or speed up
 
 
     public Shooter(String _name, double speed){
@@ -567,6 +567,7 @@ public class Robot extends TimedRobot {
 
     public void check(){
       ready_to_fire = false;
+      System.out.println(new_setpoint());
       if(gunner.lilprep_takeoff()){
         if(rhino.getVelocity() > lil_rhino){
           set_motors(max_speed);
@@ -577,11 +578,22 @@ public class Robot extends TimedRobot {
           ready_to_fire = false;
         }
       }
-      else if(gunner.prep_takeoff()){ 
-        //motor.set(mr_pid_peter.calculate(spyeye_coder.getPosition(), new_setpoint()));
-        set_motors(sgt_sam());
-        ready_to_fire = true;
+      else if(gunner.prep_takeoff()){
+        //if(rhino.getVelocity() > new_setpoint()){
+          set_motors(bignew_setpoint());
+          System.out.println(bignew_setpoint());
+          ready_to_fire = true;
+       // }
+          // else{
+          //  set_motors(1);
+          //   ready_to_fire = false;
+          // }
       }
+      //else if(gunner.prep_takeoff()){ 
+        //motor.set(mr_pid_peter.calculate(spyeye_coder.getPosition(), new_setpoint()));
+       // set_motors(sgt_sam());
+       // ready_to_fire = true;
+     // }
       else{
         set_motors(0);
         ready_to_fire = false;
@@ -592,6 +604,7 @@ public class Robot extends TimedRobot {
 
     public void test(String apple){
       set_motors(gunner.get_axis(apple));
+      SmartDashboard.putNumber("kachow",gunner.get_axis(apple));
       rez();
     }
 
@@ -602,10 +615,19 @@ public class Robot extends TimedRobot {
 
     public double sgt_sam(){
       double cap_sam = sir_pid_peter.calculate(rhino.getVelocity(), new_setpoint());
-      if(cap_sam <= 0){
-        return 0.6;
+      System.out.println(cap_sam);
+      if(cap_sam <= 0.4){
+        return 0.4;
       }  
       return cap_sam;
+    }
+
+    public double new_setpoint(){
+      return -55.1 * lucy.le_angles[1] + 3862;
+    }
+
+    public double bignew_setpoint(){
+      return -0.0105*lucy.le_angles[1] + 0.674;
     }
 
     public boolean RTF(){
@@ -625,13 +647,10 @@ public class Robot extends TimedRobot {
       return;
     }
 
-    public double new_setpoint(){
-      return -55.1 * lucy.le_angles[1] + 3862;
-    }
-
     public void talk(){
       System.out.println(" Hi, I'm " + name + " I get rid of cargo, pew pew, yuck!");
     }
+
     public void rez(){
       SmartDashboard.putString(name, state);
       SmartDashboard.putNumber("sir_rhino", rhino.getVelocity());
@@ -1404,7 +1423,7 @@ public class Robot extends TimedRobot {
     elle.test("l_bum", "r_bum");
     wally.test(); 
     nia.check();
-    lucy .test();
+    lucy.test();
 
     //todd.set_motors(.3);
     
@@ -1417,3 +1436,4 @@ public class Robot extends TimedRobot {
  
 
 }  // <--- Leave this close brace (Look at those numbers!)
+// jyn lockne li was here march 16th, 2022 [senior, 18 - class of '22]
