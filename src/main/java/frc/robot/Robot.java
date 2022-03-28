@@ -29,19 +29,18 @@ public class Robot extends TimedRobot {
   //Create motors and controllers and stuff
 
 
-  private CANSparkMax front_LeftyMotor = new CANSparkMax(4, MotorType.kBrushless);
-  private CANSparkMax back_LeftyMotor = new CANSparkMax(3, MotorType.kBrushless);
-  private CANSparkMax front_RightyMotor = new CANSparkMax(1, MotorType.kBrushless);
-  private CANSparkMax back_RightyMotor = new CANSparkMax(2, MotorType.kBrushless);
-  private CANSparkMax amys_motor = new CANSparkMax(8, MotorType.kBrushless);
-  private CANSparkMax izzys_motor = new CANSparkMax(11, MotorType.kBrushed);
+  private CANSparkMax front_LeftyMotor = new CANSparkMax(99, MotorType.kBrushless);
+  private CANSparkMax back_LeftyMotor = new CANSparkMax(98, MotorType.kBrushless);
+  private CANSparkMax front_RightyMotor = new CANSparkMax(97, MotorType.kBrushless);
+  private CANSparkMax back_RightyMotor = new CANSparkMax(96, MotorType.kBrushless);
+
 
   private MotorControllerGroup rodger = new MotorControllerGroup(front_RightyMotor, back_RightyMotor);
   private MotorControllerGroup louie = new MotorControllerGroup(front_LeftyMotor, back_LeftyMotor);
 
   private final DifferentialDrive drivechain = new DifferentialDrive(louie, rodger);
 
-  // private final XboxController joy0 = new XboxController(0);
+  private final XboxController joy0 = new XboxController(0);
   // private final XboxController joy1 = new XboxController(1);
 
 
@@ -50,168 +49,11 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
-  // tiny two frames (ttt), tiny 3 lines tl
-  // make a strings list of button ids
-  String buttons_list[] = {"na", "a", "b", "x", "y", "l_bum", "r_bum", "ttt", "tl"};
-  String axis_list[] = {"na","l_stick_x", "l_stick_y", "l_trig", "r_trig", "r_stick"};
-
-  public boolean team_blue = true;
-  DigitalInput cargo_det = new DigitalInput(0);
   
-  /*
-  Our Agents
-
-  timmy the Timer
-
-  driver the 0th Controller
-  gunner the 1st Controller
-
-  Archie the Autonomous
-
-  Wally the Wheels (4m, SparkMax, Neo's)
-
-  bobby the BallHandler | Is like a conductor, Interests: gunner and driver and cares a lot about balls
-  izzy the Intake (1m, VictorSPX, 775, pnem. 2)    *musician
-  conner the Conveyor (2m, ?, ?)                *musician
-  sunny the Shooter (2m, SparkMax, Neo's, pnem. 1)  *musician
-
-  with the possible future inclustion of:
-  todd the Turret
-  lucy the LimeLight
-  ellie the Elevator (2m/2m, VictorSPX, 775)
-
-  */
-
   Timer timmy = new Timer();
   SpyLord archie = new SpyLord("archie"); //archie stands alone 
-  Wheels wally = new Wheels("wally", .7); // speed for wheels, .x
-  Intake izzy = new Intake("izzy", .7); // speed for intake, .x
-  Driver driver = new Driver("driver", 0); // controller number
-  Arm amy = new Arm("amy", .5); //speed for arm, .x    (name, max_speed)
 
-  public class Driver{
-    private String name;
-    private XboxController joy;
-    private int apple = 1; // hopefully Y xbox button
-    private int bread = 2; // hopefully X xbox button
-   // private int yoke = 4; // hopefully A xbox button
-   //private int xcited =3; // hopefully B xbox button
-
-    
-
-    public Driver(String _name, int port_num){
-        name = _name;
-        joy = new XboxController(port_num);
-        System.out.println(name + " coming in hot ");
-      }
-      public void check(){}
-
-      public void rumble(){
-        joy.setRumble(RumbleType.kLeftRumble, 1);
-      }
-      public boolean get_but(int but_num){
-        return joy.getRawButton(but_num);
-      }
-      public double get_axis(int raw_axis){
-        return joy.getRawAxis(raw_axis);
-      }
-      public boolean wants_cargo(){
-        return get_but(apple);
-      }
-      public boolean no_cargo(){
-        return get_but(bread);
-      }
-      public double amy_up(){
-       return get_axis(2);
-      }
-      public double amy_down(){
-       return get_axis(3);
-      }
-     
-    }
-
-  public class Arm{
-    private String name;
-    private double max_speed; //this is
-    
-    public Arm(String _name, double max_speed){
-      name = _name;
-      this.max_speed = max_speed; //this is
-      System.out.println(name + " I am here  for support ");
-    }
-    public void check(){
-      if(driver.amy_up() > 0.1){
-        amys_motor.set(driver.amy_up() * max_speed);
-       //System.out.println( " Do you see me? ");
-      }
-      else if(driver.amy_down() > 0.1){
-        amys_motor.set(-driver.amy_down() * max_speed);
-       //System.out.println( " Can you still see me? ");
-      }
-      else{
-        amys_motor.set(0);
-      }
-    }
-
-  }
-
-
-  public class Intake{
-    private String name;
-    private double max_speed;
-
-    public Intake(String _name, double _max_speed){
-      name = _name;
-      max_speed = _max_speed;
-      System.out.println(name + " izzy is on the scene ");
-    }
-
-    public void check(){
-      if(driver.wants_cargo()){
-        izzys_motor.set(max_speed);
-      }
-      else if(driver.no_cargo()){
-        izzys_motor.set(-max_speed);
-      }
-      else{
-        izzys_motor.set(0);
-      }
-    }
-  }
-
-  public class Wheels{
-    private String name;
-    private double max_speed;
-    private double max_turn = 0.4; 
-
-    public Wheels(String _name, double _max_speed){
-      name = _name;
-      max_speed = _max_speed;
-      System.out.println(name + " has waddled in ");
-    }
-
-    private void check(double speed, double turn){
-      sensitive(speed, turn); 
-    }
-
-
-    private void drive(double speed, double turn){
-      drivechain.arcadeDrive(speed, -turn);
-    }
-
-    private void sensitive(double speed, double raw_turn){
-      double turn = Math.pow(raw_turn, 2.0);
-      if (raw_turn < 0){
-        turn = -turn;
-      }
-      speed = max_speed * speed;
-      turn = max_turn * turn;
-
-      drive(speed, turn);
-    }
-  }
-
-
+  
   public class SpyLord {
     private String spyroom [][]= {
         {"Back move", "Stop move", "2.0"},
@@ -266,18 +108,37 @@ public class Robot extends TimedRobot {
   }
 
 
+  public void intake(){
 
 
-  boolean[] event_chk(boolean now, boolean past){
-    boolean partyroom[] = {false, false};
-    if (now != past){
-      partyroom[0] = true;
-        if(!past){
-          partyroom[1] = true;
-        }
-    }
-    return partyroom;
   }
+
+  public void shooter(boolean on, boolean off){
+
+  }
+
+  public void elevator(boolean up, boolean down){
+
+    if(up){
+      // pneu move up
+    }
+    else if(down){
+      // pneu move down 
+    }
+    else{
+      // stop
+    }
+
+  }
+
+  public void wheels(){
+
+
+  }
+
+
+
+  
 
   @Override
   public void robotInit() {
@@ -327,34 +188,18 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
-   // Drive Train (4m, SparkMax, Neo)
-    // Climber (1m, victorSPX, 775)
-
-    // Ball Handling
-    // Intake (2 or 4m, ?, ?)
-    // Shooter (2m, SparkMax, Neo)
-    // Conveyer (2m/2m, victorsSPX,775)
-
     // Xbox A, B, Y, X, tiny two frames (TTF.), tiny three line(T3L), Dpad
     // Right Bummper, Left Bummper, Right Trigger, Left Trigger, Top Joystick, Bottom Joystick
-    // This was the shooter speed these are not things to look at buttons wise.
-    // boolean xbox_A = joy0.getRawButton(1); // xbox A
-    // boolean xbox_B = joy0.getRawButton(2); // xbox B
-    // boolean xbox_X = driver.get_but(3); // xbox X
-    // boolean xbox_Y = driver.get_but(4); // xbox Y
+    boolean xbox_A = joy0.getRawButton(1); // xbox A
+    boolean xbox_B = joy0.getRawButton(2); // xbox B
+    boolean xbox_X = joy0.getRawButton(3); // xbox X
+    boolean xbox_Y = joy0.getRawButton(4); // xbox Y
+    boolean xbox_ttf = joy0.getRawButton(5); // tiny two frames
+    boolean xbox_t3l = joy0.getRawButton(6); // tiny three lines
+    boolean xbox_r_bum = joy0.getRawButton(7); // right bummper 
+    boolean xbox_l_bum = joy0.getRawButton(8); // left bummper
+    
 
-   // dumpTruck(driver.get_but(3), driver.get_but(4));
-    // climber(xbox_A, xbox_B);
-
-    //double joy_Left = driver.get_axis(1);
-    //double joy_Right = driver.get_axis(0);
-
-
-    wally.check(driver.get_axis(1), driver.get_axis(0));
-    amy.check();
-    izzy.check();
-    // bobby.check();
-    //wally.check(left=driver.get_axis('x'), right=driver.get_axis('y'))
 
   }
 
