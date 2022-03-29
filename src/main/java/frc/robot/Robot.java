@@ -12,13 +12,18 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 //import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+
 //import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -52,6 +57,18 @@ public class Robot extends TimedRobot {
   
   Timer timmy = new Timer();
   SpyLord archie = new SpyLord("archie"); //archie stands alone 
+
+  // Shooter and Intake motors
+  private PWMSparkMax intake_motor = new PWMSparkMax(0); 
+  private PWMSparkMax shooter_motor = new PWMSparkMax(1);
+  private PWMSparkMax sir_shooter_motor = new PWMSparkMax(2);
+  private DoubleSolenoid jr_shooter_pneu = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
+  private DoubleSolenoid elevator_pneu = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
+  // Wheels motors
+  private PWMSparkMax mr_right_wheels = new PWMSparkMax(3);
+  private PWMSparkMax sir_right_wheels = new PWMSparkMax(4);
+  private PWMSparkMax jr_left_wheels = new PWMSparkMax(5);
+  private PWMSparkMax mrs_left_wheels = new PWMSparkMax(6);
 
   
   public class SpyLord {
@@ -108,37 +125,55 @@ public class Robot extends TimedRobot {
   }
 
 
-  public void intake(){
-
-
+  public void intake(boolean in, boolean out){
+    if(out){
+      intake_motor.set(.6);
+    }
+    else if(in){
+      intake_motor.set(-0.6);
+    }
+    else{
+      intake_motor.set(0);
+    }
   }
 
+  
+
   public void shooter(boolean on, boolean off){
+
+    if(on){
+      shooter_motor.set(.7);
+      // contorl how fast shooter moves
+    }
+    else if(off){
+      shooter_motor.set(0);
+    }
+    else{
+      shooter_motor.set(0);
+    }
+
 
   }
 
   public void elevator(boolean up, boolean down){
 
     if(up){
-      // pneu move up
+      elevator_pneu.set(Value.kForward);
     }
     else if(down){
-      // pneu move down 
+      elevator_pneu.set(Value.kReverse);
     }
     else{
-      // stop
+      elevator_pneu.set(Value.kOff);
     }
 
   }
 
-  public void wheels(){
-
+  public void wheels(double speed, double turn){
+    drivechain.arcadeDrive(-speed, turn);
 
   }
 
-
-
-  
 
   @Override
   public void robotInit() {
@@ -198,6 +233,7 @@ public class Robot extends TimedRobot {
     boolean xbox_t3l = joy0.getRawButton(6); // tiny three lines
     boolean xbox_r_bum = joy0.getRawButton(7); // right bummper 
     boolean xbox_l_bum = joy0.getRawButton(8); // left bummper
+    boolean left_joy = joy0.getRawAxis(axis);
     
 
 
