@@ -233,7 +233,7 @@ public class Robot extends TimedRobot {
     boolean xbox_t3l = joy0.getRawButton(6); // tiny three lines
     boolean xbox_r_bum = joy0.getRawButton(7); // right bummper 
     boolean xbox_l_bum = joy0.getRawButton(8); // left bummper
-    boolean left_joy = joy0.getRawAxis(axis);
+    // left_joy = joy0.getRawAxis(axis);
     
 
 
