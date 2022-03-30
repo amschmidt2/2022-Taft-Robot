@@ -33,18 +33,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 public class Robot extends TimedRobot {
   //Create motors and controllers and stuff
 
-
-  private CANSparkMax front_LeftyMotor = new CANSparkMax(99, MotorType.kBrushless);
-  private CANSparkMax back_LeftyMotor = new CANSparkMax(98, MotorType.kBrushless);
-  private CANSparkMax front_RightyMotor = new CANSparkMax(97, MotorType.kBrushless);
-  private CANSparkMax back_RightyMotor = new CANSparkMax(96, MotorType.kBrushless);
-
-
-  private MotorControllerGroup rodger = new MotorControllerGroup(front_RightyMotor, back_RightyMotor);
-  private MotorControllerGroup louie = new MotorControllerGroup(front_LeftyMotor, back_LeftyMotor);
-
-  private final DifferentialDrive drivechain = new DifferentialDrive(louie, rodger);
-
   private final XboxController joy0 = new XboxController(0);
   // private final XboxController joy1 = new XboxController(1);
 
@@ -70,6 +58,10 @@ public class Robot extends TimedRobot {
   private PWMSparkMax jr_left_wheels = new PWMSparkMax(5);
   private PWMSparkMax mrs_left_wheels = new PWMSparkMax(6);
 
+  private MotorControllerGroup rodger = new MotorControllerGroup(mr_right_wheels, sir_right_wheels);
+  private MotorControllerGroup louie = new MotorControllerGroup(jr_left_wheels, mrs_left_wheels);
+
+  private final DifferentialDrive drivechain = new DifferentialDrive(louie, rodger);
   
   public class SpyLord {
     private String spyroom [][]= {
