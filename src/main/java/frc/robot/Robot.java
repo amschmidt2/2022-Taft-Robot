@@ -322,7 +322,7 @@ public class Robot extends TimedRobot {
     private double inhale;
     private DoubleSolenoid lil_iz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
     private DoubleSolenoid jr_liliz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 2, 3);
-    private CANSparkMax motor = new CANSparkMax(9, MotorType.kBrushed);
+    private CANSparkMax motor = new CANSparkMax(6, MotorType.kBrushed);
     
 
     public Intake(String _name, double _inhale){
@@ -686,10 +686,10 @@ public class Robot extends TimedRobot {
     private double max_turn = .7;
     private String turn_axis = "l_stick_x";
     private String speed_axis = "l_stick_y";
-    private CANSparkMax front_LeftyMotor = new CANSparkMax(13, MotorType.kBrushless);
-    private CANSparkMax back_LeftyMotor = new CANSparkMax(6, MotorType.kBrushless);
-    private CANSparkMax front_RightyMotor = new CANSparkMax(7, MotorType.kBrushless);
-    private CANSparkMax back_RightyMotor = new CANSparkMax(12, MotorType.kBrushless);
+    private CANSparkMax front_LeftyMotor = new CANSparkMax(15, MotorType.kBrushless);
+    private CANSparkMax back_LeftyMotor = new CANSparkMax(13, MotorType.kBrushless);
+    private CANSparkMax front_RightyMotor = new CANSparkMax(12, MotorType.kBrushless);
+    private CANSparkMax back_RightyMotor = new CANSparkMax(7, MotorType.kBrushless);
 
     private MotorControllerGroup rodger = new MotorControllerGroup(front_RightyMotor, back_RightyMotor);
     private MotorControllerGroup louie = new MotorControllerGroup(front_LeftyMotor, back_LeftyMotor);
