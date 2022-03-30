@@ -750,17 +750,17 @@ public class Robot extends TimedRobot {
 
 
   public class SpyLord{
-    private String spyroom [][]= {
-      //auto 2 ball
-      {"Starting Izzy", "None", "0.1"},
-      {"Moving back", "Stop move", "1.1"},
-      {"Stop", "None", "0.1"},
-      {"Moving forward", "Stop move", "1.2"},
-      {"Starting Sunny Close", "None", "2.5"},
-      {"Starting Conner", "None", "2.5"},
-      {"Moving back", "Stop", "0.5"},
-      {"Done", "this will never run", "999.9"},
-    };
+    // private String spyroom [][]= {
+    //   //auto 2 ball
+    //   {"Starting Izzy", "None", "0.1"},
+    //   {"Moving back", "Stop move", "1.1"},
+    //   {"Stop", "None", "0.1"},
+    //   {"Moving forward", "Stop move", "1.2"},
+    //   {"Starting Sunny Close", "None", "2.5"},
+    //   {"Starting Conner", "None", "2.5"},
+    //   {"Moving back", "Stop", "0.5"},
+    //   {"Done", "this will never run", "999.9"},
+    // };
 
     // private String spyroom [][]= {
     //   //auto 2 ball
@@ -816,12 +816,25 @@ public class Robot extends TimedRobot {
     //   {"Starting Sunny Close", "None", "2.5"},
     //   {"Starting Conner", "Stop", "2.5"},
     //   {"Starting Sunny Close", "None", "0.1"},
-    //   {"Left", "None", "1.0"},
+    //   {"Left", "None", "1.4"},
     //   {"Moving back", "Stop move", "1.5"},
     //   {"Right", "Stop move", "0.7"},
     //   {"Starting Conner", "Stop", "2.0"},
     //   {"Done", "this will never run", "999.9"},
     // };
+
+    private String spyroom [][]= {
+      // mess up ball
+      {"Starting Izzy", "None", "0.1"},
+      {"Moving back", "Stop move", "0.6"},
+      {"Right", "Stop move", "0.7"},
+      {"Starting Sunny Mess Up", "None","2.5"},
+      {"Starting Conner", "Stop", "1.0"},
+      {"Moving back", "Stop move", "0.7"},
+      {"Left", "Stop move", "0.7"},
+      {"Starting Sunny Far", "None", "1.0"},
+      {"Starting Conner", "Stop", "1.0"},
+    };
     private int autonomous_counter = 0;
     private double lil_sam = 0;
     private String name;
