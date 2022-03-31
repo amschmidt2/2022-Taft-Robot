@@ -823,18 +823,31 @@ public class Robot extends TimedRobot {
     //   {"Done", "this will never run", "999.9"},
     // };
 
+    // private String spyroom [][]= {
+    //   // mess up ball
+    //   {"Starting Izzy", "None", "0.1"},
+    //   {"Moving back", "Stop move", "0.6"},
+    //   {"Right", "Stop move", "0.7"},
+    //   {"Starting Sunny Mess Up", "None","2.5"},
+    //   {"Starting Conner", "Stop", "1.0"},
+    //   {"Moving back", "Stop move", "0.7"},
+    //   {"Left", "Stop move", "0.7"},
+    //   {"Starting Sunny Far", "None", "1.0"},
+    //   {"Starting Conner", "Stop", "1.0"},
+    // };
+
     private String spyroom [][]= {
-      // mess up ball
+      // The balls are in our court
       {"Starting Izzy", "None", "0.1"},
       {"Moving back", "Stop move", "0.6"},
       {"Right", "Stop move", "0.7"},
-      {"Starting Sunny Mess Up", "None","2.5"},
-      {"Starting Conner", "Stop", "1.0"},
+      {"Wait", "Stop move","6.0"},
       {"Moving back", "Stop move", "0.7"},
       {"Left", "Stop move", "0.7"},
-      {"Starting Sunny Far", "None", "1.0"},
+      {"Starting Sunny Mess Up", "None", "0.4"},
       {"Starting Conner", "Stop", "1.0"},
     };
+
     private int autonomous_counter = 0;
     private double lil_sam = 0;
     private String name;
@@ -894,6 +907,10 @@ public class Robot extends TimedRobot {
           System.out.println("Sunny Starting Far");
           sunny.set_motors(1);
           break;
+        case "Starting Sunny Mess Up":
+          System.out.println("Sunny Starting Mess Up");
+          sunny.set_motors(.4);
+          break;
         case "None":
           System.out.println("Nothing");
           break;
@@ -921,6 +938,10 @@ public class Robot extends TimedRobot {
         case "Right forward":
           System.out.println("Turning right forward");
           wally.auto(.4, -.27);
+          break;
+        case "Wait":
+          System.out.println("Waiting");
+          wally.auto(0, 0);
           break;
         case "Stop":
           System.out.println("Stopping");
