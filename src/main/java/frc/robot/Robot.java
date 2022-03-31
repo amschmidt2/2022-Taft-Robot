@@ -6,13 +6,14 @@ package frc.robot;
 //package edu.wpi.first.wpilibj.arcadedrivexboxcontroller;
 
 
-// -------EVERYBOT--------------
+// -------Schurz--cool--robot--------------
 
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -62,6 +63,9 @@ public class Robot extends TimedRobot {
   private MotorControllerGroup louie = new MotorControllerGroup(jr_left_wheels, mrs_left_wheels);
 
   private final DifferentialDrive drivechain = new DifferentialDrive(louie, rodger);
+
+  private Joystick joy_0 = new Joystick(0);
+  private Joystick joy_1 = new Joystick(1);
   
   public class SpyLord {
     private String spyroom [][]= {
@@ -181,7 +185,9 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    
+  }
 
 
 
@@ -226,7 +232,16 @@ public class Robot extends TimedRobot {
     boolean xbox_r_bum = joy0.getRawButton(7); // right bummper 
     boolean xbox_l_bum = joy0.getRawButton(8); // left bummper
     // left_joy = joy0.getRawAxis(axis);
+
+    // here is what buttons work with each piece
+    elevator(xbox_ttf, xbox_t3l); 
+    intake(xbox_X, xbox_Y);
+    shooter(xbox_A, xbox_B);
+
+    double joy_left = joy_0.getRawAxis(0);
+    double joy_right = joy_1.getRawAxis(1);
     
+    wheels(joy_left, joy_right);
 
 
   }
