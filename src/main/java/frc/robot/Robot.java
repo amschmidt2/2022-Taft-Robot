@@ -1213,10 +1213,10 @@ public class Robot extends TimedRobot {
     RelativeEncoder jr_eyespy_coder;
     RelativeEncoder sir_eyespy_coder;
     private double upsie_daisy;
-    private CANSparkMax motor_1 = new CANSparkMax(15, MotorType.kBrushless);
+    private CANSparkMax motor_1 = new CANSparkMax(9, MotorType.kBrushless);
     private CANSparkMax motor_2 = new CANSparkMax(10, MotorType.kBrushless);
     //private CANSparkMax monke_motor = new CANSparkMax(3, MotorType.kBrushed);
-    private CANSparkMax motor_monke = new CANSparkMax(3, MotorType.kBrushed);
+    //private CANSparkMax motor_monke = new CANSparkMax(3, MotorType.kBrushed);
 
     public Elevator(String _name, double speed, double upsie_daisy){
       name = _name;
@@ -1278,7 +1278,7 @@ public class Robot extends TimedRobot {
     }
     public void move_monke(double speed){
       //monke_motor.set(speed);
-      motor_monke.set(speed);
+      //motor_monke.set(speed);
     }
     public void talk(){
       System.out.println(" Hello! " + name + " I can carry the whole robot on the monkey bars!");
