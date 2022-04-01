@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 //import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import edu.wpi.first.wpilibj.Compressor;
 
 //import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import com.revrobotics.CANSparkMax;
@@ -35,7 +36,7 @@ public class Robot extends TimedRobot {
   //Create motors and controllers and stuff
 
   private final XboxController joy0 = new XboxController(0);
-  // private final XboxController joy1 = new XboxController(1);
+  private final XboxController joy1 = new XboxController(1);
 
 
   private static final String kDefaultAuto = "Default";
@@ -45,7 +46,9 @@ public class Robot extends TimedRobot {
 
   
   Timer timmy = new Timer();
-  SpyLord archie = new SpyLord("archie"); //archie stands alone 
+  SpyLord archie = new SpyLord("archie"); //archie stands alone
+  
+  Compressor pcmCompressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
 
   // Shooter and Intake motors
   private PWMSparkMax intake_motor = new PWMSparkMax(0); 
@@ -63,9 +66,6 @@ public class Robot extends TimedRobot {
   private MotorControllerGroup louie = new MotorControllerGroup(jr_left_wheels, mrs_left_wheels);
 
   private final DifferentialDrive drivechain = new DifferentialDrive(louie, rodger);
-
-  private Joystick joy_0 = new Joystick(0);
-  private Joystick joy_1 = new Joystick(1);
   
   public class SpyLord {
     private String spyroom [][]= {
@@ -119,7 +119,7 @@ public class Robot extends TimedRobot {
     }
 
   }
-
+//ajax was here
 
   public void intake(boolean in, boolean out){
     if(out){
@@ -133,21 +133,31 @@ public class Robot extends TimedRobot {
     }
   }
 
-  
+  public void shooter(boolean out, boolean off){
 
-  public void shooter(boolean on, boolean off){
-
-    if(on){
+    if(out){
       shooter_motor.set(.7);
+      sir_shooter_motor.set(.7);
       // contorl how fast shooter moves
     }
     else if(off){
       shooter_motor.set(0);
-    }
-    else{
-      shooter_motor.set(0);
+      sir_shooter_motor.set(0);
     }
 
+  }
+
+  public void jr_shooter(boolean up, boolean down){
+
+    if(up){
+      jr_shooter_pneu.set(Value.kForward);
+    }
+    else if(down){
+      jr_shooter_pneu.set(Value.kReverse);
+    }
+    else{
+      jr_shooter_pneu.set(Value.kOff);
+    }
 
   }
 
@@ -178,6 +188,9 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Auto choices", m_chooser);
     //rodger.setInverted(true);
     louie.setInverted(true);
+    // shooter_motor.setInverted(true);
+    sir_shooter_motor.setInverted(true);
+
     
 
     // Agents will announce themselves
@@ -236,14 +249,16 @@ public class Robot extends TimedRobot {
     // here is what buttons work with each piece
     elevator(xbox_ttf, xbox_t3l); 
     intake(xbox_X, xbox_Y);
-    shooter(xbox_A, xbox_B);
+    shooter(xbox_B, xbox_A);
+    jr_shooter(xbox_r_bum, xbox_l_bum);
 
-    double joy_left = joy_0.getRawAxis(0);
-    double joy_right = joy_1.getRawAxis(1);
+    double joy_left = joy0.getRawAxis(0);
+    double joy_right = joy1.getRawAxis(1);
     
     wheels(joy_left, joy_right);
 
-
+//compressor code :D
+//print() compressor-code
   }
 
 
