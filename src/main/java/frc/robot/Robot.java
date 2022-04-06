@@ -724,17 +724,17 @@ public class Robot extends TimedRobot {
 
 
   public class SpyLord{
-    private String spyroom [][]= {
-      //auto 2 ball
-      {"Starting Izzy", "None", "0.1"},
-      {"Moving back", "Stop move", "1.1"},
-      {"Stop", "None", "0.1"},
-      {"Moving forward", "Stop move", "1.2"},
-      {"Starting Sunny Close", "None", "2.5"},
-      {"Starting Conner", "None", "2.5"},
-      {"Moving back", "Stop", "0.5"},
-      {"Done", "this will never run", "999.9"},
-    };
+    // private String spyroom [][]= {
+    //   //auto 2 ball
+    //   {"Starting Izzy", "None", "0.1"},
+    //   {"Moving back", "Stop move", "1.1"},
+    //   {"Stop", "None", "0.1"},
+    //   {"Moving forward", "Stop move", "1.2"},
+    //   {"Starting Sunny Close", "None", "2.5"},
+    //   {"Starting Conner", "None", "2.5"},
+    //   {"Moving back", "Stop", "0.5"},
+    //   {"Done", "this will never run", "999.9"},
+    // };
 
     // private String spyroom [][]= {
     //   //auto 2 ball
@@ -781,21 +781,22 @@ public class Robot extends TimedRobot {
     //   {"Done", "this will never run", "999.9"},
     // };
 
-    // private String spyroom [][]= {
-    //   //auto 3 ball
-    //   {"Starting Izzy", "None", "0.1"},
-    //   {"Moving back", "Stop move", "1.1"},
-    //   {"Stop", "None", "0.1"},
-    //   {"Moving forward", "Stop move", "1.0"},
-    //   {"Starting Sunny Close", "None", "2.5"},
-    //   {"Starting Conner", "Stop", "2.5"},
-    //   {"Starting Sunny Close", "None", "0.1"},
-    //   {"Left", "None", "1.0"},
-    //   {"Moving back", "Stop move", "1.5"},
-    //   {"Right", "Stop move", "0.7"},
-    //   {"Starting Conner", "Stop", "2.0"},
-    //   {"Done", "this will never run", "999.9"},
-    // };
+    private String spyroom [][]= {
+      //auto 3 ball
+      {"Starting Izzy", "None", "0.1"},
+      {"Moving back", "Stop move", "0.9"},
+      {"Stop", "None", "0.1"},
+      {"Moving forward", "Stop move", "0.5"},
+      {"Starting Sunny Close", "None", "2.5"},
+      {"Starting Conner", "Stop", "2.5"},
+      {"Starting Sunny Far", "None", "0.1"},
+      {"Left", "None", "0.7"},
+      {"Moving back", "None", "1.3"},
+      {"Moving back slow", "Stop move", "0.4"},
+      {"Right", "Stop move", "0.4"},
+      {"Starting Conner", "Stop", "2.0"},
+      {"Done", "this will never run", "999.9"},
+    };
     private int autonomous_counter = 0;
     private double lil_sam = 0;
     private String name;
@@ -826,9 +827,13 @@ public class Robot extends TimedRobot {
     private void briefcase(String task){
       System.out.println(task);
       switch(task){
+        case "Moving back slow":
+          System.out.println("The wheels are going slow");
+          wally.auto(-.3, 0);
+          break;
         case "Moving back":
           System.out.println("The wheels are moving back!");
-          wally.auto(-.7, 0);
+          wally.auto(-.6, 0);
           break;
         case "Moving back fast":
           System.out.println("Going Back Fast");
@@ -837,7 +842,7 @@ public class Robot extends TimedRobot {
           break;
         case "Moving forward":
           System.out.println("Going Forward");
-          wally.auto(.5, 0);
+          wally.auto(.6, 0);
           break;
         case "Moving forward fast":
           System.out.println("Going forward fast");
@@ -849,7 +854,7 @@ public class Robot extends TimedRobot {
           break;
         case "Starting Sunny Close":
           System.out.println("Sunny Starting Close");
-          sunny.set_motors(.7);
+          sunny.set_motors(.75);
           break;
         case "Starting Sunny Far":
           System.out.println("Sunny Starting Far");
@@ -1076,12 +1081,12 @@ public class Robot extends TimedRobot {
     private boolean ready_to_fire = false;
 
     private double initial_setpoint = 0.0;
-    private double lil_louie = -30.0;
-    private double lil_rodger = 270.0;
+    private double lil_louie = -90.0;
+    private double lil_rodger = 90.0;
 
     private PIDController mr_pid_peter = new PIDController(kP, kI, kD);
     private static final double kP = 0.04;
-    private static final double kI = 0.0;
+    private static final double kI = 0.01;
     private static final double kD = 0.0;
 
     RelativeEncoder spyeye_coder;
@@ -1125,6 +1130,10 @@ public class Robot extends TimedRobot {
           set_motors(gunner.move_todd());
         }
       }
+    }
+
+    public void auto(){
+      motor.set(mr_pid_peter.calculate(spyeye_coder.getPosition(), new_setpoint()));
     }
 
     public void set_motors(double speed){
@@ -1404,6 +1413,8 @@ public class Robot extends TimedRobot {
       case kDefaultAuto:
       default:
         archie.check();
+        lucy.test();
+        todd.auto();
         wally.shutupstupidbabyshutup();
     }
   }
