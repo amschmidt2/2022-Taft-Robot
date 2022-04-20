@@ -102,13 +102,13 @@ public class Robot extends TimedRobot {
   Wheels wally = new Wheels("wally", .7, .3);
   Intake izzy = new Intake("izzy", 1);
   Conveyor conner = new Conveyor("conner", .7);
-  Shooter sunny = new Shooter("sunny", .3, 0.01);
+  Shooter sunny = new Shooter("sunny", .4, 0.01);
   Driver driver = new Driver("driver", 0);
   Gunner gunner = new Gunner("gunner", 1);
   NeoPixel nia = new NeoPixel("nia");
   Turret todd = new Turret("todd");
   LimeLight lucy = new LimeLight("lucy");
-  Elevator elle = new Elevator("elle", .5, 290);
+  Elevator elle = new Elevator("elle", .5, 280);
   Compressor pcmCompressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
 
 
@@ -416,6 +416,7 @@ public class Robot extends TimedRobot {
     public double big_bow_wow = 150.0; // 68 = 34
     public double lil_bow_wow = 70.0; // 40 = 20
     public double sir_bow_wow = 200.0;
+    public double nibbles = 35.0;
 
     public Conveyor(String _name, double flush){
       name = _name;
@@ -425,6 +426,9 @@ public class Robot extends TimedRobot {
 
     public void init(){
       eyespy_coder = motor_1.getEncoder();
+      motor_1.setSmartCurrentLimit(25);
+      motor_2.setSmartCurrentLimit(25);
+      // motor_1.getMotorTemperature()
     }
 
     public void check(){
@@ -442,25 +446,44 @@ public class Robot extends TimedRobot {
 
       else if(state.equals("sleeping")){  
         if(!izzys_spoon.get()){
-          if(!ballroom[0]){ //we has no cargo
-            munch(big_bow_wow);
-            ballroom[0] = true;  // {true, false}
-            ready_to_fire = true;
-          }
-          else{ // has 1 in ballroom[0]
-            munch(lil_bow_wow);
-            ballroom[1] = true;  // {true, true}  
-            full = true;
-           // driver.rumble(1.0);
-           // gunner.rumble(1.0); 
-          }
+          munch();
         }
+        
+          // if(!ballroom[0]){ //we has no cargo
+          //   munch(big_bow_wow);
+          //   ballroom[0] = true;  // {true, false}
+          //   ready_to_fire = true;
+          // }
+          // else{ // has 1 in ballroom[0]
+          //   munch(lil_bow_wow);
+          //   ballroom[1] = true;  // {true, true}  
+          //   full = true;
+          // driver.rumble(1.0);
+          // gunner.rumble(1.0); 
+          // }
+        
       }
 
       else if(state.equals("munching")){
+        if(izzys_spoon.get()){
+          if(!ballroom[0]){
+            nibble(nibbles);
+          }
+          else{
+            set_motors(0);
+            state = "sleeping";
+          }
+        }
+        // if(eyespy_coder.getPosition() > sir_sam){
+        //   set_motors(0);
+        //   state = "burping";
+        // }
+      }
+
+      else if(state.equals("nibbling")){
         if(eyespy_coder.getPosition() > sir_sam){
           set_motors(0);
-          state = "burping";
+          state = "sleeping";
         }
       }
 
@@ -484,10 +507,10 @@ public class Robot extends TimedRobot {
 
     public void test(String yoke, String tf){
       if(driver.get_but(yoke)){
-        set_motors(.4);
+        set_motors(.7);
       }
       else if(driver.get_but(tf)){
-        set_motors(-.4);
+        set_motors(-.7);
       }
       else{
         set_motors(0);
@@ -507,10 +530,17 @@ public class Robot extends TimedRobot {
     public String get_state(){
       return state;
     } 
-    public void munch(double turns){
+    public void munch(){
       System.out.println(" Motors please move conner he is lazy ");
       set_motors(flush);
       state = "munching";
+      //sir_sam = eyespy_coder.getPosition() + turns;
+    }
+    public void nibble(double turns){
+      System.out.println(" Motors please move conner he is lazy ");
+      ballroom[0] = true;
+      set_motors(flush);
+      state = "nibbling";
       sir_sam = eyespy_coder.getPosition() + turns;
     }
     public void fire(){
@@ -593,7 +623,7 @@ public class Robot extends TimedRobot {
           ready_to_fire = true;
       }
       else{
-        set_motors(0);
+        set_motors(0.3);
         ready_to_fire = false;
       }
     }
@@ -618,8 +648,8 @@ public class Robot extends TimedRobot {
       return -55.1 * lucy.le_angles[1] + 3862;
     }
     public double bignew_setpoint(){
-      //return -0.0105 * lucy.le_angles[1] + 0.68748 + kachow * chowdown;
-      return 0.876 * Math.pow(lucy.le_angles[1], 2.0) -29.8 * lucy.le_angles[1] + 4762 + kachow * chowdown;   
+      return -0.0105 * lucy.le_angles[1] + 0.68748 + kachow * chowdown;
+     // return 0.000126466 * Math.pow(lucy.le_angles[1], 2.0) -.004302 * lucy.le_angles[1] + .68748 + kachow * chowdown;   
     }
     public boolean button_ah(boolean now, boolean past){
       partyroom = event_chk(now, past); // {event, now}
@@ -724,87 +754,119 @@ public class Robot extends TimedRobot {
 
 
   public class SpyLord{
-    // private String spyroom [][]= {
-    //   //auto 2 ball
-    //   {"Starting Izzy", "None", "0.1"},
-    //   {"Moving back", "Stop move", "1.1"},
-    //   {"Stop", "None", "0.1"},
-    //   {"Moving forward", "Stop move", "1.2"},
-    //   {"Starting Sunny Close", "None", "2.5"},
-    //   {"Starting Conner", "None", "2.5"},
-    //   {"Moving back", "Stop", "0.5"},
-    //   {"Done", "this will never run", "999.9"},
-    // };
+    private String two_ball [][]= {
+      //auto 2 ball
+      {"Starting Izzy", "None", "0.1"},
+      {"Moving back", "Stop move", "1.1"},
+      {"Stop", "None", "0.1"},
+      {"Moving forward", "Stop move", "0.58"},
+      {"Starting Sunny Close", "None", "2.5"},
+      {"Starting Conner", "None", "2.5"},
+      {"Moving back", "Stop", "0.5"},
+      {"Done", "this will never run", "999.9"},
+    };
 
-    // private String spyroom [][]= {
-    //   //auto 2 ball
-    //   {"Starting Sunny Close", "None", "10.0"},
-    //   {"Moving back", "Stop move", "0.2"},
-    //   {"Starting Conner", "Stop", "2.5"},
-    //   {"Moving back", "Stop move", "1.1"},
-    //   {"Done", "this will never run", "999.9"},
-    // };
+    private String one_ball [][]= {
+      //auto 1 ball
+      {"Starting Sunny Close", "None", "10.0"},
+      {"Moving back", "Stop move", "0.2"},
+      {"Starting Conner", "Stop", "2.5"},
+      {"Moving back", "Stop move", "1.1"},
+      {"Done", "this will never run", "999.9"},
+    };
 
-    // private String spyroom [][]= {
-    //   // 4 ball auto
-    //   {"Starting Izzy", "None", "0.1"},
-    //   {"Moving back", "Stop move", "3.0"},
-    //   {"Stop", "None", "0.1"},
-    //   {"Moving forward", "Stop move", "1.2"},
-    //   {"Starting Sunny Close", "None", "2.8"},
-    //   {"Starting Conner", "Stop", "2.5"},
-    //   {"Starting Izzy", "None", "4.0"},
-    //   {"Left back", "None", "1.5"},
-    //   {"Moving back fast", "Stop move", "3.0"},
-    //   {"Moving forward", "None", "2.0"},
-    //   {"Right forward", "Stop move", "2.0"},
-    //   {"Starting Sunny Close", "None", "2.5"},
-    //   {"Starting Conner", "Stop", "4.5"},
-    //   {"Done", "this will never run", "999.9"},
-    // };
+    private String four_ball [][]= {
+      // 4 ball auto
+      {"Starting Izzy", "None", "0.1"},
+      {"Moving back", "Stop move", "3.0"},
+      {"Stop", "None", "0.1"},
+      {"Moving forward", "Stop move", "1.2"},
+      {"Starting Sunny Close", "None", "2.8"},
+      {"Starting Conner", "Stop", "2.5"},
+      {"Starting Izzy", "None", "4.0"},
+      {"Left back", "None", "1.5"},
+      {"Moving back fast", "Stop move", "3.0"},
+      {"Moving forward", "None", "2.0"},
+      {"Right forward", "Stop move", "2.0"},
+      {"Starting Sunny Close", "None", "2.5"},
+      {"Starting Conner", "Stop", "4.5"},
+      {"Done", "this will never run", "999.9"},
+    };
 
-    // private String spyroom [][]= {
-    //   // 4 ball auto
-    //   {"Starting Izzy", "None", "0.01"},
-    //   {"Starting Sunny Close", "None", "0.01"},
-    //   {"Moving back", "Stop move", "1.2"},
-    //   {"Moving forward", "Stop move", "1.2"},
-    //   {"Starting Conner", "Stop", "2.0"},
-    //   {"Left back", "None", "1.3"},
-    //   {"Starting Sunny Close", "None", "0.01"},
-    //   {"Starting Izzy", "None", "0.01"},
-    //   {"Moving back fast", "Stop move", "2.7"},
-    //   {"Starting Izzy", "None", "0.01"},
-    //   {"Moving forward fast", "None", "1.3"},
-    //   {"Right forward", "Stop move", "1.5"},
-    //   {"Starting Conner", "Stop", "2.0"},
-    //   {"Done", "this will never run", "999.9"},
-    // };
+    private String four_ball_edit [][]= {
+      // 4 ball auto
+      {"Starting Izzy", "None", "0.01"},
+      {"Starting Sunny Close", "None", "0.01"},
+      {"Moving back", "Stop move", "1.2"},
+      {"Moving forward", "Stop move", "1.2"},
+      {"Starting Conner", "Stop", "2.0"},
+      {"Left back", "None", "1.3"},
+      {"Starting Sunny Close", "None", "0.01"},
+      {"Starting Izzy", "None", "0.01"},
+      {"Moving back fast", "Stop move", "2.7"},
+      {"Starting Izzy", "None", "0.01"},
+      {"Moving forward fast", "None", "1.3"},
+      {"Right forward", "Stop move", "1.5"},
+      {"Starting Conner", "Stop", "2.0"},
+      {"Done", "this will never run", "999.9"},
+    };
 
-    private String spyroom [][]= {
+    private String three_ball [][]= {
       //auto 3 ball
       {"Starting Izzy", "None", "0.1"},
       {"Moving back", "Stop move", "0.9"},
       {"Stop", "None", "0.1"},
-      {"Moving forward", "Stop move", "0.5"},
+      {"Moving forward", "Stop move", "0.37"},
       {"Starting Sunny Close", "None", "2.5"},
       {"Starting Conner", "Stop", "2.5"},
       {"Starting Sunny Far", "None", "0.1"},
-      {"Left", "None", "0.7"},
+      {"Left", "None", "0.89"},
       {"Moving back", "None", "1.3"},
       {"Moving back slow", "Stop move", "0.4"},
+      {"Izzy Back In", "None","0.1"},
       {"Right", "Stop move", "0.4"},
-      {"Starting Conner", "Stop", "2.0"},
+      {"Starting Conner", "Stop", "4.0"},
       {"Done", "this will never run", "999.9"},
     };
+
+    private String one_ball_comp [][]= {
+      //auto 1 ball
+      {"Starting Sunny Close", "None", "0.7"},
+      {"Moving back", "Stop move", "0.2"},
+      {"Starting Conner", "Stop", "2.5"},
+      {"Moving back", "None", "2.3"},
+      {"Moving back slow","Stop move","2.0"},
+      {"Done", "this will never run", "999.9"},
+    };
+
+
+    // private String test [][]= {
+    //   //auto 3 ball
+    //   {"Starting Izzy", "None", "3.0"},
+    //   {"Left", "Stop move", "0.88"},
+    //   {"Izzy Back In", "None","0.1"},
+    //   {"Done", "this will never run", "999.9"},
+    // };
+
+    private String test [][]= {
+      //auto 3 ball
+      {"Starting Izzy", "None", "3.0"},
+      {"Izzy Back In", "None","3.0"},
+      {"Starting Izzy", "None", "3.0"},
+      {"Izzy Back In", "None","3.0"},
+    
+      {"Done", "this will never run", "999.9"},
+    };
+    
     private int autonomous_counter = 0;
     private double lil_sam = 0;
     private String name;
-
+    private String[][] spyroom; 
 
     public SpyLord(String _name){
       name = _name;
       System.out.println(name + " has entered ");
+      this.spyroom = one_ball_comp; //change cargo auto here :)
     }
 
 
@@ -854,11 +916,11 @@ public class Robot extends TimedRobot {
           break;
         case "Starting Sunny Close":
           System.out.println("Sunny Starting Close");
-          sunny.set_motors(.75);
+          sunny.set_motors(.86);
           break;
         case "Starting Sunny Far":
           System.out.println("Sunny Starting Far");
-          sunny.set_motors(1);
+          sunny.set_motors(0.87);
           break;
         case "None":
           System.out.println("Nothing");
@@ -870,6 +932,11 @@ public class Robot extends TimedRobot {
         case "Starting Izzy":
           System.out.println("Izzy Starting");
           izzy.move_out(true);
+          izzy.set_motors(1);
+          break;
+        case "Izzy Back In":
+          System.out.println("Izzy Going In");
+          izzy.move_out(false);
           izzy.set_motors(1);
           break;
         case "Left":
@@ -1109,7 +1176,7 @@ public class Robot extends TimedRobot {
       }
       else{       
         if(lil_louie > spyeye_coder.getPosition()){
-          if(gunner.move_todd() < 0){
+          if(gunner.move_todd() < -0.15){
             //gunner.rumble(.25);
             motor.set(0); 
           }
@@ -1118,7 +1185,7 @@ public class Robot extends TimedRobot {
           }
         }
         else if(spyeye_coder.getPosition() > lil_rodger){
-          if(gunner.move_todd() > 0){
+          if(gunner.move_todd() > 0.15){
            // gunner.rumble(.25);
             motor.set(0);
           }
@@ -1172,6 +1239,7 @@ public class Robot extends TimedRobot {
     public void rez(){
       SmartDashboard.putString(name, state);
       SmartDashboard.putNumber("peddle", spyeye_coder.getPosition());
+      SmartDashboard.putNumber("toooodd", gunner.move_todd());
     }
   }
 
@@ -1293,7 +1361,7 @@ public class Robot extends TimedRobot {
 
     }
 
-    public void test(String right_bum, String left_bum, String ttt, String tl){
+    public void test(String right_bum, String left_bum, String ttt, String tl, String reset){
       if(driver.get_but(right_bum)){
         motor_1.set(0.4);
         motor_2.set(0.4);
@@ -1307,6 +1375,10 @@ public class Robot extends TimedRobot {
       }
       else if(driver.get_but(tl)){
         motor_2.set(0.4);
+      }
+      else if(driver.get_but(reset)){
+        jr_eyespy_coder.setPosition(0.0);
+        sir_eyespy_coder.setPosition(0.0);
       }
       else{
         motor_1.set(0);
@@ -1422,7 +1494,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    elle.poot();
+    //elle.poot();
   }
 
 
@@ -1465,7 +1537,7 @@ public class Robot extends TimedRobot {
   }
   @Override
   public void testInit() {
-   elle.lil_poot();
+  // elle.lil_poot();
   }
   @Override
   public void testPeriodic() {
@@ -1475,11 +1547,12 @@ public class Robot extends TimedRobot {
     sunny.test("r_trig");
     conner.test("b", "a");
     //todd.test("r_trig", "l_trig");  //gunner
-    elle.test("l_bum", "r_bum", "ttt", "tl");
+    elle.test("l_bum", "r_bum", "ttt", "tl", "y"); // all up, all down, L up, R up, reset 0.0
     wally.test(); 
     nia.check();
     lucy.test();
     
+    elle.rez();
   }
 }  // <--- Leave this close brace (Look at those numbers!)
 // jyn lockne li was here march 16th, 2022 [senior, 18 - class of '22]
