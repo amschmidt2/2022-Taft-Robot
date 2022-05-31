@@ -564,6 +564,7 @@ public class Robot extends TimedRobot {
       SmartDashboard.putBoolean("conner.full", full);
       SmartDashboard.putNumber("conner_temp", motor_1.getMotorTemperature());
       //SmartDashboard.putNumber("conner_2temp", motor_2.getMotorTemperature());
+      SmartDashboard.putNumber("conner amp", motor_1.getOutputCurrent());
     }
   }
 
@@ -757,16 +758,32 @@ public class Robot extends TimedRobot {
     private String two_ball [][]= {
       //auto 2 ball
       {"Starting Izzy", "None", "0.1"},
+      {"Starting Sunny Close One", "None", "0.1"},
       {"Moving back", "Stop move", "1.1"},
-      {"Stop", "None", "0.1"},
-      {"Moving forward", "Stop move", "0.58"},
-      {"Starting Sunny Close", "None", "2.5"},
-      {"Starting Conner", "None", "2.5"},
-      {"Moving back", "Stop", "0.5"},
+      {"Moving forward", "Stop move", "0.5"},
+      {"Starting Conner", "None", "3.5"},
+      {"Moving back", "Stop", "0.7"},
       {"Done", "this will never run", "999.9"},
     };
 
-    private String one_ball [][]= {
+    private String three_ball_comp [][]= {
+      //auto 2 ball
+      {"Starting Izzy", "None", "0.1"},
+      {"Starting Sunny Close One", "None", "0.1"},
+      {"Moving back", "Stop move", "1.1"},
+      {"Moving forward", "Stop move", "0.5"},
+      {"Starting Conner", "None", "3.5"},
+      {"Starting Sunny Far", "None", "0.1"},
+      {"Left", "None", "0.95"},
+      {"Moving back", "None", "1.3"},
+      {"Moving back slow", "Stop move", "0.4"},
+      {"Izzy Back In", "None","0.1"},
+      {"Right", "Stop move", "0.6"},
+      {"Starting Conner", "Stop", "4.0"},
+      {"Done", "this will never run", "999.9"},
+    };
+
+    private String L [][]= {
       //auto 1 ball
       {"Starting Sunny Close", "None", "10.0"},
       {"Moving back", "Stop move", "0.2"},
@@ -817,25 +834,25 @@ public class Robot extends TimedRobot {
       {"Moving back", "Stop move", "0.9"},
       {"Stop", "None", "0.1"},
       {"Moving forward", "Stop move", "0.37"},
-      {"Starting Sunny Close", "None", "2.5"},
+      {"Starting Sunny Close Three", "None", "2.5"},
       {"Starting Conner", "Stop", "2.5"},
       {"Starting Sunny Far", "None", "0.1"},
-      {"Left", "None", "0.89"},
+      {"Left", "None", "0.95"},
       {"Moving back", "None", "1.3"},
       {"Moving back slow", "Stop move", "0.4"},
       {"Izzy Back In", "None","0.1"},
-      {"Right", "Stop move", "0.4"},
+      {"Right", "Stop move", "0.6"},
       {"Starting Conner", "Stop", "4.0"},
       {"Done", "this will never run", "999.9"},
     };
 
-    private String one_ball_comp [][]= {
+    private String one_ball [][]= {
       //auto 1 ball
       {"Starting Sunny Close", "None", "0.7"},
       {"Moving back", "Stop move", "0.2"},
       {"Starting Conner", "Stop", "2.5"},
-      {"Moving back", "None", "2.3"},
-      {"Moving back slow","Stop move","2.0"},
+      {"Moving back", "None", "0.7"},
+      {"Moving back slow","Stop move","0.7"},
       {"Done", "this will never run", "999.9"},
     };
 
@@ -866,7 +883,7 @@ public class Robot extends TimedRobot {
     public SpyLord(String _name){
       name = _name;
       System.out.println(name + " has entered ");
-      this.spyroom = one_ball_comp; //change cargo auto here :)
+      this.spyroom = three_ball_comp; //change cargo auto here :)
     }
 
 
@@ -914,9 +931,17 @@ public class Robot extends TimedRobot {
           System.out.println("Stop Moving");
           wally.auto(0, 0);
           break;
+        case "Starting Sunny Close One":
+          System.out.println("Sunny Starting Close One");
+          sunny.set_motors(.76);
+          break;
         case "Starting Sunny Close":
           System.out.println("Sunny Starting Close");
-          sunny.set_motors(.86);
+          sunny.set_motors(.75);
+          break;
+        case "Starting Sunny Close Three":
+          System.out.println("Sunny Starting Close Three");
+          sunny.set_motors(.85);
           break;
         case "Starting Sunny Far":
           System.out.println("Sunny Starting Far");
@@ -1553,6 +1578,7 @@ public class Robot extends TimedRobot {
     lucy.test();
     
     elle.rez();
+    conner.rez();
   }
 }  // <--- Leave this close brace (Look at those numbers!)
 // jyn lockne li was here march 16th, 2022 [senior, 18 - class of '22]
