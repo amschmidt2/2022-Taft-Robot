@@ -410,6 +410,7 @@ public class Robot extends TimedRobot {
     private CANSparkMax motor_1 = new CANSparkMax(3, MotorType.kBrushless);
     private CANSparkMax motor_2 = new CANSparkMax(14, MotorType.kBrushless);
     RelativeEncoder eyespy_coder;
+    RelativeEncoder top_eyespy_coder; 
     private boolean ready_to_fire = false;
     DigitalInput izzys_spoon = new DigitalInput(0);
     public double flush;
@@ -486,23 +487,31 @@ public class Robot extends TimedRobot {
           state = "sleeping";
         }
       }
+// if line break true run motors x steps backwards, burp smaller
 
-      else if(state.equals("burping")){
-        if(Math.abs(eyespy_coder.getVelocity()) < 0.1 || concons_flag){ 
-          concon++;   
-          if(concon > 12){
-           // System.out.println("bleeeggghhhhh");
-            set_motors(-.5);
-            concons_flag = true;
-            if(concon > 27){
-              concon = 0;
-              set_motors(0);
-              state = "sleeping";
-              concons_flag = false;
-            }
-          }
+      else if(state.equals("hiccuping")){
+        if(top_eyespy_coder.getVelocity() < 0.1){
+          concon++;
+          set_motors(0);
+          //move cargo back 
         }
       }
+      // else if(state.equals("burping")){
+      //   if(Math.abs(eyespy_coder.getVelocity()) < 0.1 || concons_flag){ 
+      //     concon++;   
+      //     if(concon > 12){
+      //      // System.out.println("bleeeggghhhhh");
+      //       set_motors(-.5);
+      //       concons_flag = true;
+      //       if(concon > 27){
+      //         concon = 0;
+      //         set_motors(0);
+      //         state = "sleeping";
+      //         concons_flag = false;
+      //       }
+      //     }
+      //   }
+      // }
     }
 
     public void test(String yoke, String tf){
@@ -549,8 +558,12 @@ public class Robot extends TimedRobot {
       sir_sam = eyespy_coder.getPosition() + sir_bow_wow;
       set_motors(flush);
     }
-    public void burp(){
-      state = "burping";
+    // public void burp(){
+    //   state = "burping";
+    //   concon = 0;
+    // }
+    public void hiccup(){
+      state = "hiccuping";
       concon = 0;
     }
     public void talk(){
@@ -767,7 +780,7 @@ public class Robot extends TimedRobot {
     };
 
     private String three_ball_comp [][]= {
-      //auto 2 ball
+      //auto 3 ball
       {"Starting Izzy", "None", "0.1"},
       {"Starting Sunny Close One", "None", "0.1"},
       {"Moving back", "Stop move", "1.1"},
