@@ -59,7 +59,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 // private VictorSPX izzys_motor = new VictorSPX(6);
 // izzys_motor.set(ControlMode.PercentOutput, .3);
 
-
 public class Robot extends TimedRobot {
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
@@ -101,7 +100,7 @@ public class Robot extends TimedRobot {
   SpyLord archie = new SpyLord("archie");
   Wheels wally = new Wheels("wally", .7, .3);
   Intake izzy = new Intake("izzy", 1);
-  Conveyor conner = new Conveyor("conner", .7);
+  Conveyor conner = new Conveyor("conner", .7); // .7
   Shooter sunny = new Shooter("sunny", .4, 0.01);
   Driver driver = new Driver("driver", 0);
   Gunner gunner = new Gunner("gunner", 1);
@@ -231,11 +230,11 @@ public class Robot extends TimedRobot {
         //     rumbling = false;
         //   }
         // }
-        if(burp_back()){
-          if(conner.state.equals("sleeping")){
-            conner.burp();
-          }  
-        }
+        //if(burp_back()){
+          //if(conner.state.equals("sleeping")){
+            //conner.burp();
+          //}  
+        //}
 
         //top_dog = get_but(top_dog_button);
         if(get_but(top_dog_button) || get_but(lock_on_button)){
@@ -403,21 +402,22 @@ public class Robot extends TimedRobot {
     public boolean full;
     private String state = "sleeping"; 
     private double sir_sam;
-    private int concon = 0;
-    private boolean concons_flag = false;
+    //private int concon = 0;
+    //private boolean concons_flag = false;
     private boolean ballroom[] = {false, false};
     private boolean color_cargo[] = {false, true};
-    private CANSparkMax motor_1 = new CANSparkMax(3, MotorType.kBrushless);
-    private CANSparkMax motor_2 = new CANSparkMax(14, MotorType.kBrushless);
-    RelativeEncoder eyespy_coder;
-    RelativeEncoder top_eyespy_coder; 
+    private CANSparkMax motor_1 = new CANSparkMax(14, MotorType.kBrushless);
+    private CANSparkMax motor_2 = new CANSparkMax(3, MotorType.kBrushless);
+    RelativeEncoder eyespy_coder; // 0 
+   // RelativeEncoder top_eyespy_coder; // 2
     private boolean ready_to_fire = false;
     DigitalInput izzys_spoon = new DigitalInput(0);
     public double flush;
-    public double big_bow_wow = 150.0; // 68 = 34
-    public double lil_bow_wow = 70.0; // 40 = 20
-    public double sir_bow_wow = 200.0;
-    public double nibbles = 35.0;
+    // Need to change numbers for new conor with the bow wows :)
+    public double big_bow_wow = 0.8; // 68 = 34
+    public double lil_bow_wow = 0.5; // 40 = 20
+    public double sir_bow_wow = 0.5;
+    public double nibbles = 10.0;
 
     public Conveyor(String _name, double flush){
       name = _name;
@@ -468,8 +468,8 @@ public class Robot extends TimedRobot {
       else if(state.equals("munching")){
         if(izzys_spoon.get()){
           if(!ballroom[0]){
-            nibble(nibbles);
-          }
+             nibble(nibbles);
+         }
           else{
             set_motors(0);
             state = "sleeping";
@@ -480,22 +480,33 @@ public class Robot extends TimedRobot {
         //   state = "burping";
         // }
       }
-
+//  ~ nibbling function that was commented out ~
       else if(state.equals("nibbling")){
+        System.out.println("can you see me" + eyespy_coder.getPosition());
         if(eyespy_coder.getPosition() > sir_sam){
           set_motors(0);
           state = "sleeping";
         }
       }
+
 // if line break true run motors x steps backwards, burp smaller
 
-      else if(state.equals("hiccuping")){
-        if(top_eyespy_coder.getVelocity() < 0.1){
-          concon++;
-          set_motors(0);
-          //move cargo back 
-        }
-      }
+      // else if(state.equals("hiccuping")){
+      //   if(Math.abs(eyespy_coder.getVelocity()) < 0.1 || concons_flag){
+      //     concon++;
+      //     if(concon > 12){
+      //       set_motors(-.5);
+      //       concons_flag = true;
+      //       if(concon > top_eyespy_coder.getVelocity()){
+      //         concon = 0;
+      //         set_motors(0);
+      //         state = "sleeping";
+      //         concons_flag = false;
+
+      //       }
+      //     }
+      //   }
+      // }
       // else if(state.equals("burping")){
       //   if(Math.abs(eyespy_coder.getVelocity()) < 0.1 || concons_flag){ 
       //     concon++;   
@@ -543,14 +554,15 @@ public class Robot extends TimedRobot {
       System.out.println(" Motors please move conner he is lazy ");
       set_motors(flush);
       state = "munching";
-      //sir_sam = eyespy_coder.getPosition() + turns;
+     // sir_sam = eyespy_coder.getPosition() + turns;
     }
     public void nibble(double turns){
-      System.out.println(" Motors please move conner he is lazy ");
+      System.out.println(" I am the nibble function :) ");
       ballroom[0] = true;
       set_motors(flush);
       state = "nibbling";
       sir_sam = eyespy_coder.getPosition() + turns;
+    
     }
     public void fire(){
       System.out.println("gunner says to fire");
@@ -562,10 +574,10 @@ public class Robot extends TimedRobot {
     //   state = "burping";
     //   concon = 0;
     // }
-    public void hiccup(){
-      state = "hiccuping";
-      concon = 0;
-    }
+    // public void hiccup(){
+    //   state = "hiccuping";
+    //   concon = 0;
+    // }
     public void talk(){
       System.out.println(" Hi, I'm " + name + " I move the cargo ");
     }
@@ -768,16 +780,16 @@ public class Robot extends TimedRobot {
 
 
   public class SpyLord{
-    private String two_ball [][]= {
-      //auto 2 ball
-      {"Starting Izzy", "None", "0.1"},
-      {"Starting Sunny Close One", "None", "0.1"},
-      {"Moving back", "Stop move", "1.1"},
-      {"Moving forward", "Stop move", "0.5"},
-      {"Starting Conner", "None", "3.5"},
-      {"Moving back", "Stop", "0.7"},
-      {"Done", "this will never run", "999.9"},
-    };
+    // private String two_ball [][]= {
+    //   //auto 2 ball
+    //   {"Starting Izzy", "None", "0.1"},
+    //   {"Starting Sunny Close One", "None", "0.1"},
+    //   {"Moving back", "Stop move", "1.1"},
+    //   {"Moving forward", "Stop move", "0.5"},
+    //   {"Starting Conner", "None", "3.5"},
+    //   {"Moving back", "Stop", "0.7"},
+    //   {"Done", "this will never run", "999.9"},
+    // };
 
     private String three_ball_comp [][]= {
       //auto 3 ball
@@ -796,78 +808,78 @@ public class Robot extends TimedRobot {
       {"Done", "this will never run", "999.9"},
     };
 
-    private String L [][]= {
-      //auto 1 ball
-      {"Starting Sunny Close", "None", "10.0"},
-      {"Moving back", "Stop move", "0.2"},
-      {"Starting Conner", "Stop", "2.5"},
-      {"Moving back", "Stop move", "1.1"},
-      {"Done", "this will never run", "999.9"},
-    };
+    // private String L [][]= {
+    //   //auto 1 ball
+    //   {"Starting Sunny Close", "None", "10.0"},
+    //   {"Moving back", "Stop move", "0.2"},
+    //   {"Starting Conner", "Stop", "2.5"},
+    //   {"Moving back", "Stop move", "1.1"},
+    //   {"Done", "this will never run", "999.9"},
+    // };
 
-    private String four_ball [][]= {
-      // 4 ball auto
-      {"Starting Izzy", "None", "0.1"},
-      {"Moving back", "Stop move", "3.0"},
-      {"Stop", "None", "0.1"},
-      {"Moving forward", "Stop move", "1.2"},
-      {"Starting Sunny Close", "None", "2.8"},
-      {"Starting Conner", "Stop", "2.5"},
-      {"Starting Izzy", "None", "4.0"},
-      {"Left back", "None", "1.5"},
-      {"Moving back fast", "Stop move", "3.0"},
-      {"Moving forward", "None", "2.0"},
-      {"Right forward", "Stop move", "2.0"},
-      {"Starting Sunny Close", "None", "2.5"},
-      {"Starting Conner", "Stop", "4.5"},
-      {"Done", "this will never run", "999.9"},
-    };
+    // private String four_ball [][]= {
+    //   // 4 ball auto
+    //   {"Starting Izzy", "None", "0.1"},
+    //   {"Moving back", "Stop move", "3.0"},
+    //   {"Stop", "None", "0.1"},
+    //   {"Moving forward", "Stop move", "1.2"},
+    //   {"Starting Sunny Close", "None", "2.8"},
+    //   {"Starting Conner", "Stop", "2.5"},
+    //   {"Starting Izzy", "None", "4.0"},
+    //   {"Left back", "None", "1.5"},
+    //   {"Moving back fast", "Stop move", "3.0"},
+    //   {"Moving forward", "None", "2.0"},
+    //   {"Right forward", "Stop move", "2.0"},
+    //   {"Starting Sunny Close", "None", "2.5"},
+    //   {"Starting Conner", "Stop", "4.5"},
+    //   {"Done", "this will never run", "999.9"},
+    // };
 
-    private String four_ball_edit [][]= {
-      // 4 ball auto
-      {"Starting Izzy", "None", "0.01"},
-      {"Starting Sunny Close", "None", "0.01"},
-      {"Moving back", "Stop move", "1.2"},
-      {"Moving forward", "Stop move", "1.2"},
-      {"Starting Conner", "Stop", "2.0"},
-      {"Left back", "None", "1.3"},
-      {"Starting Sunny Close", "None", "0.01"},
-      {"Starting Izzy", "None", "0.01"},
-      {"Moving back fast", "Stop move", "2.7"},
-      {"Starting Izzy", "None", "0.01"},
-      {"Moving forward fast", "None", "1.3"},
-      {"Right forward", "Stop move", "1.5"},
-      {"Starting Conner", "Stop", "2.0"},
-      {"Done", "this will never run", "999.9"},
-    };
+    // private String four_ball_edit [][]= {
+    //   // 4 ball auto
+    //   {"Starting Izzy", "None", "0.01"},
+    //   {"Starting Sunny Close", "None", "0.01"},
+    //   {"Moving back", "Stop move", "1.2"},
+    //   {"Moving forward", "Stop move", "1.2"},
+    //   {"Starting Conner", "Stop", "2.0"},
+    //   {"Left back", "None", "1.3"},
+    //   {"Starting Sunny Close", "None", "0.01"},
+    //   {"Starting Izzy", "None", "0.01"},
+    //   {"Moving back fast", "Stop move", "2.7"},
+    //   {"Starting Izzy", "None", "0.01"},
+    //   {"Moving forward fast", "None", "1.3"},
+    //   {"Right forward", "Stop move", "1.5"},
+    //   {"Starting Conner", "Stop", "2.0"},
+    //   {"Done", "this will never run", "999.9"},
+    // };
 
-    private String three_ball [][]= {
-      //auto 3 ball
-      {"Starting Izzy", "None", "0.1"},
-      {"Moving back", "Stop move", "0.9"},
-      {"Stop", "None", "0.1"},
-      {"Moving forward", "Stop move", "0.37"},
-      {"Starting Sunny Close Three", "None", "2.5"},
-      {"Starting Conner", "Stop", "2.5"},
-      {"Starting Sunny Far", "None", "0.1"},
-      {"Left", "None", "0.95"},
-      {"Moving back", "None", "1.3"},
-      {"Moving back slow", "Stop move", "0.4"},
-      {"Izzy Back In", "None","0.1"},
-      {"Right", "Stop move", "0.6"},
-      {"Starting Conner", "Stop", "4.0"},
-      {"Done", "this will never run", "999.9"},
-    };
+    // private String three_ball [][]= {
+    //   //auto 3 ball
+    //   {"Starting Izzy", "None", "0.1"},
+    //   {"Moving back", "Stop move", "0.9"},
+    //   {"Stop", "None", "0.1"},
+    //   {"Moving forward", "Stop move", "0.37"},
+    //   {"Starting Sunny Close Three", "None", "2.5"},
+    //   {"Starting Conner", "Stop", "2.5"},
+    //   {"Starting Sunny Far", "None", "0.1"},
+    //   {"Left", "None", "0.95"},
+    //   {"Moving back", "None", "1.3"},
+    //   {"Moving back slow", "Stop move", "0.4"},
+    //   {"Izzy Back In", "None","0.1"},
+    //   {"Right", "Stop move", "0.6"},
+    //   {"Starting Conner", "Stop", "4.0"},
+    //   {"Done", "this will never run", "999.9"},
+    // };
 
-    private String one_ball [][]= {
-      //auto 1 ball
-      {"Starting Sunny Close", "None", "0.7"},
-      {"Moving back", "Stop move", "0.2"},
-      {"Starting Conner", "Stop", "2.5"},
-      {"Moving back", "None", "0.7"},
-      {"Moving back slow","Stop move","0.7"},
-      {"Done", "this will never run", "999.9"},
-    };
+    // private String one_ball [][]= {
+    //   //auto 1 ball
+    //   {"Starting Sunny Close", "None", "0.7"},
+    //   {"Moving back", "Stop move", "0.2"},
+    //   {"Starting Conner", "Stop", "2.5"},
+    //   {"Moving back", "None", "0.7"},
+    //   {"Moving back slow","Stop move","0.7"},
+    //   {"Done", "this will never run", "999.9"},
+    // };
 
 
     // private String test [][]= {
@@ -878,15 +890,15 @@ public class Robot extends TimedRobot {
     //   {"Done", "this will never run", "999.9"},
     // };
 
-    private String test [][]= {
-      //auto 3 ball
-      {"Starting Izzy", "None", "3.0"},
-      {"Izzy Back In", "None","3.0"},
-      {"Starting Izzy", "None", "3.0"},
-      {"Izzy Back In", "None","3.0"},
+    // private String test [][]= {
+    //   //auto 3 ball
+    //   {"Starting Izzy", "None", "3.0"},
+    //   {"Izzy Back In", "None","3.0"},
+    //   {"Starting Izzy", "None", "3.0"},
+    //   {"Izzy Back In", "None","3.0"},
     
-      {"Done", "this will never run", "999.9"},
-    };
+    //   {"Done", "this will never run", "999.9"},
+    // };
     
     private int autonomous_counter = 0;
     private double lil_sam = 0;
