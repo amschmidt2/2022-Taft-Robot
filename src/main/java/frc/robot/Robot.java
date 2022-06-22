@@ -619,7 +619,9 @@ public class Robot extends TimedRobot {
     }
     public double bignew_setpoint(){
       //return -0.0105 * lucy.le_angles[1] + 0.68748 + kachow * chowdown;
-      return 0.876 * Math.pow(lucy.le_angles[1], 2.0) -29.8 * lucy.le_angles[1] + 4762 + kachow * chowdown;   
+      // return 0.876 * Math.pow(lucy.le_angles[1], 2.0) -29.8 * lucy.le_angles[1] + 4762 + kachow * chowdown; //2022 last shooter thing (texas)
+      return -63.3 * Math.pow(lucy.le_angles[1], 2.0) + 3953 + kachow * chowdown;
+      
     }
     public boolean button_ah(boolean now, boolean past){
       partyroom = event_chk(now, past); // {event, now}
