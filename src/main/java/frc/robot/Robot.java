@@ -674,7 +674,10 @@ public class Robot extends TimedRobot {
       return -55.1 * lucy.le_angles[1] + 3862;
     }
     public double bignew_setpoint(){
-      return -0.0105 * lucy.le_angles[1] + 0.68748 + kachow * chowdown;
+      System.out.println("can you see me" + rhino.getVelocity());
+      //System.out.println("does this work" + chowdown);
+      return -63.3 * Math.pow(lucy.le_angles[1], 2.0) + 3953 + kachow * chowdown;
+     // return -0.0105 * lucy.le_angles[1] + 0.68748 + kachow * chowdown; (last to be un commented out)
      // return 0.000126466 * Math.pow(lucy.le_angles[1], 2.0) -.004302 * lucy.le_angles[1] + .68748 + kachow * chowdown;   
     }
     public boolean button_ah(boolean now, boolean past){
@@ -1309,6 +1312,7 @@ public class Robot extends TimedRobot {
 
     public void check(){ 
       vogue();
+      System.out.println("I have eyes" + le_angles[1]);
       SmartDashboard.putNumber("lucy_cam0", le_angles[0]);
       SmartDashboard.putNumber("lucy_cam1", le_angles[1]);
     }
