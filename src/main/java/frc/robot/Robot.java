@@ -118,6 +118,7 @@ public class Robot extends TimedRobot {
     private String wants_cargo_button = "x";
     private String no_cargo_button = "y";
     private String colors_button = "ttt";
+    private String izzy_out_button = "tl";
     private boolean r_elle_up;
     private boolean l_elle_up;
     private boolean elle_down;
@@ -193,6 +194,9 @@ public class Robot extends TimedRobot {
       }
       public boolean color(){
         return get_but(colors_button);
+      }
+      public boolean izzy_out(){
+        return get_but(izzy_out_button);
       }
       public void rez(){
         SmartDashboard.putBoolean(name, rumbling);
@@ -342,7 +346,11 @@ public class Robot extends TimedRobot {
       else if(state.equals("sleeping")){
         if(driver.wants_cargo()){
           eat();
+          if(driver.izzy_out()){
+            leave();
+          }
         }
+
       }
     }
 
@@ -390,6 +398,10 @@ public class Robot extends TimedRobot {
       state = "sleeping";
       set_motors(0);
       move_out(false);
+    }
+    public void leave(){
+      state = "leaveing";
+      set_motors(-0.4);
     }
     public void rez(){
       SmartDashboard.putString(name, state);
