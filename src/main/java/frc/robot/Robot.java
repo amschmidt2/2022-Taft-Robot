@@ -99,7 +99,7 @@ public class Robot extends TimedRobot {
   Timer timmy = new Timer(); // lil_sam is a timed event
   SpyLord archie = new SpyLord("archie");
   Wheels wally = new Wheels("wally", .7, .3);
-  Intake izzy = new Intake("izzy", 1);
+  Intake izzy = new Intake("izzy", 1, -0.5);
   Conveyor conner = new Conveyor("conner", .7); // .7
   Shooter sunny = new Shooter("sunny", .4, 0.01);
   Driver driver = new Driver("driver", 0);
@@ -322,18 +322,22 @@ public class Robot extends TimedRobot {
     private String name;
     private String state = "sleeping"; 
     private double inhale;
+    private double exhale;
     private DoubleSolenoid lil_iz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
     private DoubleSolenoid jr_liliz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 2, 3);
     private CANSparkMax motor = new CANSparkMax(6, MotorType.kBrushed);
     
 
-    public Intake(String _name, double _inhale){
+    public Intake(String _name, double _inhale, double _exhale){
       name = _name;
       System.out.println(name + " izzy is on the scene ");
       inhale = _inhale;
+      exhale = _exhale;
     }
 
     public void check(){
+      System.out.println("I am" + state);
+      System.out.println("can you see me" + driver.izzy_out());
       if(state.equals("eating")){
         if(driver.no_cargo()){
           sleep();
@@ -346,13 +350,20 @@ public class Robot extends TimedRobot {
       else if(state.equals("sleeping")){
         if(driver.wants_cargo()){
           eat();
-          if(driver.izzy_out()){
-            leave();
-          }
         }
-
+        else if(driver.izzy_out()){
+          leave();
+        }
       }
-    }
+
+      else if(state.equals("AH")){
+      System.out.println("can you see me");
+       if(!driver.izzy_out()){
+          sleep();
+       }
+      }
+
+     }
 
     public void test(String xcited, String tiny_lines){
       if(driver.get_but(xcited)){
@@ -400,8 +411,8 @@ public class Robot extends TimedRobot {
       move_out(false);
     }
     public void leave(){
-      state = "leaveing";
-      set_motors(-0.4);
+      state = "AH";
+      set_motors(exhale);
     }
     public void rez(){
       SmartDashboard.putString(name, state);
@@ -1324,7 +1335,7 @@ public class Robot extends TimedRobot {
 
     public void check(){ 
       vogue();
-      System.out.println("I have eyes" + le_angles[1]);
+      //System.out.println("I have eyes" + le_angles[1]);
       SmartDashboard.putNumber("lucy_cam0", le_angles[0]);
       SmartDashboard.putNumber("lucy_cam1", le_angles[1]);
     }
