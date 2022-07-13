@@ -327,7 +327,7 @@ public class Robot extends TimedRobot {
     private DoubleSolenoid jr_liliz = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 2, 3);
     private CANSparkMax motor = new CANSparkMax(6, MotorType.kBrushed);
     
-
+    // conner backwards as well as when izzy is out go backwards
     public Intake(String _name, double _inhale, double _exhale){
       name = _name;
       System.out.println(name + " izzy is on the scene ");
@@ -336,8 +336,8 @@ public class Robot extends TimedRobot {
     }
 
     public void check(){
-      System.out.println("I am" + state);
-      System.out.println("can you see me" + driver.izzy_out());
+     // System.out.println("I am" + state);
+     // System.out.println("can you see me" + driver.izzy_out());
       if(state.equals("eating")){
         if(driver.no_cargo()){
           sleep();
@@ -345,15 +345,18 @@ public class Robot extends TimedRobot {
         else if(gunner.is_top_dog()){
           sleep();
         }
+        else if(driver.izzy_out()){
+          leave();
+        }
       }
       
       else if(state.equals("sleeping")){
         if(driver.wants_cargo()){
           eat();
         }
-        else if(driver.izzy_out()){
-          leave();
-        }
+        // else if(driver.izzy_out()){
+        //   leave();
+        // }
       }
 
       else if(state.equals("AH")){
@@ -362,7 +365,6 @@ public class Robot extends TimedRobot {
           sleep();
        }
       }
-
      }
 
     public void test(String xcited, String tiny_lines){
@@ -446,6 +448,7 @@ public class Robot extends TimedRobot {
       name = _name;
       System.out.println(name + " has rolled in ");
       this.flush = flush;
+      
     }
 
     public void init(){
@@ -503,7 +506,7 @@ public class Robot extends TimedRobot {
         //   state = "burping";
         // }
       }
-//  ~ nibbling function that was commented out ~
+     //  ~ nibbling function that was commented out ~
       else if(state.equals("nibbling")){
         System.out.println("can you see me" + eyespy_coder.getPosition());
         if(eyespy_coder.getPosition() > sir_sam){
@@ -512,7 +515,7 @@ public class Robot extends TimedRobot {
         }
       }
 
-// if line break true run motors x steps backwards, burp smaller
+      // if line break true run motors x steps backwards, burp smaller
 
       // else if(state.equals("hiccuping")){
       //   if(Math.abs(eyespy_coder.getVelocity()) < 0.1 || concons_flag){
@@ -593,6 +596,7 @@ public class Robot extends TimedRobot {
       sir_sam = eyespy_coder.getPosition() + sir_bow_wow;
       set_motors(flush);
     }
+
     // public void burp(){
     //   state = "burping";
     //   concon = 0;
@@ -697,9 +701,14 @@ public class Robot extends TimedRobot {
       return -55.1 * lucy.le_angles[1] + 3862;
     }
     public double bignew_setpoint(){
-      System.out.println("can you see me" + rhino.getVelocity());
+      //System.out.println("can you see me" + rhino.getVelocity());
       //System.out.println("does this work" + chowdown);
-      return -63.3 * Math.pow(lucy.le_angles[1], 2.0) + 3953 + kachow * chowdown;
+
+
+      System.out.println("return" + 63.3 * Math.pow(lucy.le_angles[1], 2.0) + 3953 + kachow * chowdown);
+      //return -63.3 * Math.pow(lucy.le_angles[1], 2.0) + 3953 + kachow * chowdown;
+      return 63.3 * Math.pow(lucy.le_angles[1], 2.0) + 3953 + kachow * chowdown;
+
      // return -0.0105 * lucy.le_angles[1] + 0.68748 + kachow * chowdown; (last to be un commented out)
      // return 0.000126466 * Math.pow(lucy.le_angles[1], 2.0) -.004302 * lucy.le_angles[1] + .68748 + kachow * chowdown;   
     }
@@ -770,7 +779,7 @@ public class Robot extends TimedRobot {
 
     private void check(){
       if(gunner.is_top_dog()){
-        System.out.println(" you know I am top dog! ");
+        //System.out.println(" you know I am top dog! ");
         sensitive(driver.control_panel()[0] * slow_mo, driver.control_panel()[1] * slow_mo);
       }
       else{
