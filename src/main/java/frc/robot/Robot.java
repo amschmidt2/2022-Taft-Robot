@@ -706,10 +706,10 @@ public class Robot extends TimedRobot {
 
 
       System.out.println("return" + 63.3 * Math.pow(lucy.le_angles[1], 2.0) + 3953 + kachow * chowdown);
-      //return -63.3 * Math.pow(lucy.le_angles[1], 2.0) + 3953 + kachow * chowdown;
-      return 63.3 * Math.pow(lucy.le_angles[1], 2.0) + 3953 + kachow * chowdown;
+      //return -63.3 * Math.pow(lucy.le_angles[1], 2.0) + 3953 + kachow * chowdown; // stupid equation
+     // return 63.3 * Math.pow(lucy.le_angles[1], 2.0) + 3953 + kachow * chowdown; // stupid equation 1.0
 
-     // return -0.0105 * lucy.le_angles[1] + 0.68748 + kachow * chowdown; (last to be un commented out)
+      return -0.0105 * lucy.le_angles[1] + 0.68748 + kachow * chowdown; // (last to be un commented out)
      // return 0.000126466 * Math.pow(lucy.le_angles[1], 2.0) -.004302 * lucy.le_angles[1] + .68748 + kachow * chowdown;   
     }
     public boolean button_ah(boolean now, boolean past){
